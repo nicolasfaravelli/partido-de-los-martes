@@ -14,7 +14,6 @@
         body { background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; margin: 0; padding: 20px; }
         h1 { text-align: center; margin-bottom: 30px; letter-spacing: 2px; }
         
-        /* Grilla Responsive */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
@@ -24,7 +23,7 @@
             padding-bottom: 50px;
         }
         
-        /* --- LA CARTA (CONTENEDOR) --- */
+        /* --- LA CARTA --- */
         .card { 
             position: relative; 
             width: 100%; 
@@ -32,39 +31,29 @@
             background: transparent;
             cursor: pointer;
             transition: transform 0.2s ease-out;
-            
-            /* Habilita medidas relativas (cqw) */
             container-type: size; 
-            
-            /* Optimización de GPU para suavidad */
             transform: translateZ(0); 
         }
 
         .card:hover { transform: scale(1.02); z-index: 10; }
 
-        /* --- WRAPPER DE LA IMAGEN (La solución de Calidad) --- */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden;
             display: block;
-            /* La sombra va acá para no afectar la nitidez de la imagen interna */
             filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6));
         }
 
-        /* --- IMAGEN DE FONDO --- */
         .card-bg { 
             width: 100%; height: 100%;
-            object-fit: contain; /* Muestra la imagen entera */
+            object-fit: contain;
             display: block;
-
-            /* TRUCOS DE RENDERIZADO (No tocar) */
             image-rendering: auto; 
             transform: translateZ(0);
             backface-visibility: hidden;
             will-change: transform;
         }
 
-        /* Capa de Texto */
         .info-layer { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             z-index: 3; 
@@ -73,7 +62,6 @@
         
         /* --- UBICACIÓN DE LOS DATOS --- */
         
-        /* 1. PROMEDIO */
         .rating { 
             position: absolute; 
             font-family: 'Bebas Neue', sans-serif; 
@@ -85,7 +73,6 @@
             width: 25%; 
         }
 
-        /* 2. POSICIÓN */
         .position { 
             position: absolute; 
             top: 24%; 
@@ -96,40 +83,43 @@
             width: 25%;
         }
         
-        /* 3. NOMBRE */
         .name { 
             display: block; 
             position: absolute;
-            
             top: 64.5%; 
             left: 5%;
             width: 90%; 
-            
             text-align: center;
             font-size: 14.5cqw; 
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* 4. STATS */
+        /* CONTENEDOR DE STATS (Ahora son 6) */
         .stats-container { 
             display: flex; 
             justify-content: space-between; 
             position: absolute;
-            
             top: 81%; 
-            left: 10%; 
-            width: 80%; 
+            left: 8%; /* Un poco más de margen para que entren los 6 */
+            width: 84%; 
         }
 
         .stat-box {
             text-align: center;
-            width: 18%; 
+            width: 16%; /* Ajustado para que entren 6 columnas */
         }
 
         .stat-val {
-            font-size: 8.75cqw; 
+            font-size: 8.5cqw; /* Un pelín más chico para asegurar que no se toquen */
             display: block;
+        }
+
+        /* Nombres de stats (Opcional si querés poner etiquetas chicas abajo de los números) */
+        .stat-label {
+            font-size: 4cqw;
+            opacity: 0.7;
+            display: none; /* Por ahora oculto, solo mostramos números */
         }
 
         /* --- EL MODAL --- */
@@ -204,16 +194,29 @@
                 const nombre = fila[0]; 
                 if(!nombre || nombre === 'Jugador') return;
                 
-                let tipoCarta = fila[8] ? fila[8].trim().toLowerCase() : 'oro';
+                // NUEVO MAPEO DE COLUMNAS (Ajustado a tu hoja nueva)
+                // A[0]: Nombre
+                // B[1]: Ataque, C[2]: Def, D[3]: Tec, E[4]: Vel, F[5]: Res, G[6]: Arq
+                // H[7]: Promedio
+                // I[8]: Posición
+                // J[9]: Valor (Color)
+                // K[10]: Fondo
+                
+                let tipoCarta = fila[9] ? fila[9].trim().toLowerCase() : 'oro';
                 let colorTexto = COLORES[tipoCarta] || '#624f21'; 
 
                 const jugadorObj = {
                     id: index,
                     nombre: nombre,
-                    ata: fila[1], def: fila[2], tec: fila[3], res: fila[4], arq: fila[5],
-                    prom: fila[6], 
-                    pos: fila[7],
-                    fondo: fila[9] ? fila[9].trim() : "",
+                    ata: fila[1], 
+                    def: fila[2], 
+                    tec: fila[3], 
+                    vel: fila[4], // Nuevo Stat
+                    res: fila[5], 
+                    arq: fila[6],
+                    prom: fila[7], 
+                    pos: fila[8],
+                    fondo: fila[10] ? fila[10].trim() : "",
                     color: colorTexto
                 };
                 datosGlobales.push(jugadorObj);
@@ -242,9 +245,10 @@
                 <div class="name" style="color: ${j.color}">${j.nombre}</div>
                 
                 <div class="stats-container" style="color: ${j.color}">
+                    <div class="stat-box"><span class="stat-val">${j.vel}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.def}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.def}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.res}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
                 </div>
