@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Plantel Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body { background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; margin: 0; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 30px; letter-spacing: 2px; }
+        
+        /* Grilla Responsive */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 20px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding-bottom: 50px;
+        }
+        
+        /* --- LA CARTA (CONTENEDOR) --- */
+        .card { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 2 / 3; 
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.2s ease-out;
+            
+            /* Habilita medidas relativas (cqw) */
+            container-type: size; 
+            
+            /* Optimización de GPU para suavidad */
+            transform: translateZ(0); 
+        }
+
+        .card:hover { transform: scale(1.02); z-index: 10; }
+
+        /* --- WRAPPER DE LA IMAGEN (La solución de Calidad) --- */
+        .card-bg-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            display: block;
+            /* La sombra va acá para no afectar la nitidez de la imagen interna */
+            filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6));
+        }
+
+        /* --- IMAGEN DE FONDO --- */
+        .card-bg { 
+            width: 100%; height: 100%;
+            object-fit: contain; /* Muestra la imagen entera */
+            display: block;
+
+            /* TRUCOS DE RENDERIZADO (No tocar) */
+            image-rendering: auto; 
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform;
+        }
+
+        /* Capa de Texto */
+        .info-layer { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 3; 
+            pointer-events: none;
+        }
+        
+        /* --- UBICACIÓN DE LOS DATOS --- */
+        
+        /* 1. PROMEDIO */
+        .rating { 
+            position: absolute; 
+            font-family: 'Bebas Neue', sans-serif; 
+            line-height: 0.8;
+            top: 13.5%;    
+            left: 6%;
+            font-size: 18cqw; 
+            text-align: center; 
+            width: 25%; 
+        }
+
+        /* 2. POSICIÓN */
+        .position { 
+            position: absolute; 
+            top: 24%; 
+            left: 6%;
+            font-size: 10cqw; 
+            line-height: 1;
+            text-align: center;
+            width: 25%;
+        }
+        
+        /* 3. NOMBRE */
+        .name { 
+            display: block; 
+            position: absolute;
+            
+            top: 64.5%; 
+            left: 5%;
+            width: 90%; 
+            
+            text-align: center;
+            font-size: 14.5cqw; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 4. STATS */
+        .stats-container { 
+            display: flex; 
+            justify-content: space-between; 
+            position: absolute;
+            
+            top: 81%; 
+            left: 10%; 
+            width: 80%; 
+        }
+
+        .stat-box {
+            text-align: center;
+            width: 18%; 
+        }
+
+        .stat-val {
+            font-size: 8.75cqw; 
+            display: block;
+        }
+
+        /* --- EL MODAL --- */
+        #modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000;
+            flex-direction: column; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        #modal-card-container {
+            width: 340px; 
+            aspect-ratio: 2 / 3;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); 
+        }
+        
+        .btn-group { display: flex; gap: 15px; }
+        .btn {
+            padding: 12px 25px; border: none; border-radius: 4px;
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 10px;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-close { background: #333; color: white; border: 1px solid #555; }
+        .btn-download { background: #d4af37; color: black; font-weight: bold; }
+        
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
+
+    </style>
+</head>
+<body>
+
+    <h1>PARTIDO DE LOS MARTES</h1>
+    
+    <div id="loader">Cargando datos...</div>
+    <div id="grid-container" class="grid"></div>
+
+    <div id="modal">
+        <div id="modal-card-container"></div>
+        <div class="btn-group">
+            <button class="btn btn-close" onclick="cerrarModal()">CERRAR</button>
+            <button class="btn btn-download" onclick="descargarCarta()">DESCARGAR</button>
+        </div>
+    </div>
+
+<script>
+    const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
+
+    const COLORES = {
+        'oro': '#624f21',
+        'plata': '#434343',
+        'bronce': '#5e3e21'
+    };
+
+    let datosGlobales = []; 
+
+    Papa.parse(PROXY_URL, {
+        download: true, header: false, skipEmptyLines: true,
+        complete: function(results) {
+            const data = results.data;
+            document.getElementById('loader').style.display = 'none';
+            if(data.length > 0) data.shift(); 
+
+            const container = document.getElementById('grid-container');
+            container.innerHTML = ''; 
+
+            data.forEach((fila, index) => {
+                const nombre = fila[0]; 
+                if(!nombre || nombre === 'Jugador') return;
+                
+                let tipoCarta = fila[8] ? fila[8].trim().toLowerCase() : 'oro';
+                let colorTexto = COLORES[tipoCarta] || '#624f21'; 
+
+                const jugadorObj = {
+                    id: index,
+                    nombre: nombre,
+                    ata: fila[1], def: fila[2], tec: fila[3], res: fila[4], arq: fila[5],
+                    prom: fila[6], 
+                    pos: fila[7],
+                    fondo: fila[9] ? fila[9].trim() : "",
+                    color: colorTexto
+                };
+                datosGlobales.push(jugadorObj);
+
+                const html = `
+                <div class="card" onclick="abrirModal(${datosGlobales.length - 1})">
+                    ${generarHTMLCarta(jugadorObj, true)} 
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+    });
+
+    function generarHTMLCarta(j, lazy = false) {
+        const loadingAttr = lazy ? 'loading="lazy"' : '';
+        
+        return `
+            <div class="card-bg-wrapper">
+                <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
+            </div>
+
+            <div class="info-layer">
+                <div class="rating" style="color: ${j.color}">${j.prom}</div>
+                <div class="position" style="color: ${j.color}">${j.pos}</div>
+                
+                <div class="name" style="color: ${j.color}">${j.nombre}</div>
+                
+                <div class="stats-container" style="color: ${j.color}">
+                    <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.def}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.res}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
+                </div>
+            </div>
+        `;
+    }
+
+    function abrirModal(index) {
+        const jugador = datosGlobales[index];
+        const modalContainer = document.getElementById('modal-card-container');
+        modalContainer.innerHTML = `
+            <div class="card" id="carta-para-descargar">
+                ${generarHTMLCarta(jugador, false)}
+            </div>`;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function descargarCarta() {
+        const elemento = document.getElementById('carta-para-descargar');
+        const btn = document.querySelector('.btn-download');
+        btn.innerText = "PROCESANDO...";
+        
+        html2canvas(elemento, {
+            useCORS: true, 
+            allowTaint: true,
+            backgroundColor: null,
+            scale: 3 
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `FUT_Carta_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            btn.innerText = "DESCARGAR";
+        }).catch(err => {
+            alert("Error: " + err);
+            btn.innerText = "ERROR";
+        });
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") cerrarModal();
+    });
+</script>
+
+</body>
+</html>
