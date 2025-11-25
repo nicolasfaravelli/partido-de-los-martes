@@ -101,7 +101,7 @@
             justify-content: space-between; 
             position: absolute;
             top: 80.5%; 
-            left: 10%; /* Un poco más de margen para que entren los 6 */
+            left: 10%; 
             width: 79.6%; 
         }
         .stat-box {
@@ -186,13 +186,8 @@
                 const nombre = fila[0]; 
                 if(!nombre || nombre === 'Jugador') return;
                 
-                // NUEVO MAPEO DE COLUMNAS (Ajustado a tu hoja nueva)
-                // A[0]: Nombre
+                // MAPEO
                 // B[1]: Ataque, C[2]: Def, D[3]: Tec, E[4]: Vel, F[5]: Res, G[6]: Arq
-                // H[7]: Promedio
-                // I[8]: Posición
-                // J[9]: Valor (Color)
-                // K[10]: Fondo
                 
                 let tipoCarta = fila[9] ? fila[9].trim().toLowerCase() : 'oro';
                 let colorTexto = COLORES[tipoCarta] || '#624f21'; 
@@ -203,7 +198,7 @@
                     ata: fila[1], 
                     def: fila[2], 
                     tec: fila[3], 
-                    vel: fila[4], // Nuevo Stat
+                    vel: fila[4], 
                     res: fila[5], 
                     arq: fila[6],
                     prom: fila[7], 
@@ -291,24 +286,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
