@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Partido de los Martes</title>
-    <meta name="description" content="Plantel oficial y estadísticas de los jugadores del Partido de los Martes.">
-    <meta property="og:title" content="Partido de los Martes">
-    <meta property="og:description" content="Mirá las cartas y stats del plantel oficial.">
+    <meta name="description" content="AAAABUELA">
+    <meta property="og:title" content="BBBBOSTA">
+    <meta property="og:description" content="CCCCACA">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="">
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     
@@ -21,19 +20,17 @@
         body { background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; margin: 0; padding: 20px; }
         h1 { text-align: center; margin-bottom: 10px; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
         
-        /* --- BARRA DE CONTROLES (BUSCADOR, FILTROS) --- */
+        /* --- BARRA DE CONTROLES (SOLO BUSCADOR Y ORDEN) --- */
         .controls-area {
-            max-width: 1200px; margin: 0 auto 30px auto;
-            display: flex; flex-direction: column; gap: 15px;
+            max-width: 1200px; margin: 0 auto 20px auto;
+            display: flex; gap: 15px; flex-wrap: wrap;
             background: #1a1a1a; padding: 15px; border-radius: 8px;
-            border: 1px solid #333;
+            border: 1px solid #333; justify-content: space-between;
         }
 
-        .search-row { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
-        
         /* Input Buscador */
         #search-input {
-            flex: 1; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+            flex: 2; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
             min-width: 200px;
         }
@@ -41,21 +38,10 @@
 
         /* Select Orden */
         #sort-select {
-            padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+            flex: 1; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
-            cursor: pointer;
+            cursor: pointer; min-width: 200px;
         }
-
-        /* Botones de Filtro */
-        .filter-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-btn {
-            background: #2a2a2a; border: 1px solid #444; color: #aaa;
-            padding: 8px 16px; border-radius: 20px; cursor: pointer;
-            font-family: 'Bebas Neue', sans-serif; font-size: 1rem; white-space: nowrap;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover { background: #333; color: white; }
-        .filter-btn.active { background: #d4af37; color: black; border-color: #d4af37; font-weight: bold; }
 
         .results-count { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
 
@@ -135,23 +121,15 @@
     <h1>PARTIDO DE LOS MARTES</h1>
     
     <div class="controls-area">
-        <div class="search-row">
-            <input type="text" id="search-input" placeholder="Buscar jugador...">
-            <select id="sort-select">
-                <option value="prom">Ordenar por: Valoración</option>
-                <option value="nombre">Ordenar por: Nombre</option>
-                <option value="vel">Ordenar por: Velocidad</option>
-                <option value="ata">Ordenar por: Ataque</option>
-                <option value="def">Ordenar por: Defensa</option>
-            </select>
-        </div>
-        <div class="filter-row">
-            <button class="filter-btn active" data-cat="all">Todos</button>
-            <button class="filter-btn" data-cat="arq">Arqueros</button>
-            <button class="filter-btn" data-cat="def">Defensores</button>
-            <button class="filter-btn" data-cat="med">Medios</button>
-            <button class="filter-btn" data-cat="del">Delanteros</button>
-        </div>
+        <input type="text" id="search-input" placeholder="Buscar jugador...">
+        
+        <select id="sort-select">
+            <option value="prom-desc">Valoración: Mayor a Menor</option>
+            <option value="prom-asc">Valoración: Menor a Mayor</option>
+            <option value="nombre-asc">Nombre: A - Z</option>
+            <option value="nombre-desc">Nombre: Z - A</option>
+            <option value="pos-asc">Posición: A - Z</option>
+        </select>
     </div>
 
     <div id="count-display" class="results-count"></div>
@@ -170,18 +148,16 @@
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    const COLORES = { 'legendario': '#392266', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
-
-    // CATEGORÍAS DE POSICIONES
-    const CATEGORIAS = {
-        'arq': ['POR'],
-        'def': ['DFC', 'LAT'],
-        'med': ['MCD', 'MC', 'MO', 'MCO'],
-        'del': ['SD', 'DC', 'EXT']
+    // DICCIONARIO DE COLORES (Agregado Legendario)
+    const COLORES = { 
+        'oro': '#624f21', 
+        'plata': '#434343', 
+        'bronce': '#5e3e21',
+        'legendario': '#392266'
     };
 
-    let datosOriginales = []; // Copia de seguridad
-    let datosFiltrados = [];  // Lo que se ve actualmente
+    let datosOriginales = []; 
+    let datosFiltrados = [];  
 
     // --- CARGA DE DATOS ---
     Papa.parse(PROXY_URL, {
@@ -213,58 +189,43 @@
                     fondo: fila[10] ? fila[10].trim() : "",
                     color: colorTexto
                 };
-            }).filter(item => item !== null); // Eliminar nulos
+            }).filter(item => item !== null); 
 
             datosFiltrados = [...datosOriginales];
-            aplicarFiltrosYOrden(); // Renderizar primera vez
+            // Ordenar por defecto por Valoración (Mayor a Menor)
+            aplicarFiltrosYOrden(); 
         }
     });
 
     // --- LÓGICA DE FILTROS Y ORDEN ---
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    let categoriaActual = 'all';
 
-    // Event Listeners
     searchInput.addEventListener('input', aplicarFiltrosYOrden);
     sortSelect.addEventListener('change', aplicarFiltrosYOrden);
     
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Estilo botones
-            filterBtns.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            // Lógica
-            categoriaActual = e.target.getAttribute('data-cat');
-            aplicarFiltrosYOrden();
-        });
-    });
-
     function aplicarFiltrosYOrden() {
         const textoBusqueda = searchInput.value.toLowerCase();
-        const criterioOrden = sortSelect.value;
+        const criterioFull = sortSelect.value.split('-'); // ej: ['prom', 'desc']
+        const criterio = criterioFull[0];
+        const orden = criterioFull[1];
 
-        // 1. Filtrar
+        // 1. Filtrar solo por buscador
         datosFiltrados = datosOriginales.filter(j => {
-            // Filtro Nombre
-            const coincideNombre = j.nombre.toLowerCase().includes(textoBusqueda);
-            
-            // Filtro Posición
-            let coincidePos = true;
-            if(categoriaActual !== 'all') {
-                const posicionesPermitidas = CATEGORIAS[categoriaActual];
-                coincidePos = posicionesPermitidas.includes(j.pos.toUpperCase());
-            }
-
-            return coincideNombre && coincidePos;
+            return j.nombre.toLowerCase().includes(textoBusqueda);
         });
 
         // 2. Ordenar
         datosFiltrados.sort((a, b) => {
-            if(criterioOrden === 'nombre') return a.nombre.localeCompare(b.nombre);
-            // Para stats numéricos (prom, vel, ata, def) orden descendente
-            return b[criterioOrden] - a[criterioOrden];
+            if (criterio === 'nombre' || criterio === 'pos') {
+                // Ordenar texto (Nombre o Posición)
+                if(orden === 'asc') return a[criterio].localeCompare(b[criterio]);
+                return b[criterio].localeCompare(a[criterio]);
+            } else {
+                // Ordenar números (Valoración)
+                if(orden === 'asc') return a[criterio] - b[criterio];
+                return b[criterio] - a[criterio];
+            }
         });
 
         // 3. Renderizar
@@ -318,7 +279,6 @@
 
     // --- MODAL Y DESCARGA ---
     function abrirModalPorID(idReal) {
-        // Buscamos en datosOriginales para no depender del filtrado actual
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
 
@@ -360,4 +320,3 @@
 
 </body>
 </html>
-
