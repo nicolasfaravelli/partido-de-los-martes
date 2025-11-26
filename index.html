@@ -20,7 +20,7 @@
         body { background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; margin: 0; padding: 20px; }
         h1 { text-align: center; margin-bottom: 10px; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
         
-        /* --- BARRA DE CONTROLES (SOLO BUSCADOR Y ORDEN) --- */
+        /* --- BARRA DE CONTROLES --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
@@ -148,7 +148,7 @@
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    // DICCIONARIO DE COLORES (Agregado Legendario)
+    // DICCIONARIO DE COLORES
     const COLORES = { 
         'oro': '#624f21', 
         'plata': '#434343', 
@@ -192,7 +192,6 @@
             }).filter(item => item !== null); 
 
             datosFiltrados = [...datosOriginales];
-            // Ordenar por defecto por Valoración (Mayor a Menor)
             aplicarFiltrosYOrden(); 
         }
     });
@@ -206,11 +205,11 @@
     
     function aplicarFiltrosYOrden() {
         const textoBusqueda = searchInput.value.toLowerCase();
-        const criterioFull = sortSelect.value.split('-'); // ej: ['prom', 'desc']
+        const criterioFull = sortSelect.value.split('-'); 
         const criterio = criterioFull[0];
         const orden = criterioFull[1];
 
-        // 1. Filtrar solo por buscador
+        // 1. Filtrar
         datosFiltrados = datosOriginales.filter(j => {
             return j.nombre.toLowerCase().includes(textoBusqueda);
         });
@@ -218,11 +217,9 @@
         // 2. Ordenar
         datosFiltrados.sort((a, b) => {
             if (criterio === 'nombre' || criterio === 'pos') {
-                // Ordenar texto (Nombre o Posición)
                 if(orden === 'asc') return a[criterio].localeCompare(b[criterio]);
                 return b[criterio].localeCompare(a[criterio]);
             } else {
-                // Ordenar números (Valoración)
                 if(orden === 'asc') return a[criterio] - b[criterio];
                 return b[criterio] - a[criterio];
             }
@@ -253,7 +250,7 @@
         });
     }
 
-    // --- GENERADOR DE HTML ---
+    // --- GENERADOR DE HTML (CORREGIDO ORDEN) ---
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         
@@ -265,11 +262,12 @@
                 <div class="rating" style="color: ${j.color}">${j.prom}</div>
                 <div class="position" style="color: ${j.color}">${j.pos}</div>
                 <div class="name" style="color: ${j.color}">${j.nombre}</div>
+                
                 <div class="stats-container" style="color: ${j.color}">
-                    <div class="stat-box"><span class="stat-val">${j.vel}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.def}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.vel}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.res}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
                 </div>
@@ -320,4 +318,3 @@
 
 </body>
 </html>
-
