@@ -75,7 +75,6 @@
             backface-visibility: hidden; will-change: transform;
         }
 
-        /* 2. CAPA DE FOTO JUGADOR (NUEVO) - Z-INDEX 2 */
         /* ACÁ ES DONDE TENÉS QUE TOCAR PARA ACOMODAR LAS CARAS */
         .card-face {
             position: absolute;
@@ -88,10 +87,7 @@
             
             object-fit: contain; /* Mantiene proporción */
             display: block;
-            
-            /* Opcional: Sombra para separar al jugador del fondo */
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));
-        }
+         }
 
         /* 3. CAPA DE INFO (TEXTOS) - Z-INDEX 3 */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
@@ -341,6 +337,7 @@
 
 </body>
 </html>
+
 
 
 
