@@ -28,7 +28,6 @@
             border: 1px solid #333; justify-content: space-between;
         }
 
-        /* Input Buscador */
         #search-input {
             flex: 2; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
@@ -36,7 +35,6 @@
         }
         #search-input::placeholder { color: #888; }
 
-        /* Select Orden */
         #sort-select {
             flex: 1; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
@@ -64,28 +62,47 @@
         }
         .card:hover { transform: scale(1.02); z-index: 10; }
 
+        /* 1. CAPA DE FONDO (ESCUDO) - Z-INDEX 1 */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: block;
             filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6));
+            z-index: 1;
         }
-
         .card-bg { 
             width: 100%; height: 100%; object-fit: contain; display: block;
             image-rendering: auto; transform: translateZ(0);
             backface-visibility: hidden; will-change: transform;
         }
 
+        /* 2. CAPA DE FOTO JUGADOR (NUEVO) - Z-INDEX 2 */
+        /* ACÁ ES DONDE TENÉS QUE TOCAR PARA ACOMODAR LAS CARAS */
+        .card-face {
+            position: absolute;
+            z-index: 2; /* Arriba del fondo, abajo del texto */
+            
+            /* Ajustá estos valores según tus recortes: */
+            top: 16%; 
+            left: 15%; 
+            width: 70%; /* Ancho de la foto */
+            
+            object-fit: contain; /* Mantiene proporción */
+            display: block;
+            
+            /* Opcional: Sombra para separar al jugador del fondo */
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));
+        }
+
+        /* 3. CAPA DE INFO (TEXTOS) - Z-INDEX 3 */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
-        /* --- UBICACIÓN DE DATOS --- */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
 
         .stats-container { 
             display: flex; justify-content: space-between; 
-            position: absolute; top: 81%; left: 7.5%; width: 85%; 
+            position: absolute; top: 81%; left: 8%; width: 84%; 
         }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
@@ -148,7 +165,6 @@
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    // DICCIONARIO DE COLORES
     const COLORES = { 
         'oro': '#624f21', 
         'plata': '#434343', 
@@ -186,7 +202,8 @@
                     arq: parseInt(fila[6]) || 0,
                     prom: parseInt(fila[7]) || 0, 
                     pos: fila[8] ? fila[8].trim() : "",
-                    fondo: fila[10] ? fila[10].trim() : "",
+                    fondo: fila[10] ? fila[10].trim() : "",  // Columna K
+                    foto: fila[11] ? fila[11].trim() : "",    // Columna L (NUEVA)
                     color: colorTexto
                 };
             }).filter(item => item !== null); 
@@ -250,14 +267,20 @@
         });
     }
 
-    // --- GENERADOR DE HTML (CORREGIDO ORDEN) ---
+    // --- GENERADOR DE HTML ---
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         
+        // Si no hay foto, mostramos una imagen transparente o nada para que no salga el ícono roto
+        const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
+
         return `
             <div class="card-bg-wrapper">
                 <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
             </div>
+            
+            ${fotoHtml}
+            
             <div class="info-layer">
                 <div class="rating" style="color: ${j.color}">${j.prom}</div>
                 <div class="position" style="color: ${j.color}">${j.pos}</div>
@@ -318,6 +341,3 @@
 
 </body>
 </html>
-
-
-
