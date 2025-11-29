@@ -22,24 +22,57 @@
             color: white; 
             font-family: 'Bebas Neue', sans-serif; 
             margin: 0; 
-            padding: 20px; 
-            /* Configuración del fondo */
+            /* El padding top se ajusta para que el header fijo no tape contenido */
+            padding: 0 20px 20px 20px; 
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
+            transition: filter 0.3s;
         }
 
-        /* Contenedor del Título */
-        .header-container { text-align: center; margin-bottom: 20px; }
-        
-        /* Título Texto (por si no hay imagen) */
-        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        
-        /* Título Imagen */
-        .title-img { max-width: 90%; height: auto; max-height: 150px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+        /* EASTER EGG: CLASE RETRO (TV VIEJA) */
+        body.retro-mode {
+            filter: sepia(0.4) contrast(1.2) brightness(0.9);
+        }
+        body.retro-mode::before {
+            content: " ";
+            display: block;
+            position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
 
-        /* --- BARRA DE CONTROLES --- */
+        /* --- HEADER FIJO (STICKY) --- */
+        .header-container { 
+            text-align: center; 
+            /* Esto hace la magia de dejarlo fijo */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            
+            /* Fondo semitransparente con blur para legibilidad */
+            background: rgba(15, 15, 15, 0.9); 
+            backdrop-filter: blur(8px);
+            
+            /* Sombra y bordes */
+            border-bottom: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            
+            /* Ajustes de tamaño para que ocupe todo el ancho */
+            margin: 0 -20px 20px -20px; /* Negativo para compensar el padding del body */
+            padding: 15px 0;
+            cursor: pointer; /* Para indicar que es clickeable (Easter Egg) */
+            user-select: none;
+        }
+        
+        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
+        .title-img:active { transform: scale(0.98); }
+
+        /* --- BARRA DE CONTROLES (Deslizable) --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
@@ -80,8 +113,25 @@
             background: transparent; cursor: pointer;
             transition: transform 0.2s ease-out;
             container-type: size; transform: translateZ(0); 
+            overflow: hidden; /* Para contener el brillo */
         }
-        .card:hover { transform: scale(1.02); z-index: 10; }
+        .card:hover { transform: scale(1.03); z-index: 10; }
+
+        /* EFECTO DE BRILLO (SHINE) AL PASAR EL MOUSE */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            z-index: 4;
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .card:hover::after {
+            left: 150%;
+            transition: left 0.7s;
+        }
 
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -102,7 +152,6 @@
             object-fit: contain; display: block;
         }
 
-        /* INFO LAYER */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
@@ -158,12 +207,13 @@
 </head>
 <body>
 
-    <div class="header-container" id="header-area">
+    <div class="header-container" id="header-area" ondblclick="activarModoRetro()" title="Doble click para Modo Retro">
         <h1 id="default-title">PARTIDO DE LOS MARTES</h1>
     </div>
     
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
+        
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
             <option value="nombre-desc">Nombre: Z - A</option>
@@ -190,21 +240,16 @@
 
 <script>
     // ====================================================================
-    //  ZONA DE CONFIGURACIÓN (PEGÁ TUS LINKS ACÁ)
+    //  ZONA DE CONFIGURACIÓN 
     // ====================================================================
     
-    // 1. Link de la imagen de fondo (Si lo dejás vacío queda negro)
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
-
-    // 2. Link de la imagen del Título/Logo (Si lo dejás vacío, muestra el texto)
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
-
-    // 3. Link del archivo MP3 (Música de fondo)
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
 
     // ====================================================================
 
-    // --- APLICAR CONFIGURACIONES VISUALES ---
+    // CONFIGURACIÓN VISUAL
     if(FONDO_URL) document.body.style.backgroundImage = `url('${FONDO_URL}')`;
     
     if(TITULO_IMG_URL) {
@@ -214,10 +259,10 @@
     if(MUSICA_URL) {
         document.getElementById('audio-player').src = MUSICA_URL;
     } else {
-        document.querySelector('.music-btn').style.display = 'none'; // Ocultar botón si no hay música
+        document.querySelector('.music-btn').style.display = 'none'; 
     }
 
-    // --- CARGA DE DATOS ---
+    // CARGA DE DATOS
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
@@ -262,7 +307,7 @@
         }
     });
 
-    // --- FILTROS Y ORDEN ---
+    // FILTROS Y ORDEN
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
 
@@ -310,7 +355,7 @@
         });
     }
 
-    // --- GENERADOR DE HTML ---
+    // GENERADOR HTML
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
@@ -337,7 +382,7 @@
         `;
     }
 
-    // --- MODAL Y DESCARGA ---
+    // MODAL Y DESCARGA
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
@@ -354,6 +399,7 @@
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
+        
         html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 })
         .then(canvas => {
             const link = document.createElement('a');
@@ -368,14 +414,14 @@
         if (event.key === "Escape") cerrarModal();
     });
 
-    // --- CONTROL DE MÚSICA ---
+    // MÚSICA
     const audioPlayer = document.getElementById('audio-player');
     const musicBtn = document.querySelector('.music-btn');
     const musicIcon = document.getElementById('music-icon');
     let isPlaying = false;
 
     function toggleMusic() {
-        if(!audioPlayer.src) return; // Si no hay link, no hace nada
+        if(!audioPlayer.src) return; 
 
         if (isPlaying) {
             audioPlayer.pause();
@@ -383,7 +429,7 @@
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
-            audioPlayer.volume = 0.10; // VOLUMEN
+            audioPlayer.volume = 0.08; 
             audioPlayer.play().then(() => {
                 musicIcon.innerText = "🔊";
                 musicBtn.classList.add('playing');
@@ -391,18 +437,12 @@
             }).catch(e => console.log("Bloqueo de audio: ", e));
         }
     }
+
+    // EASTER EGG: MODO RETRO
+    function activarModoRetro() {
+        document.body.classList.toggle('retro-mode');
+    }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
