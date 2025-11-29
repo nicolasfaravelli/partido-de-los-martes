@@ -17,6 +17,11 @@
     
     <style>
         /* --- ESTILOS GENERALES --- */
+        :root {
+            /* Variable para guardar el fondo dinámicamente */
+            --fondo-url: none;
+        }
+
         body { 
             background-color: #0f0f0f; 
             color: white; 
@@ -24,34 +29,44 @@
             margin: 0; 
             padding: 0 20px 20px 20px; 
             
-            /* Configuración CLAVE para el fondo fijo */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed; 
-            
-            transition: filter 0.3s;
-        }
-
-        /* --- HEADER FIJO CAMUFLADO --- */
-        .header-container { 
-            text-align: center; 
-            position: sticky; 
-            top: 0;
-            z-index: 100;
-            
-            /* Márgenes y Relleno */
-            margin: 0 -20px 10px -20px;
-            padding: 20px 0 20px 0; /* Un poco más de padding abajo para la "linea imaginaria" */
-            
-            /* PROPIEDADES PARA EL CAMUFLAJE (Se llenan con JS igual que el body) */
-            background-color: #0f0f0f; /* Fallback por si no carga la imagen */
+            /* Fondo desde variable */
+            background-image: var(--fondo-url);
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
             
-            /* Sombra y linea de corte */
+            transition: filter 0.3s;
+        }
+
+        /* --- HEADER FIJO CON OPACIDAD --- */
+        .header-container { 
+            text-align: center; 
+            position: sticky; 
+            top: 0;
+            z-index: 100;
+            margin: 0 -20px 10px -20px;
+            padding: 20px 0 20px 0;
+            /* El fondo real lo maneja el ::before para poder dar opacidad sin afectar al logo */
+        }
+
+        /* Capa de fondo del header (El camuflaje semitransparente) */
+        .header-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; /* Detrás del logo */
+            
+            background-color: #0f0f0f; /* Color base por si falla la imagen */
+            background-image: var(--fondo-url); /* Misma imagen que el body */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            
+            /* --- AJUSTAR OPACIDAD ACÁ (0.9 = 90% Opaco, 1 = Sólido) --- */
+            opacity: 0.75; 
+            
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -65,6 +80,8 @@
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
             transition: transform 0.1s; 
             cursor: pointer;
+            /* Evita el recuadro azul al tocar en celular */
+            -webkit-tap-highlight-color: transparent;
         }
         .title-img:active { transform: scale(0.98); }
 
@@ -107,11 +124,14 @@
             background: transparent; cursor: pointer;
             transition: transform 0.2s ease-out;
             container-type: size; transform: translateZ(0); 
+            
+            /* Chau cuadrado azul en celular */
+            -webkit-tap-highlight-color: transparent;
         }
         
-        /* ACÁ CAMBIAS EL NIVEL DE ZOOM (scale) */
+        /* ZOOM AL PASAR MOUSE (Ajustá el 1.05 si querés más o menos) */
         .card:hover { 
-            transform: scale(1.05); /* Probá 1.03, 1.05 o 1.10 */
+            transform: scale(1.1); 
             z-index: 10; 
         }
 
@@ -131,13 +151,13 @@
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
             transform: skewX(-25deg);
             
-            /* TRUCO: Sin transición por defecto (reseteo instantáneo) */
+            /* TRUCO: Sin transición por defecto (vuelta instantánea invisible) */
             transition: none; 
         }
         
         .card:hover .shine-layer::after {
             left: 150%;
-            /* TRUCO: Transición SOLO en hover (ida suave) */
+            /* TRUCO: Transición SOLO en hover (ida suave visible) */
             transition: left 0.6s; 
         }
 
@@ -184,6 +204,7 @@
             font-size: 1.5rem; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
         .music-btn:hover { transform: scale(1.1); border-color: #d4af37; }
         .music-btn.playing { border-color: #d4af37; color: #d4af37; background: rgba(0,0,0,0.9); }
@@ -239,7 +260,7 @@
         </select>
     </div>
 
-    <div id="loader">Cargando datos...</div>
+    <div id="loader">Cargando jugadores...</div>
     <div id="grid-container" class="grid"></div>
 
     <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
@@ -267,10 +288,8 @@
     // ====================================================================
 
     if(FONDO_URL) {
-        document.body.style.backgroundImage = `url('${FONDO_URL}')`;
-        // TRUCO DE CAMUFLAJE: Le ponemos el mismo fondo al header
-        const header = document.getElementById('header-area');
-        header.style.backgroundImage = `url('${FONDO_URL}')`;
+        // Inyectamos la variable CSS para que el estilo la pueda leer
+        document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
     }
     
     if(TITULO_IMG_URL) {
@@ -456,7 +475,7 @@
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
-            audioPlayer.volume = 0.3; 
+            audioPlayer.volume = 0.1; 
             audioPlayer.play().then(() => {
                 musicIcon.innerText = "🔊";
                 musicBtn.classList.add('playing');
@@ -472,4 +491,3 @@
 
 </body>
 </html>
-
