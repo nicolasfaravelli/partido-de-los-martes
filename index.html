@@ -17,15 +17,30 @@
     
     <style>
         /* --- ESTILOS GENERALES --- */
-        body { background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; margin: 0; padding: 20px; }
-        h1 { text-align: center; margin-bottom: 10px; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
+        body { 
+            background-color: #0f0f0f; 
+            color: white; 
+            font-family: 'Bebas Neue', sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            
+            /* Configuración para la textura de fondo */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed; /* Para que el fondo quede quieto al scrollear */
+        }
+
+        h1 { text-align: center; margin-bottom: 10px; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
         
         /* --- BARRA DE CONTROLES --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
-            background: #1a1a1a; padding: 15px; border-radius: 8px;
+            background: rgba(26, 26, 26, 0.9); /* Un poco transparente para ver el fondo */
+            padding: 15px; border-radius: 8px;
             border: 1px solid #333; justify-content: space-between;
+            backdrop-filter: blur(5px);
         }
 
         #search-input {
@@ -40,8 +55,6 @@
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
             cursor: pointer; min-width: 200px;
         }
-
-        .results-count { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
 
         /* --- GRILLA --- */
         .grid { 
@@ -62,7 +75,7 @@
         }
         .card:hover { transform: scale(1.02); z-index: 10; }
 
-        /* 1. CAPA DE FONDO (ESCUDO) - Z-INDEX 1 */
+        /* 1. CAPA DE FONDO (ESCUDO) */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: block;
@@ -75,30 +88,27 @@
             backface-visibility: hidden; will-change: transform;
         }
 
-        /* ACÁ ES DONDE TENÉS QUE TOCAR PARA ACOMODAR LAS CARAS */
+        /* 2. CAPA DE FOTO JUGADOR */
         .card-face {
             position: absolute;
-            z-index: 2; /* Arriba del fondo, abajo del texto */
-            
-            /* Ajustá estos valores según tus recortes: */
-            top: 9.75%; 
-            left: 5.25%; 
-            width: 95%; /* Ancho de la foto */
-            
-            object-fit: contain; /* Mantiene proporción */
+            z-index: 2; 
+            top: 3.75%; 
+            left: 4.5%; 
+            width: 91%; /* Ajustado un poco para margen de seguridad */
+            object-fit: contain; 
             display: block;
-         }
+        }
 
-        /* 3. CAPA DE INFO (TEXTOS) - Z-INDEX 3 */
+        /* 3. CAPA DE INFO (TEXTOS) */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
-        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
+        .name { position: absolute; top: 64.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
 
         .stats-container { 
             display: flex; justify-content: space-between; 
-            position: absolute; top: 81%; left: 8%; width: 84.1%; 
+            position: absolute; top: 81%; left: 8%; width: 84%; 
         }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
@@ -137,15 +147,13 @@
         <input type="text" id="search-input" placeholder="Buscar jugador...">
         
         <select id="sort-select">
-            <option value="prom-desc">Valoración: Mayor a Menor</option>
-            <option value="prom-asc">Valoración: Menor a Mayor</option>
             <option value="nombre-asc">Nombre: A - Z</option>
             <option value="nombre-desc">Nombre: Z - A</option>
-            <option value="pos-asc">Posición: A - Z</option>
+            <option value="prom-desc">Valoración: Mayor a Menor</option>
+            <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
     </div>
 
-    <div id="count-display" class="results-count"></div>
     <div id="loader">Cargando datos...</div>
     <div id="grid-container" class="grid"></div>
 
@@ -158,8 +166,17 @@
     </div>
 
 <script>
+    // --- CONFIGURACIÓN ---
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
+    
+    // --- ACÁ PEGÁ EL LINK DE TU FONDO (ENTRE LAS COMILLAS) ---
+    const FONDO_URL = ""; 
+    
+    // Si la variable de arriba tiene algo, se aplica al body
+    if(FONDO_URL) {
+        document.body.style.backgroundImage = `url('${FONDO_URL}')`;
+    }
 
     const COLORES = { 
         'oro': '#624f21', 
@@ -179,7 +196,6 @@
             document.getElementById('loader').style.display = 'none';
             if(data.length > 0) data.shift(); 
 
-            // Convertir datos crudos a objetos
             datosOriginales = data.map((fila, index) => {
                 const nombre = fila[0]; 
                 if(!nombre || nombre === 'Jugador') return null;
@@ -198,14 +214,14 @@
                     arq: parseInt(fila[6]) || 0,
                     prom: parseInt(fila[7]) || 0, 
                     pos: fila[8] ? fila[8].trim() : "",
-                    fondo: fila[10] ? fila[10].trim() : "",  // Columna K
-                    foto: fila[11] ? fila[11].trim() : "",    // Columna L (NUEVA)
+                    fondo: fila[10] ? fila[10].trim() : "",
+                    foto: fila[11] ? fila[11].trim() : "",
                     color: colorTexto
                 };
             }).filter(item => item !== null); 
 
             datosFiltrados = [...datosOriginales];
-            aplicarFiltrosYOrden(); 
+            aplicarFiltrosYOrden(); // Esto aplicará Nombre A-Z porque es el primero del select
         }
     });
 
@@ -244,13 +260,11 @@
 
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
-        const countDisplay = document.getElementById('count-display');
         
         container.innerHTML = '';
-        countDisplay.innerText = `Mostrando ${lista.length} jugadores`;
 
         if(lista.length === 0) {
-            container.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No se encontraron jugadores.</p>';
+            container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>';
             return;
         }
 
@@ -266,8 +280,6 @@
     // --- GENERADOR DE HTML ---
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
-        
-        // Si no hay foto, mostramos una imagen transparente o nada para que no salga el ícono roto
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
 
         return `
@@ -337,26 +349,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
