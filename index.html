@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Partido de los Martes</title>
-    <meta name="description" content="">
-    <meta property="og:title" content="Partido de los martes">
-    <meta property="og:description" content="Lista de jugadores">
+    <meta name="description" content="Plantel oficial">
+    <meta property="og:title" content="Partido de los Martes">
+    <meta property="og:description" content="Plantel Oficial">
     <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -16,22 +16,30 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <style>
-        /* ESTILOS GENERALES Y FONDO */
+        /* --- ESTILOS GENERALES --- */
         body { 
             background-color: #0f0f0f; 
             color: white; 
             font-family: 'Bebas Neue', sans-serif; 
             margin: 0; 
             padding: 20px; 
+            /* Configuración del fondo */
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
         }
 
-        h1 { text-align: center; margin-bottom: 10px; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        /* Contenedor del Título */
+        .header-container { text-align: center; margin-bottom: 20px; }
         
-        /* BARRA DE CONTROLES */
+        /* Título Texto (por si no hay imagen) */
+        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        
+        /* Título Imagen */
+        .title-img { max-width: 90%; height: auto; max-height: 150px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+        /* --- BARRA DE CONTROLES --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
@@ -54,7 +62,9 @@
             cursor: pointer; min-width: 200px;
         }
 
-        /* GRILLA */
+        .results-count { text-align: center; color: #aaa; font-size: 0.9rem; margin-bottom: 15px; display:none; }
+
+        /* --- GRILLA --- */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
@@ -64,7 +74,7 @@
             padding-bottom: 50px;
         }
         
-        /* CARTA */
+        /* --- LA CARTA --- */
         .card { 
             position: relative; width: 100%; aspect-ratio: 2 / 3; 
             background: transparent; cursor: pointer;
@@ -88,14 +98,11 @@
         .card-face {
             position: absolute;
             z-index: 2; 
-            top: 3.75%; 
-            left: 4.5%; 
-            width: 91%;
-            object-fit: contain; 
-            display: block;
+            top: 3.75%; left: 4.5%; width: 91%;
+            object-fit: contain; display: block;
         }
 
-        /* INFO Y TEXTOS */
+        /* INFO LAYER */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
@@ -109,7 +116,21 @@
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
 
-        /* MODAL */
+        /* --- BOTÓN DE MÚSICA --- */
+        .music-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+            width: 50px; height: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #444; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        .music-btn:hover { transform: scale(1.1); border-color: #d4af37; }
+        .music-btn.playing { border-color: #d4af37; color: #d4af37; background: rgba(0,0,0,0.9); }
+
+        /* --- MODAL --- */
         #modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 1000;
@@ -137,11 +158,12 @@
 </head>
 <body>
 
-    <h1>PARTIDO DE LOS MARTES</h1>
+    <div class="header-container" id="header-area">
+        <h1 id="default-title">PARTIDO DE LOS MARTES</h1>
+    </div>
     
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
-        
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
             <option value="nombre-desc">Nombre: Z - A</option>
@@ -153,6 +175,11 @@
     <div id="loader">Cargando datos...</div>
     <div id="grid-container" class="grid"></div>
 
+    <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
+        <span id="music-icon">🔇</span>
+    </div>
+    <audio id="audio-player" loop></audio>
+
     <div id="modal">
         <div id="modal-card-container"></div>
         <div class="btn-group">
@@ -162,27 +189,43 @@
     </div>
 
 <script>
-    // <<<------------------ PEGA EL LINK DE TU FONDO ACÁ ABAJO ------------------>>>
+    // ====================================================================
+    //  ZONA DE CONFIGURACIÓN (PEGÁ TUS LINKS ACÁ)
+    // ====================================================================
+    
+    // 1. Link de la imagen de fondo (Si lo dejás vacío queda negro)
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
+
+    // 2. Link de la imagen del Título/Logo (Si lo dejás vacío, muestra el texto)
+    const TITULO_IMG_URL = "";
+
+    // 3. Link del archivo MP3 (Música de fondo)
+    const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
+
+    // ====================================================================
+
+    // --- APLICAR CONFIGURACIONES VISUALES ---
+    if(FONDO_URL) document.body.style.backgroundImage = `url('${FONDO_URL}')`;
     
-    const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
-    
-    if(FONDO_URL) {
-        document.body.style.backgroundImage = `url('${FONDO_URL}')`;
+    if(TITULO_IMG_URL) {
+        document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
     }
 
-    const COLORES = { 
-        'oro': '#624f21', 
-        'plata': '#434343', 
-        'bronce': '#5e3e21',
-        'legendario': '#392266'
-    };
+    if(MUSICA_URL) {
+        document.getElementById('audio-player').src = MUSICA_URL;
+    } else {
+        document.querySelector('.music-btn').style.display = 'none'; // Ocultar botón si no hay música
+    }
+
+    // --- CARGA DE DATOS ---
+    const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
+
+    const COLORES = { 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21', 'legendario': '#392266' };
 
     let datosOriginales = []; 
     let datosFiltrados = [];  
 
-    // CARGA DE DATOS
     Papa.parse(PROXY_URL, {
         download: true, header: false, skipEmptyLines: true,
         complete: function(results) {
@@ -219,7 +262,7 @@
         }
     });
 
-    // FILTROS Y ORDEN
+    // --- FILTROS Y ORDEN ---
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
 
@@ -251,7 +294,6 @@
 
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
-        
         container.innerHTML = '';
 
         if(lista.length === 0) {
@@ -268,7 +310,7 @@
         });
     }
 
-    // GENERADOR HTML
+    // --- GENERADOR DE HTML ---
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
@@ -282,6 +324,7 @@
                 <div class="rating" style="color: ${j.color}">${j.prom}</div>
                 <div class="position" style="color: ${j.color}">${j.pos}</div>
                 <div class="name" style="color: ${j.color}">${j.nombre}</div>
+                
                 <div class="stats-container" style="color: ${j.color}">
                     <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.def}</span></div>
@@ -294,16 +337,12 @@
         `;
     }
 
-    // MODAL Y DESCARGA
+    // --- MODAL Y DESCARGA ---
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
-
         const modalContainer = document.getElementById('modal-card-container');
-        modalContainer.innerHTML = `
-            <div class="card" id="carta-para-descargar">
-                ${generarHTMLCarta(jugador, false)}
-            </div>`;
+        modalContainer.innerHTML = `<div class="card" id="carta-para-descargar">${generarHTMLCarta(jugador, false)}</div>`;
         document.getElementById('modal').style.display = 'flex';
     }
 
@@ -315,27 +354,44 @@
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
-        
-        html2canvas(elemento, {
-            useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 
-        }).then(canvas => {
+        html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 })
+        .then(canvas => {
             const link = document.createElement('a');
             link.download = `FUT_Carta_${Date.now()}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.innerText = "DESCARGAR";
-        }).catch(err => {
-            alert("Error: " + err);
-            btn.innerText = "ERROR";
-        });
+        }).catch(err => { alert("Error: " + err); btn.innerText = "ERROR"; });
     }
 
     document.addEventListener('keydown', function(event) {
         if (event.key === "Escape") cerrarModal();
     });
+
+    // --- CONTROL DE MÚSICA ---
+    const audioPlayer = document.getElementById('audio-player');
+    const musicBtn = document.querySelector('.music-btn');
+    const musicIcon = document.getElementById('music-icon');
+    let isPlaying = false;
+
+    function toggleMusic() {
+        if(!audioPlayer.src) return; // Si no hay link, no hace nada
+
+        if (isPlaying) {
+            audioPlayer.pause();
+            musicIcon.innerText = "🔇";
+            musicBtn.classList.remove('playing');
+            isPlaying = false;
+        } else {
+            audioPlayer.volume = 0.5; // VOLUMEN AL 30% (Sutil)
+            audioPlayer.play().then(() => {
+                musicIcon.innerText = "🔊";
+                musicBtn.classList.add('playing');
+                isPlaying = true;
+            }).catch(e => console.log("Bloqueo de audio: ", e));
+        }
+    }
 </script>
 
 </body>
 </html>
-
-
