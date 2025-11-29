@@ -23,27 +23,37 @@
             font-family: 'Bebas Neue', sans-serif; 
             margin: 0; 
             padding: 0 20px 20px 20px; 
+            
+            /* Configuración CLAVE para el fondo fijo */
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-            background-attachment: fixed;
+            background-attachment: fixed; 
+            
             transition: filter 0.3s;
         }
 
-        /* --- HEADER FIJO (CON FONDO SÓLIDO) --- */
+        /* --- HEADER FIJO CAMUFLADO --- */
         .header-container { 
             text-align: center; 
             position: sticky; 
             top: 0;
             z-index: 100;
             
-            /* Fondo sólido oscuro (casi negro) para tapar las cartas que pasan por atrás */
-            background-color: #0f0f0f;
-            border-bottom: 2px solid #333; /* Una linea sutil para separar */
-            
+            /* Márgenes y Relleno */
             margin: 0 -20px 10px -20px;
-            padding: 20px 0 15px 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8); /* Sombra para que flote */
+            padding: 20px 0 20px 0; /* Un poco más de padding abajo para la "linea imaginaria" */
+            
+            /* PROPIEDADES PARA EL CAMUFLAJE (Se llenan con JS igual que el body) */
+            background-color: #0f0f0f; /* Fallback por si no carga la imagen */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            
+            /* Sombra y linea de corte */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
@@ -98,37 +108,37 @@
             transition: transform 0.2s ease-out;
             container-type: size; transform: translateZ(0); 
         }
-        .card:hover { transform: scale(1.03); z-index: 10; }
-
-        /* --- EL BRILLO MÁGICO (SHINE) --- */
-        /* Esta capa contiene el brillo y usa la imagen de fondo como máscara */
-        .shine-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 4; /* Por encima de todo */
-            pointer-events: none;
-            overflow: hidden;
-            /* Máscara: El brillo solo se ve donde el PNG es opaco */
-            -webkit-mask-size: contain;
-            mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            mask-position: center;
+        
+        /* ACÁ CAMBIAS EL NIVEL DE ZOOM (scale) */
+        .card:hover { 
+            transform: scale(1.05); /* Probá 1.03, 1.05 o 1.10 */
+            z-index: 10; 
         }
 
-        /* El efecto de luz que pasa */
+        /* --- EL BRILLO MÁGICO (SHINE) --- */
+        .shine-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 4; pointer-events: none; overflow: hidden;
+            -webkit-mask-size: contain; mask-size: contain;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+        }
+
         .shine-layer::after {
             content: "";
             position: absolute;
             top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
             transform: skewX(-25deg);
-            transition: left 0.5s;
+            
+            /* TRUCO: Sin transición por defecto (reseteo instantáneo) */
+            transition: none; 
         }
         
         .card:hover .shine-layer::after {
             left: 150%;
-            transition: left 0.7s;
+            /* TRUCO: Transición SOLO en hover (ida suave) */
+            transition: left 0.6s; 
         }
 
         /* Capas internas */
@@ -233,7 +243,7 @@
     <div id="grid-container" class="grid"></div>
 
     <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
-        <span id="music-icon">🔇</span>
+        <span id="music-icon">🔈</span>
     </div>
     <audio id="audio-player" loop></audio>
 
@@ -250,13 +260,18 @@
     //  ZONA DE CONFIGURACIÓN
     // ====================================================================
     
-    const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
-    const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
-    const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
+    const FONDO_URL = ""; 
+    const TITULO_IMG_URL = "";
+    const MUSICA_URL = "";
 
     // ====================================================================
 
-    if(FONDO_URL) document.body.style.backgroundImage = `url('${FONDO_URL}')`;
+    if(FONDO_URL) {
+        document.body.style.backgroundImage = `url('${FONDO_URL}')`;
+        // TRUCO DE CAMUFLAJE: Le ponemos el mismo fondo al header
+        const header = document.getElementById('header-area');
+        header.style.backgroundImage = `url('${FONDO_URL}')`;
+    }
     
     if(TITULO_IMG_URL) {
         document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
@@ -363,7 +378,6 @@
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
 
-        // ACÁ ESTÁ EL TRUCO DEL BRILLO CON MÁSCARA
         return `
             <div class="card-bg-wrapper">
                 <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
@@ -406,7 +420,6 @@
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
         
-        // Ocultamos el brillo para la descarga porque html2canvas a veces falla con máscaras
         const shine = elemento.querySelector('.shine-layer');
         if(shine) shine.style.display = 'none';
 
@@ -417,7 +430,7 @@
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.innerText = "DESCARGAR";
-            if(shine) shine.style.display = 'block'; // Volvemos a mostrar brillo
+            if(shine) shine.style.display = 'block';
         }).catch(err => { 
             alert("Error: " + err); 
             btn.innerText = "ERROR";
@@ -439,7 +452,7 @@
 
         if (isPlaying) {
             audioPlayer.pause();
-            musicIcon.innerText = "🔇";
+            musicIcon.innerText = "🔈";
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
