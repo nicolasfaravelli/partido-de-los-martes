@@ -22,7 +22,6 @@
             color: white; 
             font-family: 'Bebas Neue', sans-serif; 
             margin: 0; 
-            /* El padding top se ajusta para que el header fijo no tape contenido */
             padding: 0 20px 20px 20px; 
             background-position: center;
             background-repeat: no-repeat;
@@ -31,55 +30,58 @@
             transition: filter 0.3s;
         }
 
-        /* EASTER EGG: CLASE RETRO (TV VIEJA) */
-        body.retro-mode {
-            filter: sepia(0.4) contrast(1.2) brightness(0.9);
-        }
-        body.retro-mode::before {
-            content: " ";
-            display: block;
-            position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
-
-        /* --- HEADER FIJO (STICKY) --- */
+        /* --- HEADER FIJO (SIN FONDO) --- */
         .header-container { 
             text-align: center; 
-            /* Esto hace la magia de dejarlo fijo */
-            position: sticky;
+            position: sticky; /* Se queda pegado arriba */
             top: 0;
-            z-index: 100;
+            z-index: 100; /* Siempre encima de las cartas */
             
-            /* Fondo semitransparente con blur para legibilidad */
-            background: rgba(15, 15, 15, 0.9); 
-            backdrop-filter: blur(8px);
+            /* Fondo transparente total */
+            background: transparent; 
             
-            /* Sombra y bordes */
-            border-bottom: 1px solid #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            /* Ajustes de margen */
+            margin: 0 -20px 10px -20px;
+            padding: 20px 0 10px 0;
             
-            /* Ajustes de tamaño para que ocupe todo el ancho */
-            margin: 0 -20px 20px -20px; /* Negativo para compensar el padding del body */
-            padding: 15px 0;
-            cursor: pointer; /* Para indicar que es clickeable (Easter Egg) */
-            user-select: none;
+            /* Para que si hacés click en un hueco vacío, agarre la carta de atrás */
+            pointer-events: none; 
         }
         
-        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
+        /* Estilo del Título Texto */
+        h1 { 
+            margin: 0; 
+            letter-spacing: 2px; 
+            font-size: 3.5rem; 
+            color: #d4af37; 
+            /* Sombra fuerte para que se lea cuando pasan cartas por atrás */
+            text-shadow: 0px 4px 10px rgba(0,0,0,1), 0px 0px 5px rgba(0,0,0,0.8);
+            pointer-events: auto; /* Habilita el click solo en el texto para el Easter Egg */
+            cursor: pointer;
+        }
+        
+        /* Estilo del Título Imagen (Si usás logo) */
+        .title-img { 
+            max-width: 85%; 
+            height: auto; 
+            max-height: 120px; 
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.9)); 
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.1s; 
+        }
         .title-img:active { transform: scale(0.98); }
 
-        /* --- BARRA DE CONTROLES (Deslizable) --- */
+        /* --- BARRA DE CONTROLES (Se mueve con el scroll) --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
-            background: rgba(26, 26, 26, 0.9); 
+            background: rgba(20, 20, 20, 0.85); /* Fondo oscuro para los inputs */
             padding: 15px; border-radius: 8px;
             border: 1px solid #333; justify-content: space-between;
             backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 50;
         }
 
         #search-input {
@@ -94,8 +96,6 @@
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
             cursor: pointer; min-width: 200px;
         }
-
-        .results-count { text-align: center; color: #aaa; font-size: 0.9rem; margin-bottom: 15px; display:none; }
 
         /* --- GRILLA --- */
         .grid { 
@@ -113,26 +113,10 @@
             background: transparent; cursor: pointer;
             transition: transform 0.2s ease-out;
             container-type: size; transform: translateZ(0); 
-            overflow: hidden; /* Para contener el brillo */
         }
         .card:hover { transform: scale(1.03); z-index: 10; }
 
-        /* EFECTO DE BRILLO (SHINE) AL PASAR EL MOUSE */
-        .card::after {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            z-index: 4;
-            pointer-events: none;
-            transition: left 0.5s;
-        }
-        .card:hover::after {
-            left: 150%;
-            transition: left 0.7s;
-        }
-
+        /* Capas de la carta */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: block;
@@ -154,6 +138,7 @@
 
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
+        /* Ubicación de datos */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
@@ -203,6 +188,14 @@
         
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
 
+        /* EASTER EGG RETRO */
+        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
+        body.retro-mode::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
@@ -226,7 +219,7 @@
     <div id="grid-container" class="grid"></div>
 
     <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
-        <span id="music-icon">🔈</span>
+        <span id="music-icon">🔇</span>
     </div>
     <audio id="audio-player" loop></audio>
 
@@ -240,7 +233,7 @@
 
 <script>
     // ====================================================================
-    //  ZONA DE CONFIGURACIÓN 
+    //  ZONA DE CONFIGURACIÓN (PEGÁ TUS LINKS ACÁ)
     // ====================================================================
     
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
@@ -249,7 +242,6 @@
 
     // ====================================================================
 
-    // CONFIGURACIÓN VISUAL
     if(FONDO_URL) document.body.style.backgroundImage = `url('${FONDO_URL}')`;
     
     if(TITULO_IMG_URL) {
@@ -262,7 +254,6 @@
         document.querySelector('.music-btn').style.display = 'none'; 
     }
 
-    // CARGA DE DATOS
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
@@ -307,7 +298,6 @@
         }
     });
 
-    // FILTROS Y ORDEN
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
 
@@ -355,7 +345,6 @@
         });
     }
 
-    // GENERADOR HTML
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
@@ -382,7 +371,6 @@
         `;
     }
 
-    // MODAL Y DESCARGA
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
@@ -399,7 +387,6 @@
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
-        
         html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 })
         .then(canvas => {
             const link = document.createElement('a');
@@ -414,7 +401,6 @@
         if (event.key === "Escape") cerrarModal();
     });
 
-    // MÚSICA
     const audioPlayer = document.getElementById('audio-player');
     const musicBtn = document.querySelector('.music-btn');
     const musicIcon = document.getElementById('music-icon');
@@ -425,11 +411,11 @@
 
         if (isPlaying) {
             audioPlayer.pause();
-            musicIcon.innerText = "🔈";
+            musicIcon.innerText = "🔇";
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
-            audioPlayer.volume = 0.08; 
+            audioPlayer.volume = 0.3; 
             audioPlayer.play().then(() => {
                 musicIcon.innerText = "🔊";
                 musicBtn.classList.add('playing');
@@ -438,7 +424,6 @@
         }
     }
 
-    // EASTER EGG: MODO RETRO
     function activarModoRetro() {
         document.body.classList.toggle('retro-mode');
     }
