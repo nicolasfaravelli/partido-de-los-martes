@@ -30,58 +30,42 @@
             transition: filter 0.3s;
         }
 
-        /* --- HEADER FIJO (SIN FONDO) --- */
+        /* --- HEADER FIJO (CON FONDO SÓLIDO) --- */
         .header-container { 
             text-align: center; 
-            position: sticky; /* Se queda pegado arriba */
+            position: sticky; 
             top: 0;
-            z-index: 100; /* Siempre encima de las cartas */
+            z-index: 100;
             
-            /* Fondo transparente total */
-            background: transparent; 
+            /* Fondo sólido oscuro (casi negro) para tapar las cartas que pasan por atrás */
+            background-color: #0f0f0f;
+            border-bottom: 2px solid #333; /* Una linea sutil para separar */
             
-            /* Ajustes de margen */
             margin: 0 -20px 10px -20px;
-            padding: 20px 0 10px 0;
-            
-            /* Para que si hacés click en un hueco vacío, agarre la carta de atrás */
-            pointer-events: none; 
+            padding: 20px 0 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8); /* Sombra para que flote */
         }
         
-        /* Estilo del Título Texto */
-        h1 { 
-            margin: 0; 
-            letter-spacing: 2px; 
-            font-size: 3.5rem; 
-            color: #d4af37; 
-            /* Sombra fuerte para que se lea cuando pasan cartas por atrás */
-            text-shadow: 0px 4px 10px rgba(0,0,0,1), 0px 0px 5px rgba(0,0,0,0.8);
-            pointer-events: auto; /* Habilita el click solo en el texto para el Easter Egg */
-            cursor: pointer;
-        }
+        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
         
-        /* Estilo del Título Imagen (Si usás logo) */
         .title-img { 
             max-width: 85%; 
             height: auto; 
             max-height: 120px; 
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.9)); 
-            pointer-events: auto;
-            cursor: pointer;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
             transition: transform 0.1s; 
+            cursor: pointer;
         }
         .title-img:active { transform: scale(0.98); }
 
-        /* --- BARRA DE CONTROLES (Se mueve con el scroll) --- */
+        /* --- BARRA DE CONTROLES --- */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
             display: flex; gap: 15px; flex-wrap: wrap;
-            background: rgba(20, 20, 20, 0.85); /* Fondo oscuro para los inputs */
+            background: rgba(20, 20, 20, 0.95); 
             padding: 15px; border-radius: 8px;
             border: 1px solid #333; justify-content: space-between;
-            backdrop-filter: blur(5px);
-            position: relative;
-            z-index: 50;
+            position: relative; z-index: 50;
         }
 
         #search-input {
@@ -116,7 +100,38 @@
         }
         .card:hover { transform: scale(1.03); z-index: 10; }
 
-        /* Capas de la carta */
+        /* --- EL BRILLO MÁGICO (SHINE) --- */
+        /* Esta capa contiene el brillo y usa la imagen de fondo como máscara */
+        .shine-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 4; /* Por encima de todo */
+            pointer-events: none;
+            overflow: hidden;
+            /* Máscara: El brillo solo se ve donde el PNG es opaco */
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        /* El efecto de luz que pasa */
+        .shine-layer::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: left 0.5s;
+        }
+        
+        .card:hover .shine-layer::after {
+            left: 150%;
+            transition: left 0.7s;
+        }
+
+        /* Capas internas */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: block;
@@ -138,7 +153,6 @@
 
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
-        /* Ubicación de datos */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
@@ -233,7 +247,7 @@
 
 <script>
     // ====================================================================
-    //  ZONA DE CONFIGURACIÓN (PEGÁ TUS LINKS ACÁ)
+    //  ZONA DE CONFIGURACIÓN
     // ====================================================================
     
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
@@ -349,10 +363,14 @@
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
 
+        // ACÁ ESTÁ EL TRUCO DEL BRILLO CON MÁSCARA
         return `
             <div class="card-bg-wrapper">
                 <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
             </div>
+            
+            <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
+            
             ${fotoHtml}
             <div class="info-layer">
                 <div class="rating" style="color: ${j.color}">${j.prom}</div>
@@ -387,6 +405,11 @@
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
+        
+        // Ocultamos el brillo para la descarga porque html2canvas a veces falla con máscaras
+        const shine = elemento.querySelector('.shine-layer');
+        if(shine) shine.style.display = 'none';
+
         html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 })
         .then(canvas => {
             const link = document.createElement('a');
@@ -394,7 +417,12 @@
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.innerText = "DESCARGAR";
-        }).catch(err => { alert("Error: " + err); btn.innerText = "ERROR"; });
+            if(shine) shine.style.display = 'block'; // Volvemos a mostrar brillo
+        }).catch(err => { 
+            alert("Error: " + err); 
+            btn.innerText = "ERROR";
+            if(shine) shine.style.display = 'block';
+        });
     }
 
     document.addEventListener('keydown', function(event) {
