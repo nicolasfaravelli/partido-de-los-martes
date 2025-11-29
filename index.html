@@ -80,4 +80,260 @@
             z-index: 1;
         }
         .card-bg { 
-            width: 100%; height: 100%; object-fit: contain; display
+            width: 100%; height: 100%; object-fit: contain; display: block;
+            image-rendering: auto; transform: translateZ(0);
+            backface-visibility: hidden; will-change: transform;
+        }
+
+        .card-face {
+            position: absolute;
+            z-index: 2; 
+            top: 3.75%; 
+            left: 4.5%; 
+            width: 91%;
+            object-fit: contain; 
+            display: block;
+        }
+
+        /* INFO Y TEXTOS */
+        .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+        
+        .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
+        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
+        .name { position: absolute; top: 64.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
+
+        .stats-container { 
+            display: flex; justify-content: space-between; 
+            position: absolute; top: 81%; left: 8%; width: 84%; 
+        }
+        .stat-box { text-align: center; width: 16%; }
+        .stat-val { font-size: 8.5cqw; display: block; }
+
+        /* MODAL */
+        #modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000;
+            flex-direction: column; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        #modal-card-container {
+            width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); 
+        }
+        .btn-group { display: flex; gap: 15px; }
+        .btn {
+            padding: 12px 25px; border: none; border-radius: 4px;
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 10px; transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-close { background: #333; color: white; border: 1px solid #555; }
+        .btn-download { background: #d4af37; color: black; font-weight: bold; }
+        
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
+
+    </style>
+</head>
+<body>
+
+    <h1>PARTIDO DE LOS MARTES</h1>
+    
+    <div class="controls-area">
+        <input type="text" id="search-input" placeholder="Buscar jugador...">
+        
+        <select id="sort-select">
+            <option value="nombre-asc">Nombre: A - Z</option>
+            <option value="nombre-desc">Nombre: Z - A</option>
+            <option value="prom-desc">Valoración: Mayor a Menor</option>
+            <option value="prom-asc">Valoración: Menor a Mayor</option>
+        </select>
+    </div>
+
+    <div id="loader">Cargando datos...</div>
+    <div id="grid-container" class="grid"></div>
+
+    <div id="modal">
+        <div id="modal-card-container"></div>
+        <div class="btn-group">
+            <button class="btn btn-close" onclick="cerrarModal()">CERRAR</button>
+            <button class="btn btn-download" onclick="descargarCarta()">DESCARGAR</button>
+        </div>
+    </div>
+
+<script>
+    // --- PEGA EL LINK DE TU FONDO ACÁ ABAJO ---
+    const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
+    
+    const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
+    
+    if(FONDO_URL) {
+        document.body.style.backgroundImage = `url('${FONDO_URL}')`;
+    }
+
+    const COLORES = { 
+        'oro': '#624f21', 
+        'plata': '#434343', 
+        'bronce': '#5e3e21',
+        'legendario': '#392266'
+    };
+
+    let datosOriginales = []; 
+    let datosFiltrados = [];  
+
+    // CARGA DE DATOS
+    Papa.parse(PROXY_URL, {
+        download: true, header: false, skipEmptyLines: true,
+        complete: function(results) {
+            const data = results.data;
+            document.getElementById('loader').style.display = 'none';
+            if(data.length > 0) data.shift(); 
+
+            datosOriginales = data.map((fila, index) => {
+                const nombre = fila[0]; 
+                if(!nombre || nombre === 'Jugador') return null;
+                
+                let tipoCarta = fila[9] ? fila[9].trim().toLowerCase() : 'oro';
+                let colorTexto = COLORES[tipoCarta] || '#624f21'; 
+
+                return {
+                    id: index,
+                    nombre: nombre,
+                    ata: parseInt(fila[1]) || 0, 
+                    def: parseInt(fila[2]) || 0, 
+                    tec: parseInt(fila[3]) || 0, 
+                    vel: parseInt(fila[4]) || 0, 
+                    res: parseInt(fila[5]) || 0, 
+                    arq: parseInt(fila[6]) || 0,
+                    prom: parseInt(fila[7]) || 0, 
+                    pos: fila[8] ? fila[8].trim() : "",
+                    fondo: fila[10] ? fila[10].trim() : "",
+                    foto: fila[11] ? fila[11].trim() : "",
+                    color: colorTexto
+                };
+            }).filter(item => item !== null); 
+
+            datosFiltrados = [...datosOriginales];
+            aplicarFiltrosYOrden();
+        }
+    });
+
+    // FILTROS Y ORDEN
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+
+    searchInput.addEventListener('input', aplicarFiltrosYOrden);
+    sortSelect.addEventListener('change', aplicarFiltrosYOrden);
+    
+    function aplicarFiltrosYOrden() {
+        const textoBusqueda = searchInput.value.toLowerCase();
+        const criterioFull = sortSelect.value.split('-'); 
+        const criterio = criterioFull[0];
+        const orden = criterioFull[1];
+
+        datosFiltrados = datosOriginales.filter(j => {
+            return j.nombre.toLowerCase().includes(textoBusqueda);
+        });
+
+        datosFiltrados.sort((a, b) => {
+            if (criterio === 'nombre' || criterio === 'pos') {
+                if(orden === 'asc') return a[criterio].localeCompare(b[criterio]);
+                return b[criterio].localeCompare(a[criterio]);
+            } else {
+                if(orden === 'asc') return a[criterio] - b[criterio];
+                return b[criterio] - a[criterio];
+            }
+        });
+
+        renderizarGrilla(datosFiltrados);
+    }
+
+    function renderizarGrilla(lista) {
+        const container = document.getElementById('grid-container');
+        
+        container.innerHTML = '';
+
+        if(lista.length === 0) {
+            container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>';
+            return;
+        }
+
+        lista.forEach(jugadorObj => {
+            const html = `
+            <div class="card" onclick="abrirModalPorID(${jugadorObj.id})">
+                ${generarHTMLCarta(jugadorObj, true)} 
+            </div>`;
+            container.innerHTML += html;
+        });
+    }
+
+    // GENERADOR HTML
+    function generarHTMLCarta(j, lazy = false) {
+        const loadingAttr = lazy ? 'loading="lazy"' : '';
+        const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
+
+        return `
+            <div class="card-bg-wrapper">
+                <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
+            </div>
+            ${fotoHtml}
+            <div class="info-layer">
+                <div class="rating" style="color: ${j.color}">${j.prom}</div>
+                <div class="position" style="color: ${j.color}">${j.pos}</div>
+                <div class="name" style="color: ${j.color}">${j.nombre}</div>
+                <div class="stats-container" style="color: ${j.color}">
+                    <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.def}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.vel}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.res}</span></div>
+                    <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
+                </div>
+            </div>
+        `;
+    }
+
+    // MODAL Y DESCARGA
+    function abrirModalPorID(idReal) {
+        const jugador = datosOriginales.find(j => j.id === idReal);
+        if(!jugador) return;
+
+        const modalContainer = document.getElementById('modal-card-container');
+        modalContainer.innerHTML = `
+            <div class="card" id="carta-para-descargar">
+                ${generarHTMLCarta(jugador, false)}
+            </div>`;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function descargarCarta() {
+        const elemento = document.getElementById('carta-para-descargar');
+        const btn = document.querySelector('.btn-download');
+        btn.innerText = "PROCESANDO...";
+        
+        html2canvas(elemento, {
+            useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `FUT_Carta_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            btn.innerText = "DESCARGAR";
+        }).catch(err => {
+            alert("Error: " + err);
+            btn.innerText = "ERROR";
+        });
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") cerrarModal();
+    });
+</script>
+
+</body>
+</html>
