@@ -383,7 +383,7 @@
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
-            audioPlayer.volume = 0.5; // VOLUMEN AL 30% (Sutil)
+            audioPlayer.volume = 0.25; // VOLUMEN
             audioPlayer.play().then(() => {
                 musicIcon.innerText = "🔊";
                 musicBtn.classList.add('playing');
@@ -395,3 +395,4 @@
 
 </body>
 </html>
+
