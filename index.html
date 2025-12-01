@@ -16,9 +16,10 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* =========================================
+           1. ESTILOS GENERALES Y FONDO
+           ========================================= */
         :root {
-            /* Variable para guardar el fondo dinámicamente */
             --fondo-url: none;
         }
 
@@ -28,18 +29,17 @@
             font-family: 'Bebas Neue', sans-serif; 
             margin: 0; 
             padding: 0 20px 20px 20px; 
-            
-            /* Fondo desde variable */
             background-image: var(--fondo-url);
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
-            
             transition: filter 0.3s;
         }
 
-        /* --- HEADER FIJO CON OPACIDAD --- */
+        /* =========================================
+           2. ENCABEZADO (TÍTULO FIJO)
+           ========================================= */
         .header-container { 
             text-align: center; 
             position: sticky; 
@@ -47,26 +47,20 @@
             z-index: 100;
             margin: 0 -20px 10px -20px;
             padding: 20px 0 20px 0;
-            /* El fondo real lo maneja el ::before para poder dar opacidad sin afectar al logo */
         }
 
-        /* Capa de fondo del header (El camuflaje semitransparente) */
         .header-container::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; /* Detrás del logo */
-            
-            background-color: #0f0f0f; /* Color base por si falla la imagen */
-            background-image: var(--fondo-url); /* Misma imagen que el body */
+            z-index: -1; 
+            background-color: #0f0f0f; 
+            background-image: var(--fondo-url); 
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
-            
-            /* --- AJUSTAR OPACIDAD ACÁ (0.9 = 90% Opaco, 1 = Sólido) --- */
-            opacity: 0.95; 
-            
+            opacity: 0.95; /* OPACIDAD DEL FONDO DEL TÍTULO */
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -80,35 +74,47 @@
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
             transition: transform 0.1s; 
             cursor: pointer;
-            /* Evita el recuadro azul al tocar en celular */
             -webkit-tap-highlight-color: transparent;
         }
         .title-img:active { transform: scale(0.98); }
 
-        /* --- BARRA DE CONTROLES --- */
+        /* =========================================
+           3. BARRA DE CONTROLES
+           ========================================= */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto;
-            display: flex; gap: 15px; flex-wrap: wrap;
+            display: flex; gap: 10px; flex-wrap: wrap;
             background: rgba(20, 20, 20, 0.95); 
             padding: 15px; border-radius: 8px;
             border: 1px solid #333; justify-content: space-between;
+            align-items: center;
             position: relative; z-index: 50;
         }
 
         #search-input {
             flex: 2; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
-            min-width: 200px;
+            min-width: 150px;
         }
-        #search-input::placeholder { color: #888; }
 
         #sort-select {
             flex: 1; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
-            cursor: pointer; min-width: 200px;
+            cursor: pointer; min-width: 150px;
         }
 
-        /* --- GRILLA --- */
+        .btn-teams {
+            background: #392266; color: white; border: 1px solid #5e3e21;
+            padding: 10px 20px; border-radius: 4px; cursor: pointer;
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+            display: flex; align-items: center; gap: 8px;
+            transition: background 0.2s;
+        }
+        .btn-teams:hover { background: #4a2c85; }
+
+        /* =========================================
+           4. GRILLA Y CONTENEDOR DE CARTA
+           ========================================= */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
@@ -118,50 +124,16 @@
             padding-bottom: 50px;
         }
         
-        /* --- LA CARTA --- */
         .card { 
             position: relative; width: 100%; aspect-ratio: 2 / 3; 
             background: transparent; cursor: pointer;
             transition: transform 0.2s ease-out;
             container-type: size; transform: translateZ(0); 
-            
-            /* Chau cuadrado azul en celular */
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* ZOOM AL PASAR MOUSE (Ajustá el 1.05 si querés más o menos) */
-        .card:hover { 
-            transform: scale(1.1); 
-            z-index: 10; 
-        }
+        .card:hover { transform: scale(1.05); z-index: 10; }
 
-        /* --- EL BRILLO MÁGICO (SHINE) --- */
-        .shine-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 4; pointer-events: none; overflow: hidden;
-            -webkit-mask-size: contain; mask-size: contain;
-            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-            -webkit-mask-position: center; mask-position: center;
-        }
-
-        .shine-layer::after {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            
-            /* TRUCO: Sin transición por defecto (vuelta instantánea invisible) */
-            transition: none; 
-        }
-        
-        .card:hover .shine-layer::after {
-            left: 150%;
-            /* TRUCO: Transición SOLO en hover (ida suave visible) */
-            transition: left 0.6s; 
-        }
-
-        /* Capas internas */
         .card-bg-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: block;
@@ -174,30 +146,66 @@
             backface-visibility: hidden; will-change: transform;
         }
 
+        /* =========================================
+           5. CARTA: EFECTO BRILLO (SHINE)
+           ========================================= */
+        .shine-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 4; pointer-events: none; overflow: hidden;
+            -webkit-mask-size: contain; mask-size: contain;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+        }
+
+        .shine-layer::after {
+            content: "";
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: none; 
+        }
+        
+        .card:hover .shine-layer::after {
+            left: 150%;
+            transition: left 0.6s; 
+        }
+
+        /* =========================================
+           6. CARTA: POSICIONES Y ESTILOS
+           ========================================= */
         .card-face {
             position: absolute;
             z-index: 2; 
-            top: 8.2%; left: 5.4%; width: 95%;
-            object-fit: contain; display: block;
+            object-fit: contain; 
+            display: block;
+            
+            /* --- AJUSTAR FOTO --- */
+            top: 9.75%; 
+            left: 5.25%; 
+            width: 95%; 
         }
 
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
+        /* --- AJUSTAR TEXTOS --- */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
-        .name { position: absolute; top: 63.5%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
+        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* --- AJUSTAR NUMEROS STATS --- */
         .stats-container { 
             display: flex; justify-content: space-between; 
-            position: absolute; top: 81%; left: 8%; width: 84%; 
+            position: absolute; top: 81%; left: 8%; width: 84.1%; 
         }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
 
-        /* --- BOTÓN DE MÚSICA --- */
+        /* =========================================
+           7. BOTÓN Y REPRODUCTOR DE MÚSICA
+           ========================================= */
         .music-btn {
             position: fixed; bottom: 20px; right: 20px; z-index: 2000;
-            width: 37.5px; height: 37.5px;
+            width: 50px; height: 50px;
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid #444; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -209,10 +217,12 @@
         .music-btn:hover { transform: scale(1.1); border-color: #d4af37; }
         .music-btn.playing { border-color: #d4af37; color: #d4af37; background: rgba(0,0,0,0.9); }
 
-        /* --- MODAL --- */
-        #modal {
+        /* =========================================
+           8. MODALES (ZOOM Y ARMADOR)
+           ========================================= */
+        .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 1000;
+            background: rgba(0,0,0,0.95); z-index: 3000;
             flex-direction: column; justify-content: center; align-items: center;
             backdrop-filter: blur(5px);
         }
@@ -220,7 +230,44 @@
             width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px;
             filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); 
         }
-        .btn-group { display: flex; gap: 15px; }
+        
+        /* ESTILOS ARMADOR DE EQUIPOS */
+        #team-modal-content {
+            background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #444;
+            width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;
+        }
+        .team-title { text-align: center; color: #d4af37; margin-bottom: 15px; font-size: 2rem; border-bottom: 1px solid #333; padding-bottom: 10px;}
+        
+        .team-scroll { 
+            overflow-y: auto; flex: 1; margin-bottom: 15px; 
+            border: 1px solid #333; padding: 10px; background: #111;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;
+        }
+        
+        .player-row { 
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px; background: #222; border-radius: 4px; cursor: pointer; 
+            user-select: none;
+        }
+        .player-row:hover { background: #333; }
+        .player-check { transform: scale(1.3); accent-color: #d4af37; }
+        
+        .btn-generate { background: #392266; color: white; width: 100%; font-size: 1.5rem; margin-bottom: 15px; }
+        
+        /* Resultados Equipos */
+        #team-capture-area { background: #1a1a1a; padding: 10px; }
+        .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
+        .team-column { flex: 1; padding: 15px; border-radius: 8px; border: 2px solid #333; }
+        
+        /* Estilos Blanco vs Negro */
+        .team-white { background: #e0e0e0; color: #111; border-color: #fff; }
+        .team-black { background: #111; color: #fff; border-color: #333; }
+        
+        .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold;}
+        .team-avg { text-align: center; font-size: 1rem; margin-bottom: 15px; opacity: 0.8; }
+        .team-list-item { padding: 5px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.2rem; }
+
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
         .btn {
             padding: 12px 25px; border: none; border-radius: 4px;
             font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; cursor: pointer;
@@ -258,9 +305,13 @@
             <option value="prom-desc">Valoración: Mayor a Menor</option>
             <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
+
+        <button class="btn-teams" onclick="abrirArmador()">
+            <span>⚖️</span> ARMAR
+        </button>
     </div>
 
-    <div id="loader">Cargando jugadores...</div>
+    <div id="loader">Cargando datos...</div>
     <div id="grid-container" class="grid"></div>
 
     <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
@@ -268,11 +319,41 @@
     </div>
     <audio id="audio-player" loop></audio>
 
-    <div id="modal">
+    <div id="modal" class="modal-overlay">
         <div id="modal-card-container"></div>
         <div class="btn-group">
             <button class="btn btn-close" onclick="cerrarModal()">CERRAR</button>
             <button class="btn btn-download" onclick="descargarCarta()">DESCARGAR</button>
+        </div>
+    </div>
+
+    <div id="team-modal" class="modal-overlay">
+        <div id="team-modal-content">
+            <div class="team-title">SELECCIONAR JUGADORES</div>
+            
+            <div id="players-checklist" class="team-scroll"></div>
+            
+            <button class="btn btn-generate" onclick="generarEquipos()">GENERAR EQUIPOS</button>
+            
+            <div id="team-capture-area">
+                <div id="team-results" class="team-results">
+                    <div class="team-column team-white" id="col-team-1">
+                        <div class="team-header">BLANCO</div>
+                        <div class="team-avg" id="avg-team-1">Prom: 0</div>
+                        <div id="list-team-1"></div>
+                    </div>
+                    <div class="team-column team-black" id="col-team-2">
+                        <div class="team-header">NEGRO</div>
+                        <div class="team-avg" id="avg-team-2">Prom: 0</div>
+                        <div id="list-team-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="btn btn-close" onclick="cerrarArmador()">CERRAR</button>
+                <button class="btn btn-download" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">DESCARGAR PARTIDO</button>
+            </div>
         </div>
     </div>
 
@@ -287,10 +368,8 @@
 
     // ====================================================================
 
-    if(FONDO_URL) {
-        // Inyectamos la variable CSS para que el estilo la pueda leer
-        document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
-    }
+    // --- SETUP VISUAL ---
+    if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
     
     if(TITULO_IMG_URL) {
         document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
@@ -302,6 +381,7 @@
         document.querySelector('.music-btn').style.display = 'none'; 
     }
 
+    // --- CARGA DE DATOS ---
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
@@ -346,6 +426,7 @@
         }
     });
 
+    // --- UI: FILTROS Y ORDEN ---
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
 
@@ -401,15 +482,12 @@
             <div class="card-bg-wrapper">
                 <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
             </div>
-            
             <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
-            
             ${fotoHtml}
             <div class="info-layer">
                 <div class="rating" style="color: ${j.color}">${j.prom}</div>
                 <div class="position" style="color: ${j.color}">${j.pos}</div>
                 <div class="name" style="color: ${j.color}">${j.nombre}</div>
-                
                 <div class="stats-container" style="color: ${j.color}">
                     <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.def}</span></div>
@@ -422,6 +500,7 @@
         `;
     }
 
+    // --- MODAL ZOOM ---
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
@@ -458,9 +537,13 @@
     }
 
     document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") cerrarModal();
+        if (event.key === "Escape") {
+            cerrarModal();
+            cerrarArmador();
+        }
     });
 
+    // --- MÚSICA ---
     const audioPlayer = document.getElementById('audio-player');
     const musicBtn = document.querySelector('.music-btn');
     const musicIcon = document.getElementById('music-icon');
@@ -475,7 +558,7 @@
             musicBtn.classList.remove('playing');
             isPlaying = false;
         } else {
-            audioPlayer.volume = 0.05; 
+            audioPlayer.volume = 0.05; // VOLUMEN
             audioPlayer.play().then(() => {
                 musicIcon.innerText = "🔊";
                 musicBtn.classList.add('playing');
@@ -487,14 +570,94 @@
     function activarModoRetro() {
         document.body.classList.toggle('retro-mode');
     }
+
+    // =========================================
+    //  LÓGICA ARMADOR DE EQUIPOS
+    // =========================================
+    
+    function abrirArmador() {
+        const list = document.getElementById('players-checklist');
+        list.innerHTML = '';
+        const sorted = [...datosOriginales].sort((a,b) => a.nombre.localeCompare(b.nombre));
+        
+        sorted.forEach(j => {
+            list.innerHTML += `
+            <label class="player-row">
+                <input type="checkbox" class="player-check" value="${j.id}">
+                <span>${j.nombre} <small>(${j.prom})</small></span>
+            </label>`;
+        });
+        
+        document.getElementById('team-results').style.display = 'none';
+        document.getElementById('btn-download-teams').style.display = 'none';
+        document.getElementById('team-modal').style.display = 'flex';
+    }
+
+    function cerrarArmador() {
+        document.getElementById('team-modal').style.display = 'none';
+    }
+
+    function generarEquipos() {
+        // 1. Obtener seleccionados
+        const checkboxes = document.querySelectorAll('.player-check:checked');
+        const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+        
+        if (selectedIds.length < 2) {
+            alert("Seleccioná al menos 2 jugadores.");
+            return;
+        }
+
+        // 2. Ordenar por Promedio (Mejor a Peor)
+        let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
+        pool.sort((a, b) => b.prom - a.prom);
+
+        // 3. Reparto Equilibrado (Suma compensada)
+        let teamA = [];
+        let teamB = [];
+        let sumA = 0;
+        let sumB = 0;
+
+        pool.forEach(p => {
+            if (sumA <= sumB) {
+                teamA.push(p);
+                sumA += p.prom;
+            } else {
+                teamB.push(p);
+                sumB += p.prom;
+            }
+        });
+
+        // 4. Asignación Aleatoria de Camisetas (Blanco vs Negro)
+        let finalTeam1, finalTeam2;
+        if (Math.random() > 0.5) {
+            finalTeam1 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
+            finalTeam2 = { data: teamB, prom: (sumB/teamB.length).toFixed(1) };
+        } else {
+            finalTeam1 = { data: teamB, prom: (sumB/teamB.length).toFixed(1) };
+            finalTeam2 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
+        }
+
+        // 5. Renderizar
+        document.getElementById('list-team-1').innerHTML = finalTeam1.data.map(p => `<div class="team-list-item">${p.nombre} <small>(${p.prom})</small></div>`).join('');
+        document.getElementById('avg-team-1').innerText = `Prom: ${finalTeam1.prom}`;
+
+        document.getElementById('list-team-2').innerHTML = finalTeam2.data.map(p => `<div class="team-list-item">${p.nombre} <small>(${p.prom})</small></div>`).join('');
+        document.getElementById('avg-team-2').innerText = `Prom: ${finalTeam2.prom}`;
+
+        document.getElementById('team-results').style.display = 'flex';
+        document.getElementById('btn-download-teams').style.display = 'block';
+    }
+
+    function descargarEquipos() {
+        const elemento = document.getElementById('team-capture-area');
+        html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `PARTIDO_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
