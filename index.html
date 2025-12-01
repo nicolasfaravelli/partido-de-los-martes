@@ -305,7 +305,7 @@
 
             <div class="btn-group" style="margin-top: 15px;">
                 <button class="btn-standard" onclick="cerrarArmador()">CERRAR</button>
-                <button class="btn-standard" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">⬇ DESCARGAR</button>
+                <button class="btn-standard" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;"DESCARGAR</button>
                 <button class="btn-standard btn-share" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">📲 COMPARTIR</button>
             </div>
         </div>
@@ -523,7 +523,7 @@
     // RENDER LIST ITEM
     function getPlayerHTML(p, isWhite) {
         const colorNota = getRatingColor(p.prom);
-        const emoji = isWhite ? '▫️' : '▪️';
+        const emoji = isWhite ? '◼️' : '◻️';
         return `
         <div class="team-list-item">
             <span>${emoji} ${p.nombre}</span>
@@ -619,3 +619,4 @@
 
 </body>
 </html>
+
