@@ -18,27 +18,27 @@
     
     <style>
         /* =========================================
-           1. ESTILOS GENERALES Y PALETA
+           1. ESTILOS GENERALES
            ========================================= */
         :root {
             --fondo-url: none;
-            
             /* PALETA */
             --color-fondo: #0f0f0f;
             --color-paneles: #1a1a1a;
             --color-bordes: #333333;
             --color-texto: #ffffff;
             --color-acento: #d4af37; /* Dorado */
+            --color-whatsapp: #25D366; /* Verde WA */
             
-            /* Colores de Stats (Ajustado el Plata para contraste) */
+            /* Colores de Stats */
             --stat-legend: #a855f7;
             --stat-gold: #d4af37;
-            --stat-silver: #7a7a7a; /* Gris Acero (Visible en blanco y negro) */
+            --stat-silver: #7a7a7a;
             --stat-bronze: #cd7f32;
 
             /* TIPOGRAFÍAS */
-            --fuente-titulo: 'Bebas Neue', sans-serif; /* Títulos, Botones, Impacto */
-            --fuente-texto: 'Roboto', system-ui, sans-serif; /* Listas, Nombres */
+            --fuente-titulo: 'Bebas Neue', sans-serif;
+            --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
 
         body { 
@@ -99,7 +99,6 @@
         }
         #search-input:focus, #sort-select:focus { outline: none; border-color: var(--color-acento); }
 
-        /* Botón Estándar (Gris) - FUENTE BEBAS */
         .btn-standard {
             background: #333; color: white; border: 1px solid #555; 
             padding: 10px 20px; border-radius: 4px; cursor: pointer;
@@ -130,12 +129,10 @@
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
-        /* Brillo */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
 
-        /* Textos Carta */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
@@ -169,22 +166,29 @@
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
         
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; }
-        /* Botón Acción (Descargar/Generar) - FUENTE BEBAS */
+        
         .btn-action { 
             background-color: var(--color-acento); color: #000; border: none; font-weight: bold;
             font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem;
         }
         .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
 
+        /* Botón Compartir (Verde) */
+        .btn-share {
+            background-color: var(--color-whatsapp); color: #fff; border: none; font-weight: bold;
+            font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem;
+        }
+        .btn-share:hover { opacity: 0.9; transform: scale(1.02); }
+
         /* =========================================
-           7. ARMADOR DE EQUIPOS (INTERFAZ)
+           7. ARMADOR DE EQUIPOS
            ========================================= */
         #team-modal-content { 
             background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); 
             width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; 
         }
         
-        .team-title { text-align: center; color: var(--color-acento); margin-bottom: 5px; font-size: 2.5rem; }
+        .team-title { text-align: center; color: var(--color-acento); margin-bottom: 5px; font-size: 2rem; }
         
         #team-counter { 
             text-align: center; color: #888; font-size: 1.1rem; margin-bottom: 15px; 
@@ -198,7 +202,6 @@
             display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px;
         }
         
-        /* ITEM LISTA (Casillero) */
         .player-row { 
             display: flex; align-items: center; gap: 12px; 
             padding: 12px; background: #252525; border-radius: 4px; cursor: pointer; 
@@ -209,20 +212,17 @@
         .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
         .player-check { transform: scale(1.3); accent-color: var(--color-acento); cursor: pointer; }
         
-        /* BOTÓN GENERAR (Estado Inactivo) - FUENTE BEBAS */
         .btn-generate { 
-            background: #333; color: #888; width: 90%; font-size: 1.5rem; margin-bottom: 15px; 
+            background: #333; color: #888; width: 100%; font-size: 1.8rem; margin-bottom: 15px; 
             border: 1px solid #444; pointer-events: none; transition: all 0.3s;
             font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px;
         }
-        /* Estado Activo (Se agrega por JS) */
         .btn-generate.active { 
             background: var(--color-acento); color: #000; border-color: var(--color-acento); 
             pointer-events: auto; cursor: pointer; font-weight: bold;
         }
         .btn-generate.active:hover { transform: scale(1.02); }
         
-        /* RESULTADOS */
         #team-capture-area { background: var(--color-paneles); padding: 15px; border-radius: 8px; }
         .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
         
@@ -235,7 +235,7 @@
         
         .team-list-item { 
             padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.3); 
-            font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; /* NEGRILLA */
+            font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; 
             display: flex; justify-content: space-between; align-items: center;
         }
 
@@ -305,7 +305,8 @@
 
             <div class="btn-group" style="margin-top: 15px;">
                 <button class="btn-standard" onclick="cerrarArmador()">CERRAR</button>
-                <button class="btn-standard btn-action" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">DESCARGAR EQUIPOS</button>
+                <button class="btn-standard" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">⬇ DESCARGAR</button>
+                <button class="btn-standard btn-share" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">📲 COMPARTIR</button>
             </div>
         </div>
     </div>
@@ -323,12 +324,7 @@
 
     if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
     if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
-    
-    if(MUSICA_URL) {
-        document.getElementById('audio-player').src = MUSICA_URL;
-    } else {
-        document.querySelector('.music-btn').style.display = 'none'; 
-    }
+    if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL; else document.querySelector('.music-btn').style.display = 'none';
 
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
@@ -338,7 +334,7 @@
     let datosOriginales = []; 
     let datosFiltrados = [];  
 
-    // --- CARGA CSV ---
+    // CARGA
     Papa.parse(PROXY_URL, {
         download: true, header: false, skipEmptyLines: true,
         complete: function(results) {
@@ -370,10 +366,9 @@
         }
     });
 
-    // --- FILTROS ---
+    // FILTROS
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
-
     searchInput.addEventListener('input', aplicarFiltrosYOrden);
     sortSelect.addEventListener('change', aplicarFiltrosYOrden);
     
@@ -386,11 +381,8 @@
         datosFiltrados = datosOriginales.filter(j => j.nombre.toLowerCase().includes(textoBusqueda));
 
         datosFiltrados.sort((a, b) => {
-            if (criterio === 'nombre' || criterio === 'pos') {
-                return orden === 'asc' ? a[criterio].localeCompare(b[criterio]) : b[criterio].localeCompare(a[criterio]);
-            } else {
-                return orden === 'asc' ? a[criterio] - b[criterio] : b[criterio] - a[criterio];
-            }
+            if (criterio === 'nombre' || criterio === 'pos') return orden === 'asc' ? a[criterio].localeCompare(b[criterio]) : b[criterio].localeCompare(a[criterio]);
+            return orden === 'asc' ? a[criterio] - b[criterio] : b[criterio] - a[criterio];
         });
         renderizarGrilla(datosFiltrados);
     }
@@ -398,10 +390,7 @@
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
         container.innerHTML = '';
-        if(lista.length === 0) {
-            container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>';
-            return;
-        }
+        if(lista.length === 0) { container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>'; return; }
         lista.forEach(jugadorObj => {
             const html = `<div class="card" onclick="abrirModalPorID(${jugadorObj.id})">${generarHTMLCarta(jugadorObj, true)}</div>`;
             container.innerHTML += html;
@@ -431,7 +420,7 @@
         `;
     }
 
-    // --- MODAL Y MÚSICA ---
+    // MODAL Y MÚSICA
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
@@ -464,7 +453,7 @@
     function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
     // =========================================
-    //  ARMADOR DE EQUIPOS (V3)
+    //  ARMADOR DE EQUIPOS (LÓGICA)
     // =========================================
     
     function abrirArmador() {
@@ -482,6 +471,7 @@
         
         document.getElementById('team-results').style.display = 'none';
         document.getElementById('btn-download-teams').style.display = 'none';
+        document.getElementById('btn-share-teams').style.display = 'none';
         document.getElementById('team-modal').style.display = 'flex';
         actualizarContador(0);
     }
@@ -491,6 +481,10 @@
     function controlarLimite(checkbox) {
         const checked = document.querySelectorAll('.player-check:checked');
         const count = checked.length;
+        
+        // Si se cambia la selección, el botón vuelve a decir "GENERAR"
+        document.getElementById('btn-generate').innerText = "GENERAR EQUIPOS";
+        
         actualizarContador(count);
         if (count >= 10) {
             document.querySelectorAll('.player-check:not(:checked)').forEach(cb => {
@@ -518,7 +512,7 @@
         }
     }
 
-    // HELPER: COLOR POR PROMEDIO
+    // COLOR POR PROMEDIO
     function getRatingColor(val) {
         if (val >= 90) return 'var(--stat-legend)'; 
         if (val >= 80) return 'var(--stat-gold)';
@@ -526,10 +520,10 @@
         return 'var(--stat-bronze)';
     }
 
-    // HELPER: RENDER LIST ITEM
+    // RENDER LIST ITEM
     function getPlayerHTML(p, isWhite) {
         const colorNota = getRatingColor(p.prom);
-        const emoji = isWhite ? '◼️' : '◻️';
+        const emoji = isWhite ? '▫️' : '▪️';
         return `
         <div class="team-list-item">
             <span>${emoji} ${p.nombre}</span>
@@ -541,6 +535,9 @@
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
+        // Cambio de Texto a REGENERAR
+        document.getElementById('btn-generate').innerText = "REGENERAR EQUIPOS";
+
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
         let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
 
@@ -584,20 +581,41 @@
 
         document.getElementById('team-results').style.display = 'flex';
         document.getElementById('btn-download-teams').style.display = 'block';
+        document.getElementById('btn-share-teams').style.display = 'block';
     }
 
     function getImpactScore(p) { return (p.prom * 6) + (p.res * 3) + (p.tec * 2) - (p.edad * 0.5); }
     function calcularPromedioReal(equipo) { let sum = 0; equipo.forEach(p => sum += p.prom); return (sum / equipo.length).toFixed(1); }
+    
     function descargarEquipos() {
         const elemento = document.getElementById('team-capture-area');
         html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
             const link = document.createElement('a'); link.download = `PARTIDO_${Date.now()}.png`; link.href = canvas.toDataURL("image/png"); link.click();
         });
     }
+
+    async function compartirEquipos() {
+        const elemento = document.getElementById('team-capture-area');
+        try {
+            const canvas = await html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 });
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], "equipos.png", { type: "image/png" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Equipos del Martes',
+                        text: 'Acá están los equipos!'
+                    });
+                } else {
+                    alert("Tu navegador no soporta compartir imágenes directo. Usá descargar.");
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Error al compartir: " + err);
+        }
+    }
 </script>
 
 </body>
 </html>
-
-
-
