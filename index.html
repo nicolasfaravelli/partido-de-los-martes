@@ -19,21 +19,12 @@
         /* =========================================
            1. ESTILOS GENERALES Y FONDO
            ========================================= */
-        :root {
-            --fondo-url: none;
-        }
+        :root { --fondo-url: none; }
 
         body { 
-            background-color: #0f0f0f; 
-            color: white; 
-            font-family: 'Bebas Neue', sans-serif; 
-            margin: 0; 
-            padding: 0 20px 20px 20px; 
-            background-image: var(--fondo-url);
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
+            background-color: #0f0f0f; color: white; font-family: 'Bebas Neue', sans-serif; 
+            margin: 0; padding: 0 20px 20px 20px; 
+            background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
             transition: filter 0.3s;
         }
 
@@ -41,252 +32,108 @@
            2. ENCABEZADO (TÍTULO FIJO)
            ========================================= */
         .header-container { 
-            text-align: center; 
-            position: sticky; 
-            top: 0;
-            z-index: 100;
-            margin: 0 -20px 10px -20px;
-            padding: 20px 0 20px 0;
+            text-align: center; position: sticky; top: 0; z-index: 100;
+            margin: 0 -20px 10px -20px; padding: 20px 0 20px 0;
         }
-
         .header-container::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; 
-            background-color: #0f0f0f; 
-            background-image: var(--fondo-url); 
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
-            opacity: 0.95; /* OPACIDAD DEL FONDO DEL TÍTULO */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+            background-color: #0f0f0f; background-image: var(--fondo-url); 
+            background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
+            opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: #d4af37; }
-        
-        .title-img { 
-            max-width: 85%; 
-            height: auto; 
-            max-height: 120px; 
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
-            transition: transform 0.1s; 
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .title-img:active { transform: scale(0.98); }
 
         /* =========================================
            3. BARRA DE CONTROLES
            ========================================= */
         .controls-area {
-            max-width: 1200px; margin: 0 auto 20px auto;
-            display: flex; gap: 10px; flex-wrap: wrap;
-            background: rgba(20, 20, 20, 0.95); 
-            padding: 15px; border-radius: 8px;
-            border: 1px solid #333; justify-content: space-between;
-            align-items: center;
-            position: relative; z-index: 50;
+            max-width: 1200px; margin: 0 auto 20px auto; display: flex; gap: 10px; flex-wrap: wrap;
+            background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid #333; 
+            justify-content: space-between; align-items: center; position: relative; z-index: 50;
         }
-
-        #search-input {
-            flex: 2; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
-            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
-            min-width: 150px;
-        }
-
-        #sort-select {
+        #search-input, #sort-select {
             flex: 1; padding: 10px 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
-            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;
-            cursor: pointer; min-width: 150px;
+            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px;
         }
-
+        
+        /* BOTÓN ARMADOR (AHORA GRIS) */
         .btn-teams {
-            background: #392266; color: white; border: 1px solid #5e3e21;
-            padding: 10px 20px; border-radius: 4px; cursor: pointer;
-            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
-            display: flex; align-items: center; gap: 8px;
-            transition: background 0.2s;
+            background: #333; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 4px; cursor: pointer;
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; transition: background 0.2s;
         }
-        .btn-teams:hover { background: #4a2c85; }
+        .btn-teams:hover { background: #555; }
 
         /* =========================================
-           4. GRILLA Y CONTENEDOR DE CARTA
+           4. GRILLA Y CARTAS
            ========================================= */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 20px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding-bottom: 50px;
-        }
-        
-        .card { 
-            position: relative; width: 100%; aspect-ratio: 2 / 3; 
-            background: transparent; cursor: pointer;
-            transition: transform 0.2s ease-out;
-            container-type: size; transform: translateZ(0); 
-            -webkit-tap-highlight-color: transparent;
-        }
-        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; background: transparent; cursor: pointer; transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
-
-        .card-bg-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; display: block;
-            filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6));
-            z-index: 1;
-        }
-        .card-bg { 
-            width: 100%; height: 100%; object-fit: contain; display: block;
-            image-rendering: auto; transform: translateZ(0);
-            backface-visibility: hidden; will-change: transform;
-        }
-
-        /* =========================================
-           5. CARTA: EFECTO BRILLO (SHINE)
-           ========================================= */
-        .shine-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 4; pointer-events: none; overflow: hidden;
-            -webkit-mask-size: contain; mask-size: contain;
-            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-            -webkit-mask-position: center; mask-position: center;
-        }
-
-        .shine-layer::after {
-            content: "";
-            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            transition: none; 
-        }
         
-        .card:hover .shine-layer::after {
-            left: 150%;
-            transition: left 0.6s; 
-        }
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
+        .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
 
+        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; display: block; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); z-index: 1; }
+        .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; will-change: transform; }
+        
         /* =========================================
-           6. CARTA: POSICIONES Y ESTILOS
+           5. POSICIONES INTERNAS CARTA
            ========================================= */
-        .card-face {
-            position: absolute;
-            z-index: 2; 
-            object-fit: contain; 
-            display: block;
-            
-            /* --- AJUSTAR FOTO --- */
-            top: 9.75%; 
-            left: 5.25%; 
-            width: 95%; 
-        }
-
+        .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
-        /* --- AJUSTAR TEXTOS --- */
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* --- AJUSTAR NUMEROS STATS --- */
-        .stats-container { 
-            display: flex; justify-content: space-between; 
-            position: absolute; top: 81%; left: 8%; width: 84.1%; 
-        }
+        .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
 
         /* =========================================
-           7. BOTÓN Y REPRODUCTOR DE MÚSICA
+           6. MÚSICA
            ========================================= */
-        .music-btn {
-            position: fixed; bottom: 20px; right: 20px; z-index: 2000;
-            width: 50px; height: 50px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #444; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .music-btn { position: fixed; bottom: 20px; right: 20px; z-index: 2000; width: 50px; height: 50px; background: rgba(0, 0, 0, 0.8); border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
         .music-btn:hover { transform: scale(1.1); border-color: #d4af37; }
         .music-btn.playing { border-color: #d4af37; color: #d4af37; background: rgba(0,0,0,0.9); }
 
         /* =========================================
-           8. MODALES (ZOOM Y ARMADOR)
+           7. MODALES (ZOOM Y ARMADOR)
            ========================================= */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 3000;
-            flex-direction: column; justify-content: center; align-items: center;
-            backdrop-filter: blur(5px);
-        }
-        #modal-card-container {
-            width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); 
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
         
-        /* ESTILOS ARMADOR DE EQUIPOS */
-        #team-modal-content {
-            background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #444;
-            width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;
-        }
-        .team-title { text-align: center; color: #d4af37; margin-bottom: 15px; font-size: 2rem; border-bottom: 1px solid #333; padding-bottom: 10px;}
+        #team-modal-content { background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #444; width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; }
+        .team-title { text-align: center; color: #d4af37; margin-bottom: 5px; font-size: 2rem; }
+        #team-counter { text-align: center; color: #888; font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; font-family: sans-serif; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;}
         
-        .team-scroll { 
-            overflow-y: auto; flex: 1; margin-bottom: 15px; 
-            border: 1px solid #333; padding: 10px; background: #111;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;
-        }
-        
-        .player-row { 
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px; background: #222; border-radius: 4px; cursor: pointer; 
-            user-select: none;
-        }
+        .team-scroll { overflow-y: auto; flex: 1; margin-bottom: 15px; border: 1px solid #333; padding: 10px; background: #111; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #222; border-radius: 4px; cursor: pointer; user-select: none; transition: opacity 0.2s; }
         .player-row:hover { background: #333; }
+        .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
         .player-check { transform: scale(1.3); accent-color: #d4af37; }
         
         .btn-generate { background: #392266; color: white; width: 100%; font-size: 1.5rem; margin-bottom: 15px; }
-        
-        /* Resultados Equipos */
         #team-capture-area { background: #1a1a1a; padding: 10px; }
         .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
         .team-column { flex: 1; padding: 15px; border-radius: 8px; border: 2px solid #333; }
-        
-        /* Estilos Blanco vs Negro */
         .team-white { background: #e0e0e0; color: #111; border-color: #fff; }
         .team-black { background: #111; color: #fff; border-color: #333; }
-        
         .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold;}
         .team-avg { text-align: center; font-size: 1rem; margin-bottom: 15px; opacity: 0.8; }
         .team-list-item { padding: 5px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.2rem; }
 
         .btn-group { display: flex; gap: 15px; justify-content: center; }
-        .btn {
-            padding: 12px 25px; border: none; border-radius: 4px;
-            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 10px; transition: opacity 0.2s;
-        }
+        .btn { padding: 12px 25px; border: none; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: opacity 0.2s; }
         .btn:hover { opacity: 0.9; }
         .btn-close { background: #333; color: white; border: 1px solid #555; }
         .btn-download { background: #d4af37; color: black; font-weight: bold; }
         
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
-
-        /* EASTER EGG RETRO */
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
-        body.retro-mode::before {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none;
-        }
+        body.retro-mode::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none; }
 
     </style>
 </head>
@@ -331,9 +178,11 @@
         <div id="team-modal-content">
             <div class="team-title">SELECCIONAR JUGADORES</div>
             
+            <div id="team-counter">Faltan 10 jugadores</div>
+            
             <div id="players-checklist" class="team-scroll"></div>
             
-            <button class="btn btn-generate" onclick="generarEquipos()">GENERAR EQUIPOS</button>
+            <button class="btn btn-generate" onclick="generarEquipos()" id="btn-generate">GENERAR EQUIPOS</button>
             
             <div id="team-capture-area">
                 <div id="team-results" class="team-results">
@@ -368,20 +217,15 @@
 
     // ====================================================================
 
-    // --- SETUP VISUAL ---
     if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
+    if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
     
-    if(TITULO_IMG_URL) {
-        document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
-    }
-
     if(MUSICA_URL) {
         document.getElementById('audio-player').src = MUSICA_URL;
     } else {
         document.querySelector('.music-btn').style.display = 'none'; 
     }
 
-    // --- CARGA DE DATOS ---
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
@@ -390,6 +234,7 @@
     let datosOriginales = []; 
     let datosFiltrados = [];  
 
+    // --- CARGA CSV ---
     Papa.parse(PROXY_URL, {
         download: true, header: false, skipEmptyLines: true,
         complete: function(results) {
@@ -407,16 +252,10 @@
                 return {
                     id: index,
                     nombre: nombre,
-                    ata: parseInt(fila[1]) || 0, 
-                    def: parseInt(fila[2]) || 0, 
-                    tec: parseInt(fila[3]) || 0, 
-                    vel: parseInt(fila[4]) || 0, 
-                    res: parseInt(fila[5]) || 0, 
-                    arq: parseInt(fila[6]) || 0,
-                    prom: parseInt(fila[7]) || 0, 
-                    pos: fila[8] ? fila[8].trim() : "",
-                    fondo: fila[10] ? fila[10].trim() : "",
-                    foto: fila[11] ? fila[11].trim() : "",
+                    ata: parseInt(fila[1]) || 0, def: parseInt(fila[2]) || 0, tec: parseInt(fila[3]) || 0, 
+                    vel: parseInt(fila[4]) || 0, res: parseInt(fila[5]) || 0, arq: parseInt(fila[6]) || 0,
+                    prom: parseInt(fila[7]) || 0, pos: fila[8] ? fila[8].trim() : "",
+                    fondo: fila[10] ? fila[10].trim() : "", foto: fila[11] ? fila[11].trim() : "",
                     color: colorTexto
                 };
             }).filter(item => item !== null); 
@@ -426,7 +265,7 @@
         }
     });
 
-    // --- UI: FILTROS Y ORDEN ---
+    // --- FILTROS ---
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
 
@@ -439,37 +278,27 @@
         const criterio = criterioFull[0];
         const orden = criterioFull[1];
 
-        datosFiltrados = datosOriginales.filter(j => {
-            return j.nombre.toLowerCase().includes(textoBusqueda);
-        });
+        datosFiltrados = datosOriginales.filter(j => j.nombre.toLowerCase().includes(textoBusqueda));
 
         datosFiltrados.sort((a, b) => {
             if (criterio === 'nombre' || criterio === 'pos') {
-                if(orden === 'asc') return a[criterio].localeCompare(b[criterio]);
-                return b[criterio].localeCompare(a[criterio]);
+                return orden === 'asc' ? a[criterio].localeCompare(b[criterio]) : b[criterio].localeCompare(a[criterio]);
             } else {
-                if(orden === 'asc') return a[criterio] - b[criterio];
-                return b[criterio] - a[criterio];
+                return orden === 'asc' ? a[criterio] - b[criterio] : b[criterio] - a[criterio];
             }
         });
-
         renderizarGrilla(datosFiltrados);
     }
 
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
         container.innerHTML = '';
-
         if(lista.length === 0) {
             container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>';
             return;
         }
-
         lista.forEach(jugadorObj => {
-            const html = `
-            <div class="card" onclick="abrirModalPorID(${jugadorObj.id})">
-                ${generarHTMLCarta(jugadorObj, true)} 
-            </div>`;
+            const html = `<div class="card" onclick="abrirModalPorID(${jugadorObj.id})">${generarHTMLCarta(jugadorObj, true)}</div>`;
             container.innerHTML += html;
         });
     }
@@ -477,11 +306,8 @@
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
-
         return `
-            <div class="card-bg-wrapper">
-                <img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous">
-            </div>
+            <div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous"></div>
             <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
             ${fotoHtml}
             <div class="info-layer">
@@ -500,79 +326,40 @@
         `;
     }
 
-    // --- MODAL ZOOM ---
+    // --- MODAL Y MÚSICA ---
     function abrirModalPorID(idReal) {
         const jugador = datosOriginales.find(j => j.id === idReal);
         if(!jugador) return;
-        const modalContainer = document.getElementById('modal-card-container');
-        modalContainer.innerHTML = `<div class="card" id="carta-para-descargar">${generarHTMLCarta(jugador, false)}</div>`;
+        document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-para-descargar">${generarHTMLCarta(jugador, false)}</div>`;
         document.getElementById('modal').style.display = 'flex';
     }
-
-    function cerrarModal() {
-        document.getElementById('modal').style.display = 'none';
-    }
-
+    function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
     function descargarCarta() {
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "PROCESANDO...";
-        
         const shine = elemento.querySelector('.shine-layer');
         if(shine) shine.style.display = 'none';
-
-        html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 })
-        .then(canvas => {
-            const link = document.createElement('a');
-            link.download = `FUT_Carta_${Date.now()}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-            btn.innerText = "DESCARGAR";
-            if(shine) shine.style.display = 'block';
-        }).catch(err => { 
-            alert("Error: " + err); 
-            btn.innerText = "ERROR";
-            if(shine) shine.style.display = 'block';
-        });
+        html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 }).then(canvas => {
+            const link = document.createElement('a'); link.download = `FUT_Carta_${Date.now()}.png`; link.href = canvas.toDataURL("image/png"); link.click();
+            btn.innerText = "DESCARGAR"; if(shine) shine.style.display = 'block';
+        }).catch(err => { alert("Error: " + err); btn.innerText = "ERROR"; if(shine) shine.style.display = 'block'; });
     }
+    document.addEventListener('keydown', function(event) { if (event.key === "Escape") { cerrarModal(); cerrarArmador(); } });
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            cerrarModal();
-            cerrarArmador();
-        }
-    });
-
-    // --- MÚSICA ---
     const audioPlayer = document.getElementById('audio-player');
     const musicBtn = document.querySelector('.music-btn');
     const musicIcon = document.getElementById('music-icon');
     let isPlaying = false;
-
     function toggleMusic() {
         if(!audioPlayer.src) return; 
-
-        if (isPlaying) {
-            audioPlayer.pause();
-            musicIcon.innerText = "🔈";
-            musicBtn.classList.remove('playing');
-            isPlaying = false;
-        } else {
-            audioPlayer.volume = 0.05; // VOLUMEN
-            audioPlayer.play().then(() => {
-                musicIcon.innerText = "🔊";
-                musicBtn.classList.add('playing');
-                isPlaying = true;
-            }).catch(e => console.log("Bloqueo de audio: ", e));
-        }
+        if (isPlaying) { audioPlayer.pause(); musicIcon.innerText = "🔈"; musicBtn.classList.remove('playing'); isPlaying = false; }
+        else { audioPlayer.volume = 0.05; audioPlayer.play().then(() => { musicIcon.innerText = "🔊"; musicBtn.classList.add('playing'); isPlaying = true; }).catch(e => console.log("Bloqueo audio", e)); }
     }
-
-    function activarModoRetro() {
-        document.body.classList.toggle('retro-mode');
-    }
+    function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
     // =========================================
-    //  LÓGICA ARMADOR DE EQUIPOS
+    //  LÓGICA ARMADOR DE EQUIPOS (LIMITADA A 10)
     // =========================================
     
     function abrirArmador() {
@@ -582,8 +369,8 @@
         
         sorted.forEach(j => {
             list.innerHTML += `
-            <label class="player-row">
-                <input type="checkbox" class="player-check" value="${j.id}">
+            <label class="player-row" id="row-${j.id}">
+                <input type="checkbox" class="player-check" value="${j.id}" onclick="controlarLimite(this)">
                 <span>${j.nombre} <small>(${j.prom})</small></span>
             </label>`;
         });
@@ -591,43 +378,64 @@
         document.getElementById('team-results').style.display = 'none';
         document.getElementById('btn-download-teams').style.display = 'none';
         document.getElementById('team-modal').style.display = 'flex';
+        actualizarContador(0);
     }
 
-    function cerrarArmador() {
-        document.getElementById('team-modal').style.display = 'none';
+    function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
+
+    function controlarLimite(checkbox) {
+        const checked = document.querySelectorAll('.player-check:checked');
+        const count = checked.length;
+        
+        actualizarContador(count);
+
+        if (count >= 10) {
+            document.querySelectorAll('.player-check:not(:checked)').forEach(cb => {
+                cb.disabled = true;
+                document.getElementById(`row-${cb.value}`).classList.add('disabled');
+            });
+        } else {
+            document.querySelectorAll('.player-check').forEach(cb => {
+                cb.disabled = false;
+                document.getElementById(`row-${cb.value}`).classList.remove('disabled');
+            });
+        }
+    }
+
+    function actualizarContador(count) {
+        const missing = 10 - count;
+        const counterLabel = document.getElementById('team-counter');
+        const generateBtn = document.getElementById('btn-generate');
+
+        if (missing > 0) {
+            counterLabel.innerText = `FALTAN ${missing} JUGADORES`;
+            counterLabel.style.color = "#888";
+            generateBtn.style.opacity = "0.5";
+            generateBtn.style.pointerEvents = "none";
+        } else if (missing === 0) {
+            counterLabel.innerText = "¡LISTO! (10/10)";
+            counterLabel.style.color = "#d4af37";
+            generateBtn.style.opacity = "1";
+            generateBtn.style.pointerEvents = "auto";
+        } else {
+            counterLabel.innerText = "DEMASIADOS JUGADORES";
+        }
     }
 
     function generarEquipos() {
-        // 1. Obtener seleccionados
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
-        if (selectedIds.length < 2) {
-            alert("Seleccioná al menos 2 jugadores.");
-            return;
-        }
-
-        // 2. Ordenar por Promedio (Mejor a Peor)
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
         pool.sort((a, b) => b.prom - a.prom);
 
-        // 3. Reparto Equilibrado (Suma compensada)
-        let teamA = [];
-        let teamB = [];
-        let sumA = 0;
-        let sumB = 0;
+        let teamA = []; let teamB = []; let sumA = 0; let sumB = 0;
 
         pool.forEach(p => {
-            if (sumA <= sumB) {
-                teamA.push(p);
-                sumA += p.prom;
-            } else {
-                teamB.push(p);
-                sumB += p.prom;
-            }
+            if (sumA <= sumB) { teamA.push(p); sumA += p.prom; } 
+            else { teamB.push(p); sumB += p.prom; }
         });
 
-        // 4. Asignación Aleatoria de Camisetas (Blanco vs Negro)
         let finalTeam1, finalTeam2;
         if (Math.random() > 0.5) {
             finalTeam1 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
@@ -637,7 +445,6 @@
             finalTeam2 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
         }
 
-        // 5. Renderizar
         document.getElementById('list-team-1').innerHTML = finalTeam1.data.map(p => `<div class="team-list-item">${p.nombre} <small>(${p.prom})</small></div>`).join('');
         document.getElementById('avg-team-1').innerText = `Prom: ${finalTeam1.prom}`;
 
@@ -651,10 +458,7 @@
     function descargarEquipos() {
         const elemento = document.getElementById('team-capture-area');
         html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `PARTIDO_${Date.now()}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+            const link = document.createElement('a'); link.download = `PARTIDO_${Date.now()}.png`; link.href = canvas.toDataURL("image/png"); link.click();
         });
     }
 </script>
