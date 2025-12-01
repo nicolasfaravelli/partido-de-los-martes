@@ -531,9 +531,9 @@
 
         // 2. RESTO (Ponderado + Aleatorio)
         resto.sort((a, b) => {
-            // Factor Caos: +/- 5 puntos
-            let impactA = getImpactScore(a) + (Math.random() * 10 - 5);
-            let impactB = getImpactScore(b) + (Math.random() * 10 - 5);
+            // Factor Caos: +/- 2 puntos
+            let impactA = getImpactScore(a) + (Math.random() * 10 - 2);
+            let impactB = getImpactScore(b) + (Math.random() * 10 - 2);
             return impactB - impactA;
         });
 
@@ -588,4 +588,5 @@
 
 </body>
 </html>
+
 
