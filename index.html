@@ -58,7 +58,7 @@
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px;
         }
         
-        /* BOTÓN ARMADOR (AHORA GRIS) */
+        /* BOTÓN ARMADOR (GRIS) */
         .btn-teams {
             background: #333; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 4px; cursor: pointer;
             font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; transition: background 0.2s;
@@ -115,7 +115,10 @@
         .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
         .player-check { transform: scale(1.3); accent-color: #d4af37; }
         
-        .btn-generate { background: #392266; color: white; width: 100%; font-size: 1.5rem; margin-bottom: 15px; }
+        /* BOTÓN GENERAR (GRIS AHORA) */
+        .btn-generate { background: #333; color: white; width: 100%; font-size: 1.5rem; margin-bottom: 15px; border: 1px solid #555; }
+        .btn-generate:hover { background: #444; }
+        
         #team-capture-area { background: #1a1a1a; padding: 10px; }
         .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
         .team-column { flex: 1; padding: 15px; border-radius: 8px; border: 2px solid #333; }
@@ -234,7 +237,7 @@
     let datosOriginales = []; 
     let datosFiltrados = [];  
 
-    // --- CARGA CSV ---
+    // --- CARGA CSV (INDICES CORREGIDOS) ---
     Papa.parse(PROXY_URL, {
         download: true, header: false, skipEmptyLines: true,
         complete: function(results) {
@@ -246,16 +249,24 @@
                 const nombre = fila[0]; 
                 if(!nombre || nombre === 'Jugador') return null;
                 
-                let tipoCarta = fila[9] ? fila[9].trim().toLowerCase() : 'oro';
+                let tipoCarta = fila[10] ? fila[10].trim().toLowerCase() : 'oro';
                 let colorTexto = COLORES[tipoCarta] || '#624f21'; 
 
                 return {
                     id: index,
                     nombre: nombre,
-                    ata: parseInt(fila[1]) || 0, def: parseInt(fila[2]) || 0, tec: parseInt(fila[3]) || 0, 
-                    vel: parseInt(fila[4]) || 0, res: parseInt(fila[5]) || 0, arq: parseInt(fila[6]) || 0,
-                    prom: parseInt(fila[7]) || 0, pos: fila[8] ? fila[8].trim() : "",
-                    fondo: fila[10] ? fila[10].trim() : "", foto: fila[11] ? fila[11].trim() : "",
+                    edad: parseInt(fila[1]) || 0, // NUEVA COLUMNA EDAD
+                    ata: parseInt(fila[2]) || 0, 
+                    def: parseInt(fila[3]) || 0, 
+                    tec: parseInt(fila[4]) || 0, 
+                    vel: parseInt(fila[5]) || 0, 
+                    res: parseInt(fila[6]) || 0, 
+                    arq: parseInt(fila[7]) || 0,
+                    prom: parseInt(fila[8]) || 0, 
+                    pos: fila[9] ? fila[9].trim() : "",
+                    valor: fila[10] ? fila[10].trim() : "Oro",
+                    fondo: fila[11] ? fila[11].trim() : "", // Columna L (Fondo)
+                    foto: fila[12] ? fila[12].trim() : "",  // Columna M (Foto)
                     color: colorTexto
                 };
             }).filter(item => item !== null); 
@@ -359,7 +370,7 @@
     function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
     // =========================================
-    //  LÓGICA ARMADOR DE EQUIPOS (LIMITADA A 10)
+    //  LÓGICA ARMADOR DE EQUIPOS (LIMITADA A 10 CON ARQUEROS)
     // =========================================
     
     function abrirArmador() {
@@ -426,16 +437,45 @@
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
+        // Recuperar objetos completos
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
-        pool.sort((a, b) => b.prom - a.prom);
+        
+        let teamA = [];
+        let teamB = [];
+        let sumA = 0;
+        let sumB = 0;
 
-        let teamA = []; let teamB = []; let sumA = 0; let sumB = 0;
+        // 1. SEPARAR ARQUEROS (POR)
+        const arqueros = pool.filter(p => p.pos.toUpperCase() === "POR");
+        const resto = pool.filter(p => p.pos.toUpperCase() !== "POR");
 
-        pool.forEach(p => {
-            if (sumA <= sumB) { teamA.push(p); sumA += p.prom; } 
-            else { teamB.push(p); sumB += p.prom; }
+        if (arqueros.length >= 2) {
+            // Mandamos los 2 mejores arqueros uno a cada lado
+            arqueros.sort((a, b) => b.prom - a.prom);
+            teamA.push(arqueros[0]); sumA += arqueros[0].prom;
+            teamB.push(arqueros[1]); sumB += arqueros[1].prom;
+            // Si hay más de 2 arqueros, los sobrantes van al pozo común
+            for(let i=2; i<arqueros.length; i++) resto.push(arqueros[i]);
+        } else if (arqueros.length === 1) {
+            // Solo hay uno, va al A (se desbalancea un poco pero es inevitable)
+            teamA.push(arqueros[0]); sumA += arqueros[0].prom;
+        }
+
+        // 2. ORDENAR RESTO POR PROMEDIO (Mejor a Peor)
+        resto.sort((a, b) => b.prom - a.prom);
+
+        // 3. REPARTO COMPENSADO
+        resto.forEach(p => {
+            if (sumA <= sumB) {
+                teamA.push(p);
+                sumA += p.prom;
+            } else {
+                teamB.push(p);
+                sumB += p.prom;
+            }
         });
 
+        // 4. Asignación Aleatoria de Camisetas
         let finalTeam1, finalTeam2;
         if (Math.random() > 0.5) {
             finalTeam1 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
@@ -445,6 +485,7 @@
             finalTeam2 = { data: teamA, prom: (sumA/teamA.length).toFixed(1) };
         }
 
+        // 5. Renderizar
         document.getElementById('list-team-1').innerHTML = finalTeam1.data.map(p => `<div class="team-list-item">${p.nombre} <small>(${p.prom})</small></div>`).join('');
         document.getElementById('avg-team-1').innerText = `Prom: ${finalTeam1.prom}`;
 
