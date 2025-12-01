@@ -20,22 +20,18 @@
            1. SISTEMA DE DISEÑO (TOCÁ ACÁ PARA CAMBIAR COLORES)
            ======================================================= */
         :root {
-            /* TUS LINKS (Se inyectan via JS, no tocar acá) */
             --fondo-url: none;
 
             /* PALETA DE COLORES */
-            --color-fondo: #0f0f0f;       /* Negro de fondo */
-            --color-paneles: #1a1a1a;     /* Gris oscuro de cajas */
-            --color-bordes: #333333;      /* Gris medio de bordes */
-            --color-texto: #ffffff;       /* Blanco */
-            
-            /* COLOR ACENTO (El color "Principal" de la página) */
-            /* Cambiá este y cambia todo (ej: Dorado #d4af37, Azul #007bff) */
+            --color-fondo: #0f0f0f;   
+            --color-paneles: #1a1a1a;  
+            --color-bordes: #333333;     
+            --color-texto: #ffffff; 
             --color-acento: #d4af37;      
 
             /* TIPOGRAFÍAS */
-            --fuente-titulo: 'Bebas Neue', sans-serif; /* Para impacto visual */
-            --fuente-texto: system-ui, -apple-system, sans-serif; /* Para leer cómodo */
+            --fuente-titulo: 'Bebas Neue', sans-serif;
+            --fuente-texto: system-ui, -apple-system, sans-serif;
         }
 
         /* =======================================================
@@ -286,12 +282,12 @@
             <div id="team-capture-area">
                 <div id="team-results" class="team-results">
                     <div class="team-column team-white" id="col-team-1">
-                        <div class="team-header">BLANCO</div>
+                        <div class="team-header">CLARO</div>
                         <div class="team-avg" id="avg-team-1">Prom: 0</div>
                         <div id="list-team-1"></div>
                     </div>
                     <div class="team-column team-black" id="col-team-2">
-                        <div class="team-header">NEGRO</div>
+                        <div class="team-header">OSCURO</div>
                         <div class="team-avg" id="avg-team-2">Prom: 0</div>
                         <div id="list-team-2"></div>
                     </div>
@@ -300,7 +296,7 @@
 
             <div class="btn-group" style="margin-top: 15px;">
                 <button class="btn-standard" onclick="cerrarArmador()">CERRAR</button>
-                <button class="btn-standard btn-action" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">DESCARGAR PARTIDO</button>
+                <button class="btn-standard btn-action" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;">DESCARGAR EQUIPOS</button>
             </div>
         </div>
     </div>
@@ -588,5 +584,6 @@
 
 </body>
 </html>
+
 
 
