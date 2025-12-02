@@ -18,25 +18,25 @@
     
     <style>
         /* =========================================
-           1. ESTILOS GENERALES
+           1. CONFIGURACIÓN Y PALETA
            ========================================= */
         :root {
             --fondo-url: none;
-            /* PALETA */
+            
+            /* Colores Base */
             --color-fondo: #0f0f0f;
             --color-paneles: #1a1a1a;
             --color-bordes: #333333;
             --color-texto: #ffffff;
             --color-acento: #d4af37; /* Dorado */
-            --color-whatsapp: #25D366; /* Verde WA */
             
-            /* Colores de Stats */
+            /* Colores Stats */
             --stat-legend: #a855f7;
             --stat-gold: #d4af37;
             --stat-silver: #7a7a7a;
             --stat-bronze: #cd7f32;
 
-            /* TIPOGRAFÍAS */
+            /* Tipografías */
             --fuente-titulo: 'Bebas Neue', sans-serif;
             --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
@@ -48,7 +48,10 @@
             margin: 0; 
             padding: 0 20px 20px 20px; 
             background-image: var(--fondo-url); 
-            background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-size: cover; 
+            background-attachment: fixed;
             transition: filter 0.3s;
         }
 
@@ -56,12 +59,16 @@
            2. ENCABEZADO
            ========================================= */
         .header-container { 
-            text-align: center; position: sticky; top: 0; z-index: 100;
-            margin: 0 -20px 10px -20px; padding: 20px 0 20px 0;
+            text-align: center; 
+            position: sticky; top: 0; 
+            z-index: 100;
+            margin: 0 -20px 10px -20px; 
+            padding: 20px 0 20px 0;
         }
         
         .header-container::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -1; 
             background-color: var(--color-fondo); 
             background-image: var(--fondo-url); 
             background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
@@ -75,12 +82,13 @@
         .title-img { 
             max-width: 85%; height: auto; max-height: 120px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
-            transition: transform 0.1s; cursor: pointer; -webkit-tap-highlight-color: transparent; 
+            transition: transform 0.1s; cursor: pointer; 
+            -webkit-tap-highlight-color: transparent; 
         }
         .title-img:active { transform: scale(0.98); }
 
         /* =========================================
-           3. CONTROLES
+           3. BARRA DE CONTROLES
            ========================================= */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto; 
@@ -155,7 +163,7 @@
         .music-btn.playing { border-color: var(--color-acento); color: var(--color-acento); background: rgba(0,0,0,0.9); }
 
         /* =========================================
-           6. MODALES
+           6. MODALES (GENERAL)
            ========================================= */
         .modal-overlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -172,13 +180,6 @@
             font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem;
         }
         .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
-
-        /* Botón Compartir (Verde) */
-        .btn-share {
-            background-color: var(--color-whatsapp); color: #fff; border: none; font-weight: bold;
-            font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem;
-        }
-        .btn-share:hover { opacity: 0.9; transform: scale(1.02); }
 
         /* =========================================
            7. ARMADOR DE EQUIPOS
@@ -305,8 +306,7 @@
 
             <div class="btn-group" style="margin-top: 15px;">
                 <button class="btn-standard" onclick="cerrarArmador()">CERRAR</button>
-                <button class="btn-standard" onclick="descargarEquipos()" id="btn-download-teams" style="display:none;"DESCARGAR</button>
-                <button class="btn-standard btn-share" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">📲 COMPARTIR</button>
+                <button class="btn-standard btn-action" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
             </div>
         </div>
     </div>
@@ -428,6 +428,7 @@
         document.getElementById('modal').style.display = 'flex';
     }
     function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
+    
     function descargarCarta() {
         const elemento = document.getElementById('carta-para-descargar');
         const btn = document.querySelector('.btn-download');
@@ -470,7 +471,6 @@
         });
         
         document.getElementById('team-results').style.display = 'none';
-        document.getElementById('btn-download-teams').style.display = 'none';
         document.getElementById('btn-share-teams').style.display = 'none';
         document.getElementById('team-modal').style.display = 'flex';
         actualizarContador(0);
@@ -482,7 +482,6 @@
         const checked = document.querySelectorAll('.player-check:checked');
         const count = checked.length;
         
-        // Si se cambia la selección, el botón vuelve a decir "GENERAR"
         document.getElementById('btn-generate').innerText = "GENERAR EQUIPOS";
         
         actualizarContador(count);
@@ -523,7 +522,7 @@
     // RENDER LIST ITEM
     function getPlayerHTML(p, isWhite) {
         const colorNota = getRatingColor(p.prom);
-        const emoji = isWhite ? '◼️' : '◻️';
+        const emoji = isWhite ? '▫️' : '▪️';
         return `
         <div class="team-list-item">
             <span>${emoji} ${p.nombre}</span>
@@ -535,8 +534,7 @@
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
-        // Cambio de Texto a REGENERAR
-        document.getElementById('btn-generate').innerText = "REGENERAR EQUIPOS";
+        document.getElementById('btn-generate').innerText = "🔄 REGENERAR EQUIPOS";
 
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
         let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
@@ -580,20 +578,12 @@
         document.getElementById('avg-team-2').innerText = `Prom: ${finalTeam2.prom}`;
 
         document.getElementById('team-results').style.display = 'flex';
-        document.getElementById('btn-download-teams').style.display = 'block';
         document.getElementById('btn-share-teams').style.display = 'block';
     }
 
     function getImpactScore(p) { return (p.prom * 6) + (p.res * 3) + (p.tec * 2) - (p.edad * 0.5); }
     function calcularPromedioReal(equipo) { let sum = 0; equipo.forEach(p => sum += p.prom); return (sum / equipo.length).toFixed(1); }
     
-    function descargarEquipos() {
-        const elemento = document.getElementById('team-capture-area');
-        html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
-            const link = document.createElement('a'); link.download = `PARTIDO_${Date.now()}.png`; link.href = canvas.toDataURL("image/png"); link.click();
-        });
-    }
-
     async function compartirEquipos() {
         const elemento = document.getElementById('team-capture-area');
         try {
@@ -607,7 +597,7 @@
                         text: 'Acá están los equipos!'
                     });
                 } else {
-                    alert("Tu navegador no soporta compartir imágenes directo. Usá descargar.");
+                    alert("Tu navegador no soporta compartir imágenes directo.");
                 }
             });
         } catch (err) {
@@ -619,4 +609,3 @@
 
 </body>
 </html>
-
