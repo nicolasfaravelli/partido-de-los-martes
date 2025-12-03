@@ -450,13 +450,13 @@
                 foto: base.fotoLeyenda,
                 fondo: LEYENDA_FONDO_URL,
                 color: COLORES['oro'], // FUERZO QUE EL TEXTO SEA DORADO AUNQUE EL FONDO SEA LEYENDA
-                ata: Math.min(98, base.ata *1.18),
-                def: Math.min(98, base.def *1.18),
-                tec: Math.min(98, base.tec *1.18),
-                vel: Math.min(98, base.vel *1.18),
-                res: Math.min(98, base.res *1.18),
-                arq: Math.min(98, base.arq *1.18),
-                prom: Math.min(98, base.prom *1.18)
+                ata: Math.min(98, Math.round(base.ata * 1.2)),
+                def: Math.min(98, Math.round(base.def * 1.2)),
+                tec: Math.min(98, Math.round(base.tec * 1.2)),
+                vel: Math.min(98, Math.round(base.vel * 1.2)),
+                res: Math.min(98, Math.round(base.res * 1.2)),
+                arq: Math.min(98, Math.round(base.arq * 1.2)),
+                prom: Math.min(98, Math.round(base.prom * 1.2))
             };
         } else {
             jugadorParaMostrar = jugadorActualEnModal;
@@ -645,6 +645,7 @@
 
 </body>
 </html>
+
 
 
 
