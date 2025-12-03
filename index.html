@@ -17,27 +17,26 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <style>
-        /* #######################################################
-           SECCIÓN 1: VARIABLES Y CONFIGURACIÓN GLOBAL
-           ####################################################### */
+        /* =========================================
+           1. CONFIGURACIÓN Y PALETA
+           ========================================= */
         :root {
-            --fondo-url: none; /* Se carga desde JS */
-            
-            /* --- PALETA DE COLORES --- */
+            --fondo-url: none;
+            /* PALETA */
             --color-fondo: #0f0f0f;
             --color-paneles: #1a1a1a;
             --color-bordes: #333333;
             --color-texto: #ffffff;
-            --color-acento: #d4af37; /* Dorado Principal */
+            --color-acento: #d4af37; /* Dorado */
+            --color-whatsapp: #25D366; 
             
-            /* --- COLORES DE STATS --- */
-            --stat-legend: #a855f7; /* Violeta */
-            --stat-gold: #d4af37;   /* Dorado */
-            --stat-silver: #7a7a7a; /* Gris Acero */
-            --stat-bronze: #cd7f32; /* Bronce */
-            --color-whatsapp: #25D366;
+            /* Colores Stats */
+            --stat-legend: #a855f7;
+            --stat-gold: #d4af37;
+            --stat-silver: #7a7a7a;
+            --stat-bronze: #cd7f32;
 
-            /* --- FUENTES --- */
+            /* TIPOGRAFÍAS */
             --fuente-titulo: 'Bebas Neue', sans-serif;
             --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
@@ -47,19 +46,13 @@
             color: var(--color-texto); 
             font-family: var(--fuente-titulo); 
             margin: 0; padding: 0 20px 20px 20px; 
-            background-image: var(--fondo-url); 
-            background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
+            background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
             transition: filter 0.3s;
         }
 
-        #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif; }
-
-        /* Easter Egg */
-        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
-
-        /* #######################################################
-           SECCIÓN 2: ENCABEZADO Y CONTROLES
-           ####################################################### */
+        /* =========================================
+           2. ENCABEZADO
+           ========================================= */
         .header-container { 
             text-align: center; position: sticky; top: 0; z-index: 100;
             margin: 0 -20px 10px -20px; padding: 20px 0 20px 0;
@@ -69,139 +62,109 @@
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
             background-color: var(--color-fondo); background-image: var(--fondo-url); 
             background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
-            opacity: 0.95; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
-        
-        .title-img { 
-            max-width: 85%; height: auto; max-height: 120px; 
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; cursor: pointer; -webkit-tap-highlight-color: transparent; 
-        }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .title-img:active { transform: scale(0.98); }
 
-        /* BARRA DE BUSQUEDA Y FILTROS */
+        /* =========================================
+           3. BARRA DE CONTROLES
+           ========================================= */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto; 
             display: flex; gap: 10px; flex-wrap: wrap;
-            background: rgba(20, 20, 20, 0.95); 
-            padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
+            background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
             justify-content: space-between; align-items: center; position: relative; z-index: 50;
         }
 
         #search-input, #sort-select {
-            flex: 1; padding: 10px 15px; 
-            font-family: var(--fuente-titulo); font-size: 1.1rem; letter-spacing: 1px;
+            flex: 1; padding: 10px 15px; font-family: var(--fuente-titulo); font-size: 1.1rem; letter-spacing: 1px;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px;
         }
         #search-input:focus, #sort-select:focus { outline: none; border-color: var(--color-acento); }
 
-        /* BOTÓN ESTÁNDAR (Gris) */
         .btn-standard {
-            background: #333; color: white; border: 1px solid #555; 
-            padding: 10px 20px; border-radius: 4px; cursor: pointer;
+            background: #333; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 4px; cursor: pointer;
             font-family: var(--fuente-titulo); font-size: 1.3rem; letter-spacing: 1px;
             display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s;
         }
         .btn-standard:hover { background: #444; border-color: var(--color-acento); }
 
-        /* BOTÓN LEYENDA (Ahora es Dorado/Acento) */
+        /* Botón Leyenda (Dorado) */
         .btn-legend {
-            background: var(--color-acento); 
-            color: #000; /* Texto negro para contraste */
-            border: 1px solid var(--color-acento);
-            font-weight: bold;
+            background: var(--color-acento); color: #000; border: 1px solid var(--color-acento); font-weight: bold;
         }
         .btn-legend:hover { filter: brightness(1.1); }
 
-        /* #######################################################
-           SECCIÓN 3: DISEÑO DE LA CARTA (GRID & CARD)
-           ####################################################### */
-        .grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; 
-        }
+        /* =========================================
+           4. GRILLA Y CARTA
+           ========================================= */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         
-        .card { 
-            position: relative; width: 100%; aspect-ratio: 2 / 3; 
-            background: transparent; cursor: pointer; 
-            transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; 
-        }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; background: transparent; cursor: pointer; transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
 
-        /* Capas internas de la carta */
         .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; display: block; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); z-index: 1; }
         .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; will-change: transform; }
-        
-        /* FOTO DEL JUGADOR */
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
+        .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
         
-        /* EFECTO BRILLO */
+        /* BRILLO (SHINE) */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
+        
+        /* Brillo al pasar mouse */
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
 
-        /* TEXTOS Y DATOS */
-        .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+        /* Brillo forzado por JS (Animación al cambiar a Leyenda) */
+        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
+        .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
+
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
         .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
-        
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
 
-        /* #######################################################
-           SECCIÓN 4: MODALES (ZOOM Y ARMADOR)
-           ####################################################### */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); z-index: 3000; 
-            flex-direction: column; justify-content: center; align-items: center; 
-            backdrop-filter: blur(5px); 
-        }
-        
-        /* Modal Carta */
+        /* =========================================
+           5. MÚSICA
+           ========================================= */
+        .music-btn { position: fixed; bottom: 20px; right: 20px; z-index: 2000; width: 50px; height: 50px; background: rgba(0, 0, 0, 0.8); border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+        .music-btn:hover { transform: scale(1.1); border-color: var(--color-acento); }
+        .music-btn.playing { border-color: var(--color-acento); color: var(--color-acento); background: rgba(0,0,0,0.9); }
+
+        /* =========================================
+           6. MODALES
+           ========================================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
         
-        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; }
         .btn-action { background-color: var(--color-acento); color: #000; border: none; font-weight: bold; font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem; }
         .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
         .btn-share { background-color: var(--color-whatsapp); color: #fff; border: none; font-weight: bold; font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem; }
         .btn-share:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* Modal Armador de Equipos */
-        #team-modal-content { 
-            background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); 
-            width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; 
-        }
+        /* =========================================
+           7. ARMADOR DE EQUIPOS
+           ========================================= */
+        #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; }
         .team-title { text-align: center; color: var(--color-acento); margin-bottom: 5px; font-size: 2rem; }
         #team-counter { text-align: center; color: #888; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--color-bordes); padding-bottom: 10px; font-family: var(--fuente-texto); font-weight: bold; text-transform: uppercase; }
+        .team-scroll { overflow-y: auto; flex: 1; margin-bottom: 15px; border: 1px solid var(--color-bordes); padding: 10px; background: #111; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
         
-        .team-scroll { 
-            overflow-y: auto; flex: 1; margin-bottom: 15px; 
-            border: 1px solid var(--color-bordes); padding: 10px; background: #111; 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; 
-        }
-        
-        .player-row { 
-            display: flex; align-items: center; gap: 12px; 
-            padding: 12px; background: #252525; border-radius: 4px; cursor: pointer; user-select: none; transition: opacity 0.2s; 
-            font-family: var(--fuente-texto); font-weight: bold; font-size: 1rem; 
-        }
+        .player-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #252525; border-radius: 4px; cursor: pointer; user-select: none; transition: opacity 0.2s; font-family: var(--fuente-texto); font-weight: bold; font-size: 1rem; }
         .player-row:hover { background: #333; }
         .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
         .player-check { transform: scale(1.3); accent-color: var(--color-acento); cursor: pointer; }
         
-        .btn-generate { 
-            background: #333; color: #888; width: 100%; font-size: 1.8rem; margin-bottom: 15px; border: 1px solid #444; pointer-events: none; transition: all 0.3s; 
-            font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px; 
-        }
+        .btn-generate { background: #333; color: #888; width: 100%; font-size: 1.8rem; margin-bottom: 15px; border: 1px solid #444; pointer-events: none; transition: all 0.3s; font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px; }
         .btn-generate.active { background: var(--color-acento); color: #000; border-color: var(--color-acento); pointer-events: auto; cursor: pointer; font-weight: bold; }
         .btn-generate.active:hover { transform: scale(1.02); }
         
-        /* Resultados de Equipos */
         #team-capture-area { background: var(--color-paneles); padding: 15px; border-radius: 8px; }
         .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
         .team-column { flex: 1; padding: 15px; border-radius: 8px; border: 2px solid var(--color-bordes); }
@@ -211,17 +174,8 @@
         .team-avg { text-align: center; font-size: 1rem; margin-bottom: 15px; opacity: 0.8; font-family: var(--fuente-texto); font-weight: bold; }
         .team-list-item { padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
 
-        /* =========================================
-           8. UTILIDADES EXTRA (MÚSICA)
-           ========================================= */
-        .music-btn { 
-            position: fixed; bottom: 20px; right: 20px; z-index: 2000; width: 50px; height: 50px; background: rgba(0, 0, 0, 0.8); 
-            border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s; -webkit-tap-highlight-color: transparent; 
-        }
-        .music-btn:hover { transform: scale(1.1); border-color: var(--color-acento); }
-        .music-btn.playing { border-color: var(--color-acento); color: var(--color-acento); background: rgba(0,0,0,0.9); }
-
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
+        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
     </style>
 </head>
 <body>
@@ -239,7 +193,7 @@
             <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
         <button class="btn-standard" onclick="abrirArmador()">
-            ARMAR EQUIPOS
+            <span>⚖️</span> ARMAR EQUIPOS
         </button>
     </div>
 
@@ -290,33 +244,30 @@
     </div>
 
 <script>
-    // #######################################################
-    //  SECCIÓN DE CONFIGURACIÓN
-    // #######################################################
+    // ====================================================================
+    //  ZONA DE CONFIGURACIÓN
+    // ====================================================================
     
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
-    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
+    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Leyenda.png";
 
-    // #######################################################
+    // ====================================================================
 
-    // --- SETUP VISUAL ---
     if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
     if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
     if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL; else document.querySelector('.music-btn').style.display = 'none';
 
-    // --- CONFIGURACIÓN DE DATOS ---
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    // Acá definimos los colores para usar en JS
     const COLORES = { 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21', 'legendario': '#392266' };
 
     let datosOriginales = []; 
     let datosFiltrados = [];  
 
-    // --- CARGA DE CSV ---
+    // CARGA
     Papa.parse(PROXY_URL, {
         download: true, header: false, skipEmptyLines: true,
         complete: function(results) {
@@ -350,7 +301,7 @@
         }
     });
 
-    // --- FILTROS Y ORDEN ---
+    // FILTROS
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
     searchInput.addEventListener('input', aplicarFiltrosYOrden);
@@ -381,7 +332,6 @@
         });
     }
 
-    // --- GENERADOR DE HTML DE CARTA ---
     function generarHTMLCarta(j, lazy = false) {
         const loadingAttr = lazy ? 'loading="lazy"' : '';
         const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
@@ -449,19 +399,28 @@
                 ...base,
                 foto: base.fotoLeyenda,
                 fondo: LEYENDA_FONDO_URL,
-                color: COLORES['oro'], // O QUE EL TEXTO SEA DORADO AUNQUE EL FONDO SEA LEYENDA
-                ata: Math.min(98, Math.round(base.ata * 1.25)),
-                def: Math.min(98, Math.round(base.def * 1.25)),
-                tec: Math.min(98, Math.round(base.tec * 1.25)),
-                vel: Math.min(98, Math.round(base.vel * 1.25)),
-                res: Math.min(98, Math.round(base.res * 1.25)),
-                arq: Math.min(98, Math.round(base.arq * 1.25)),
-                prom: Math.min(98, Math.round(base.prom * 1.25))
+                color: COLORES['oro'], // Mantenemos texto dorado
+                
+                // Multiplicador 1.3 con redondeo y tope
+                ata: Math.min(98, Math.round(base.ata * 1.3)),
+                def: Math.min(98, Math.round(base.def * 1.3)),
+                tec: Math.min(98, Math.round(base.tec * 1.3)),
+                vel: Math.min(98, Math.round(base.vel * 1.3)),
+                res: Math.min(98, Math.round(base.res * 1.3)),
+                arq: Math.min(98, Math.round(base.arq * 1.3)),
+                prom: Math.min(98, Math.round(base.prom * 1.3))
             };
         } else {
             jugadorParaMostrar = jugadorActualEnModal;
         }
+        
         renderizarModal(jugadorParaMostrar);
+        
+        // EFECTO DE TRANSICIÓN: DISPARAR BRILLO
+        const cardElement = document.getElementById('carta-para-descargar');
+        cardElement.classList.remove('trigger-shine'); // Reset
+        void cardElement.offsetWidth; // Force Reflow
+        cardElement.classList.add('trigger-shine'); // Activar
     }
 
     function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
@@ -477,9 +436,10 @@
             btn.innerText = "DESCARGAR"; if(shine) shine.style.display = 'block';
         }).catch(err => { alert("Error: " + err); btn.innerText = "ERROR"; if(shine) shine.style.display = 'block'; });
     }
+    
     document.addEventListener('keydown', function(event) { if (event.key === "Escape") { cerrarModal(); cerrarArmador(); } });
 
-    // --- MÚSICA Y RETRO ---
+    // MÚSICA
     const audioPlayer = document.getElementById('audio-player');
     const musicBtn = document.querySelector('.music-btn');
     const musicIcon = document.getElementById('music-icon');
@@ -491,9 +451,9 @@
     }
     function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
-    // #######################################################
-    //  SECCIÓN: LÓGICA ARMADOR DE EQUIPOS
-    // #######################################################
+    // =========================================
+    //  ARMADOR DE EQUIPOS 
+    // =========================================
     
     function abrirArmador() {
         const list = document.getElementById('players-checklist');
@@ -549,6 +509,7 @@
         }
     }
 
+    // COLOR POR PROMEDIO
     function getRatingColor(val) {
         if (val >= 90) return 'var(--stat-legend)'; 
         if (val >= 80) return 'var(--stat-gold)';
@@ -556,6 +517,7 @@
         return 'var(--stat-bronze)';
     }
 
+    // RENDER LIST ITEM
     function getPlayerHTML(p, isWhite) {
         const colorNota = getRatingColor(p.prom);
         const emoji = isWhite ? '▫️' : '▪️';
@@ -570,7 +532,7 @@
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
-        document.getElementById('btn-generate').innerText = "REGENERAR EQUIPOS";
+        document.getElementById('btn-generate').innerText = "🔄 REGENERAR EQUIPOS";
 
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
         let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
@@ -645,8 +607,3 @@
 
 </body>
 </html>
-
-
-
-
-
