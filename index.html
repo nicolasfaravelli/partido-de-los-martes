@@ -90,13 +90,13 @@
             font-family: var(--fuente-titulo); font-size: 1.3rem; letter-spacing: 1px;
             display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s;
         }
-        .btn-standard:hover { background: #444; border-color: var(--color-acento); }
+        .btn-standard:ho{ background: #444; border-color: var(--color-acento); }
 
         /* Botón Leyenda (Violeta) */
         .btn-legend {
             background: var(--stat-legend); color: white; border: 1px solid #fff;
         }
-        .btn-legend:hover { filter: brightness(1.2); }
+        .btn-legend:ho{ filter: brightness(1.2); }
 
         /* =========================================
            4. GRILLA Y CARTA
@@ -378,9 +378,9 @@
         // Si tiene foto leyenda, mostrar botón mágico
         if (jugadorActualEnModal.fotoLeyenda) {
             if (esModoLeyenda) {
-                botonesHTML += `<button class="btn-standard" onclick="toggleLeyenda()">VER ACTUAL</button>`;
+                botonesHTML += `<button class="btn-standard" onclick="toggleLeyenda()">ACTUAL</button>`;
             } else {
-                botonesHTML += `<button class="btn-standard btn-legend" onclick="toggleLeyenda()">VER LEYENDA</button>`;
+                botonesHTML += `<button class="btn-standard btn-legend" onclick="toggleLeyenda()">LEYENDA</button>`;
             }
         }
         modalButtons.innerHTML = botonesHTML;
@@ -598,3 +598,4 @@
 
 </body>
 </html>
+
