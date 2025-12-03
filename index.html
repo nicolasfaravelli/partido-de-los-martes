@@ -193,7 +193,7 @@
             <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
         <button class="btn-standard" onclick="abrirArmador()">
-            <span>⚖️</span> ARMAR EQUIPOS
+            ARMAR EQUIPOS
         </button>
     </div>
 
@@ -532,7 +532,7 @@
         const checkboxes = document.querySelectorAll('.player-check:checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
-        document.getElementById('btn-generate').innerText = "🔄 REGENERAR EQUIPOS";
+        document.getElementById('btn-generate').innerText = "REGENERAR EQUIPOS";
 
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
         let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
@@ -607,5 +607,6 @@
 
 </body>
 </html>
+
 
 
