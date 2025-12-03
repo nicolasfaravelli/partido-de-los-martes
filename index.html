@@ -18,7 +18,7 @@
     
     <style>
         /* =========================================
-           1. CONFIGURACIÓN Y PALETA
+           1. CONFIGURACIÓN GLOBAL Y PALETA
            ========================================= */
         :root {
             --fondo-url: none;
@@ -30,7 +30,7 @@
             --color-acento: #d4af37; /* Dorado */
             --color-whatsapp: #25D366; 
             
-            /* Colores Stats */
+            /* Colores Stats para promedios (Círculos de color) */
             --stat-legend: #a855f7;
             --stat-gold: #d4af37;
             --stat-silver: #7a7a7a;
@@ -99,7 +99,7 @@
         .btn-legend:hover { filter: brightness(1.1); }
 
         /* =========================================
-           4. GRILLA Y CARTA
+           4. ESTRUCTURA DE LA CARTA (CONTENEDOR)
            ========================================= */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         
@@ -108,8 +108,74 @@
 
         .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; display: block; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); z-index: 1; }
         .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; will-change: transform; }
+        
+        /* FOTO DEL JUGADOR */
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
+        
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+
+        /* =================================================================
+           4.1. CONFIGURACIÓN ESTÉTICA DE LA CARTA (POSICIONES Y TAMAÑOS)
+           (Acá modificás dónde aparece cada texto y su tamaño)
+           ================================================================= */
+        
+        /* Valoración General (Número grande arriba izquierda) */
+        .rating { 
+            position: absolute; 
+            top: 13.5%; 
+            left: 6%; 
+            font-size: 18cqw; 
+            text-align: center; 
+            width: 25%; 
+            line-height: 0.8; 
+        }
+        
+        /* Posición (Texto debajo de la valoración) */
+        .position { 
+            position: absolute; 
+            top: 24%; 
+            left: 6%; 
+            font-size: 10cqw; 
+            text-align: center; 
+            width: 25%; 
+            line-height: 1; 
+        }
+        
+        /* Nombre del Jugador */
+        .name { 
+            position: absolute; 
+            top: 64.25%; 
+            left: 5%; 
+            width: 90%; 
+            text-align: center; 
+            font-size: 14.5cqw; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        
+        /* Contenedor de las Estadísticas (Ritmo, Tiro, Pase, etc.) */
+        .stats-container { 
+            display: flex; 
+            justify-content: space-between; 
+            position: absolute; 
+            top: 81%; 
+            left: 8%; 
+            width: 84.1%; 
+        }
+        
+        /* Cajas individuales de cada stat */
+        .stat-box { 
+            text-align: center; 
+            width: 16%; 
+        }
+        
+        /* Valor numérico de la stat */
+        .stat-val { 
+            font-size: 8.5cqw; 
+            display: block; 
+        }
+
+        /* ================================================================= */
         
         /* BRILLO (SHINE) */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
@@ -121,13 +187,6 @@
         /* Brillo forzado por JS (Animación al cambiar a Leyenda) */
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
-
-        .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
-        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
-        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
-        .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
-        .stat-box { text-align: center; width: 16%; }
-        .stat-val { font-size: 8.5cqw; display: block; }
 
         /* =========================================
            5. MÚSICA
@@ -245,7 +304,7 @@
 
 <script>
     // ====================================================================
-    //  ZONA DE CONFIGURACIÓN
+    //   ZONA DE CONFIGURACIÓN
     // ====================================================================
     
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
@@ -262,7 +321,14 @@
     const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    const COLORES = { 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21', 'legendario': '#392266' };
+    // CONFIGURACIÓN DE COLORES DE TEXTO POR TIPO DE CARTA
+    const COLORES = { 
+        'leyenda': '#644b14',    // Color específico para la carta Leyenda
+        'legendario': '#392266', 
+        'oro': '#624f21', 
+        'plata': '#434343', 
+        'bronce': '#5e3e21'
+    };
 
     let datosOriginales = []; 
     let datosFiltrados = [];  
@@ -399,7 +465,7 @@
                 ...base,
                 foto: base.fotoLeyenda,
                 fondo: LEYENDA_FONDO_URL,
-                color: COLORES['oro'], // Mantenemos texto dorado
+                color: COLORES['leyenda'], // Color específico para Leyenda
                 
                 // Multiplicador 1.3 con redondeo y tope
                 ata: Math.min(98, Math.round(base.ata * 1.3)),
@@ -452,7 +518,7 @@
     function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
     // =========================================
-    //  ARMADOR DE EQUIPOS 
+    //   ARMADOR DE EQUIPOS 
     // =========================================
     
     function abrirArmador() {
@@ -607,6 +673,3 @@
 
 </body>
 </html>
-
-
-
