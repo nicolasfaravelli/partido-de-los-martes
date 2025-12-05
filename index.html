@@ -174,9 +174,13 @@
         /* Brillo al pasar mouse */
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
 
-        /* Brillo forzado por JS (Animación al cambiar a Leyenda) */
+        /* ANIMACIÓN BRILLO (IDA - LEYENDA) */
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
+
+        /* ANIMACIÓN BRILLO (VUELTA - ACTUAL) */
+        @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
+        .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.7s ease-out forwards; }
 
         /* =========================================
            5. MÚSICA
@@ -310,7 +314,7 @@
     // ====================================================================
     const COLORES = { 
         'leyenda': '#644b14',    // Color Texto Leyenda
-        'legendario': '#392266', 
+        'legendario': '#372864', // CORREGIDO A #372864
         'oro': '#624f21', 
         'plata': '#434343', 
         'bronce': '#5e3e21'
@@ -554,12 +558,22 @@
         
         renderizarModal(jugadorParaMostrar);
         
-        // EFECTO DE TRANSICIÓN: DISPARAR BRILLO
+        // EFECTO DE TRANSICIÓN: DISPARAR BRILLO (IDA O VUELTA)
         const cardElement = document.getElementById('carta-para-descargar');
         if(cardElement) {
+            // Limpiamos ambas clases primero
             cardElement.classList.remove('trigger-shine'); 
-            void cardElement.offsetWidth; 
-            cardElement.classList.add('trigger-shine'); 
+            cardElement.classList.remove('trigger-shine-reverse'); 
+            
+            void cardElement.offsetWidth; // Force Reflow
+            
+            // Si vamos a Leyenda -> Brillo normal (Ida)
+            // Si volvemos a Actual -> Brillo invertido (Vuelta)
+            if (esModoLeyenda) {
+                cardElement.classList.add('trigger-shine'); 
+            } else {
+                cardElement.classList.add('trigger-shine-reverse');
+            }
         }
     }
 
