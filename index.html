@@ -314,7 +314,7 @@
     // ====================================================================
     const COLORES = { 
         'leyenda': '#644b14',    // Color Texto Leyenda
-        'legendario': '#372864', // CORREGIDO A #372864
+        'legendario': '#372864',
         'oro': '#624f21', 
         'plata': '#434343', 
         'bronce': '#5e3e21'
@@ -325,22 +325,20 @@
     // ====================================================================
     
     // Multiplicadores según el orden de sus stats (Del mejor al peor)
-    // 1º mejor stat se multiplica por 1.35, el 2º por 1.30, etc.
-    const MULTIPLICADORES_RANKING = [1.175, 1.15, 1.125, 1.10, 1.075, 1.05]; 
+    const MULTIPLICADORES_RANKING = [1.15, 1.125, 1.1, 1.075, 1.05, 1.025]; 
 
     // Bonus extra acumulativo para stats físicos (se aplica DESPUÉS del ranking)
     const BONUS_FISICO = { 
-        'res': 1.10, // Resistencia x 1.1 extra
-        'vel': 1.05  // Velocidad x 1.05 extra
+        'res': 1.075, // Resistencia extra
+        'vel': 1.05  // Velocidad extra
     };
 
-    const TOPE_MAXIMO = 97; // Ningún stat superará este valor
+    const TOPE_MAXIMO = 98; // Ningún stat superará este valor
 
     // ====================================================================
     //   2. LÓGICA DEL SISTEMA
     // ====================================================================
 
-    // Esperar a que cargue el DOM para evitar pantalla blanca si se inserta en <head>
     document.addEventListener("DOMContentLoaded", function() {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) {
@@ -802,5 +800,6 @@
 
 </body>
 </html>
+
 
 
