@@ -141,8 +141,8 @@
         /* Sección 1: Selección (Arriba) */
         .selection-area { background: #111; padding: 10px; border-radius: 6px; border: 1px solid #333; }
         
-        .selection-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .counter-text { font-family: var(--fuente-texto); font-weight: bold; color: #888; text-transform: uppercase; }
+        .selection-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; gap: 15px; }
+        .counter-text { font-family: var(--fuente-texto); font-weight: bold; color: #888; text-transform: uppercase; font-size: 1.1rem; }
         .counter-text.complete { color: var(--color-acento); }
 
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
@@ -162,8 +162,20 @@
         .guest-input-name:focus { outline: none; border-color: var(--color-acento); }
         .guest-input-rating { background: #111; border: 1px solid #444; color: var(--color-acento); width: 30px; text-align: center; border-radius: 3px; font-weight: bold; }
 
-        /* Botón Agregar Invitado */
-        .btn-add-guest { width: 100%; padding: 8px; background: #222; border: 1px dashed #444; color: #888; font-family: var(--fuente-titulo); cursor: pointer; margin-bottom: 10px; border-radius: 4px; transition: all 0.2s; }
+        /* Botón Agregar Invitado (CORREGIDO) */
+        .btn-add-guest { 
+            width: auto; /* Ancho automático */
+            padding: 8px 15px; 
+            background: #222; 
+            border: 1px dashed #444; 
+            color: #888; 
+            font-family: var(--fuente-titulo); 
+            font-size: 1.1rem; /* Letra más grande */
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: all 0.2s; 
+            white-space: nowrap;
+        }
         .btn-add-guest:hover { background: #2a2a2a; color: var(--color-acento); border-color: var(--color-acento); }
 
         /* Sección 2: Herramientas (Medio) */
@@ -212,7 +224,9 @@
         <input type="text" id="search-input" placeholder="Buscar jugador...">
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
+            <option value="nombre-desc">Nombre: Z - A</option>
             <option value="prom-desc">Valoración: Mayor a Menor</option>
+            <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
         <button class="btn btn-gold" onclick="abrirArmador()">
             ARMAR EQUIPOS
@@ -335,24 +349,46 @@
                     };
                 }).filter(i => i !== null);
                 
-                renderizarGrilla(datosOriginales);
+                aplicarFiltrosYOrden(); // Usar la función de filtrado inicial
             }
         });
     }
 
     // ====================================================================
-    //   VISUALIZACIÓN BÁSICA (GRILLA)
+    //   VISUALIZACIÓN BÁSICA (GRILLA) Y FILTROS (RESTAURADOS)
     // ====================================================================
     const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', () => {
-        const val = searchInput.value.toLowerCase();
-        const filtered = datosOriginales.filter(j => j.nombre.toLowerCase().includes(val));
-        renderizarGrilla(filtered);
-    });
+    const sortSelect = document.getElementById('sort-select');
+    
+    if(searchInput) searchInput.addEventListener('input', aplicarFiltrosYOrden);
+    if(sortSelect) sortSelect.addEventListener('change', aplicarFiltrosYOrden);
+
+    function aplicarFiltrosYOrden() {
+        const texto = searchInput.value.toLowerCase();
+        const val = sortSelect.value.split('-');
+        const criterio = val[0];
+        const orden = val[1];
+
+        // 1. Filtrar
+        let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(texto));
+
+        // 2. Ordenar
+        lista.sort((a,b) => {
+            if(criterio === 'nombre') {
+                return orden === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre);
+            }
+            if(criterio === 'prom') {
+                return orden === 'asc' ? a.prom - b.prom : b.prom - a.prom;
+            }
+        });
+        
+        renderizarGrilla(lista);
+    }
 
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
         container.innerHTML = '';
+        if(lista.length === 0) { container.innerHTML = '<p style="text-align:center;color:#aaa">No se encontraron jugadores.</p>'; return; }
         lista.forEach(j => {
             container.innerHTML += `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`;
         });
