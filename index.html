@@ -306,11 +306,13 @@
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
 
-    const NEW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+    // 1.1. URL MODIFICADA CON CACHE BUSTER (Date.now())
+    const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+    const NEW_CSV_URL = BASE_CSV_URL + "&uid=" + Date.now(); // Forzar URL única
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
     // ====================================================================
-    //   1.1. CONFIGURACIÓN DE COLORES
+    //   1.2. CONFIGURACIÓN DE COLORES
     // ====================================================================
     const COLORES = { 
         'leyenda': '#644b14', 
@@ -321,7 +323,7 @@
     };
 
     // ====================================================================
-    //   1.2. CONFIGURACIÓN MATEMÁTICA LEYENDA (EDITAR AQUÍ LOS VALORES)
+    //   1.3. CONFIGURACIÓN MATEMÁTICA LEYENDA (EDITAR AQUÍ LOS VALORES)
     // ====================================================================
     
     // Multiplicadores según el orden de sus stats (Del mejor al peor)
@@ -472,11 +474,10 @@
 
         modalContainer.innerHTML = `<div class="card" id="carta-para-descargar">${generarHTMLCarta(j, false)}</div>`;
         
-        let botonesHTML = `
-            <button class="btn-standard" onclick="cerrarModal()">CERRAR</button>
-            <button class="btn-standard btn-action" onclick="descargarCarta()">DESCARGAR</button>
-        `;
-
+        // 2. LÓGICA DE BOTONES REORGANIZADA
+        let botonesHTML = '';
+        
+        // BOTON LEYENDA (IZQUIERDA) - SOLO SI EXISTE LA FOTO
         if (jugadorActualEnModal.fotoLeyenda) {
             if (esModoLeyenda) {
                 botonesHTML += `<button class="btn-standard" onclick="toggleLeyenda()">ACTUAL</button>`;
@@ -484,6 +485,13 @@
                 botonesHTML += `<button class="btn-standard btn-legend" onclick="toggleLeyenda()">LEYENDA</button>`;
             }
         }
+
+        // BOTON DESCARGAR (CENTRO)
+        botonesHTML += `<button class="btn-standard btn-action" onclick="descargarCarta()">DESCARGAR</button>`;
+        
+        // BOTON CERRAR (DERECHA)
+        botonesHTML += `<button class="btn-standard" onclick="cerrarModal()">CERRAR</button>`;
+
         modalButtons.innerHTML = botonesHTML;
     }
 
@@ -800,9 +808,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
