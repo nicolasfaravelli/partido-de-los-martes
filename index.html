@@ -24,7 +24,6 @@
             --color-texto: #ffffff;
             --color-acento: #d4af37; /* Dorado */
             --color-gris-claro: #f0f0f0;
-            --color-whatsapp: #25D366; 
             
             --stat-legend: #a855f7;
             --stat-gold: #d4af37;
@@ -85,13 +84,8 @@
         .btn-gold { background: var(--color-acento); color: #000; border-color: var(--color-acento); font-weight: bold; }
         .btn-gold:hover { filter: brightness(1.1); }
 
-        .btn-dark { background: #333; color: #fff; border-color: #555; }
-        .btn-dark:hover { background: #444; border-color: #777; }
-
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
         .btn-ghost:hover { color: #fff; border-color: #fff; }
-
-        .btn-whatsapp { background: var(--color-whatsapp); color: #fff; border: none; }
 
         /* =========================================
            3. GRILLA DE JUGADORES (HOME)
@@ -118,8 +112,11 @@
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
+        
+        /* Animaciones Brillo */
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
+        
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.7s ease-out forwards; }
 
@@ -198,7 +195,7 @@
         .team-player-li:active { cursor: grabbing; transform: scale(0.98); }
         .team-player-li:hover { background: rgba(128,128,128,0.2); }
         
-        /* Footer del Modal */
+        /* Footer del Modal (Botones cambiados) */
         .modal-footer { margin-top: 15px; display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #333; padding-top: 15px; }
 
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
@@ -245,7 +242,7 @@
 
                 <div class="tools-area">
                     <button class="btn btn-gold btn-generate" onclick="generarAutomatico()" id="btn-generate" style="opacity: 0.5; pointer-events: none;">
-                        GENERAR (AUTO)
+                        GENERAR AUTOMÁTICO
                     </button>
                 </div>
 
@@ -267,9 +264,9 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
+                <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="flex:1"></div>
-                <button class="btn btn-whatsapp" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR IMAGEN</button>
+                <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
             </div>
         </div>
     </div>
@@ -293,14 +290,21 @@
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
 
+    // MATEMÁTICA LEYENDA (RESTAURADA)
+    const MULTIPLICADORES_RANKING = [1.125, 1.1, 1.075, 1.05, 1.025, 1]; 
+    const BONUS_FISICO = { 'res': 1.05, 'vel': 1.025 };
+    const TOPE_MAXIMO = 98;
+
     // ====================================================================
     //   ESTADO GLOBAL
     // ====================================================================
     let datosOriginales = [];
-    let invitados = []; // Lista de invitados temporales
+    let invitados = []; 
     let equipo1 = []; // IDs en equipo 1
     let equipo2 = []; // IDs en equipo 2
-    let draggingId = null; // ID siendo arrastrado
+    let draggingId = null;
+    let jugadorActualEnModal = null;
+    let esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", function() {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
@@ -323,9 +327,9 @@
                         id: index,
                         nombre: fila[0],
                         prom: parseInt(fila[8]) || 60,
-                        // Guardamos datos mínimos necesarios para visual
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
                         vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
+                        edad: parseInt(fila[1]) || 25,
                         pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13],
                         color: COLORES[fila[10] ? fila[10].trim().toLowerCase() : 'oro'] || '#624f21'
                     };
@@ -356,11 +360,11 @@
 
     function generarHTMLCarta(j, lazy) {
         const load = lazy ? 'loading="lazy"' : '';
-        const img = j.foto ? `<img src="${j.foto}" class="card-face" ${load} crossorigin="anonymous">` : '';
+        const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${load} crossorigin="anonymous">` : '';
         return `
             <div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${load} crossorigin="anonymous"></div>
             <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
-            ${img}
+            ${fotoHtml}
             <div class="info-layer">
                 <div class="rating" style="color:${j.color}">${j.prom}</div>
                 <div class="position" style="color:${j.color}">${j.pos}</div>
@@ -377,23 +381,84 @@
     }
 
     // ====================================================================
-    //   MODAL CARTA INDIVIDUAL
+    //   MODAL CARTA Y LÓGICA LEYENDA (REPARADA)
     // ====================================================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === id);
+        jugadorActualEnModal = j;
+        esModoLeyenda = false;
+        
         const modal = document.getElementById('modal');
+        modal.style.display = 'flex';
+        renderizarModal(j);
+    }
+
+    function renderizarModal(j) {
         const cont = document.getElementById('modal-card-container');
         const btns = document.getElementById('modal-buttons');
         
         cont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
         
         let htmlBtns = '';
-        if(j.fotoLeyenda) htmlBtns += `<button class="btn btn-gold" onclick="alert('Funcionalidad Leyenda Simplificada')">LEYENDA</button>`;
+        // Botón Leyenda
+        if (jugadorActualEnModal.fotoLeyenda) {
+            const txt = esModoLeyenda ? "ACTUAL" : "LEYENDA";
+            const cls = esModoLeyenda ? "btn-ghost" : "btn-gold";
+            htmlBtns += `<button class="btn ${cls}" onclick="toggleLeyenda()">${txt}</button>`;
+        }
+        
         htmlBtns += `<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>`;
         htmlBtns += `<button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
         
         btns.innerHTML = htmlBtns;
-        modal.style.display = 'flex';
+    }
+
+    function toggleLeyenda() {
+        esModoLeyenda = !esModoLeyenda;
+        let mostrar;
+        if(esModoLeyenda) mostrar = calcularObjetoLeyenda(jugadorActualEnModal);
+        else mostrar = jugadorActualEnModal;
+        
+        renderizarModal(mostrar);
+
+        // Efecto visual
+        const card = document.getElementById('carta-descarga');
+        if(card) {
+            card.classList.remove('trigger-shine', 'trigger-shine-reverse');
+            void card.offsetWidth;
+            card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
+        }
+    }
+
+    function calcularObjetoLeyenda(base) {
+        let stats = [
+            { id: 'ata', valor: base.ata }, { id: 'def', valor: base.def },
+            { id: 'tec', valor: base.tec }, { id: 'vel', valor: base.vel },
+            { id: 'res', valor: base.res }, { id: 'arq', valor: base.arq }
+        ];
+        stats.sort((a, b) => b.valor - a.valor);
+        
+        let nuevos = {};
+        stats.forEach((obj, idx) => {
+            let mult = MULTIPLICADORES_RANKING[idx] || 1.05;
+            let val = obj.valor * mult;
+            if (BONUS_FISICO[obj.id]) val *= BONUS_FISICO[obj.id];
+            nuevos[obj.id] = Math.min(TOPE_MAXIMO, Math.round(val));
+        });
+
+        let suma = 0; 
+        for(let k in nuevos) suma += nuevos[k];
+        let prom = Math.min(99, Math.round(suma/6));
+
+        return {
+            ...base,
+            foto: base.fotoLeyenda,
+            fondo: LEYENDA_FONDO_URL,
+            color: COLORES['leyenda'],
+            ata: nuevos.ata, def: nuevos.def, tec: nuevos.tec,
+            vel: nuevos.vel, res: nuevos.res, arq: nuevos.arq,
+            prom: prom
+        };
     }
 
     function descargarCarta() {
@@ -407,12 +472,12 @@
     }
 
     // ====================================================================
-    //   ARMADOR DE EQUIPOS (LÓGICA NUEVA)
+    //   ARMADOR DE EQUIPOS (LÓGICA CORREGIDA)
     // ====================================================================
     
     function abrirArmador() {
         document.getElementById('team-modal').style.display = 'flex';
-        invitados = []; // Reset invitados al abrir? O mantener? Mejor reset.
+        invitados = []; 
         renderizarListaSeleccion();
         limpiarEquipos();
     }
@@ -422,20 +487,30 @@
     }
 
     function agregarInvitado() {
-        const idInv = 9000 + invitados.length; // ID alto para no chocar
-        invitados.push({
+        const num = invitados.length + 1;
+        const idInv = 9000 + num; 
+        
+        const nuevoInvitado = {
             id: idInv,
-            nombre: "Invitado",
-            prom: 70, // Default solicitado
+            nombre: `Invitado ${num}`, // Numeración automática
+            prom: 70, // Default 70
             esInvitado: true,
-            seleccionado: true // Nace seleccionado
-        });
+            // Simulación stats para el algoritmo
+            ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25
+        };
+
+        invitados.push(nuevoInvitado);
+        
+        // Asignación inmediata al agregarlo (Auto-Select)
+        asignarJugadorAutomaticamente(idInv);
+        
         renderizarListaSeleccion();
         actualizarContadorEquipos();
     }
 
     function borrarInvitado(idInv) {
         invitados = invitados.filter(i => i.id !== idInv);
+        removerJugadorDeEquipos(idInv);
         renderizarListaSeleccion();
         actualizarContadorEquipos();
     }
@@ -444,21 +519,23 @@
         const inv = invitados.find(i => i.id === idInv);
         if(inv) {
             if(campo === 'nombre') inv.nombre = valor;
-            if(campo === 'prom') inv.prom = parseInt(valor) || 60;
-            // Si ya está en un equipo, actualizar visualmente
+            if(campo === 'prom') {
+                const v = parseInt(valor) || 60;
+                inv.prom = v;
+                // Actualizar stats espejo para el algoritmo
+                inv.ata=v; inv.def=v; inv.tec=v; inv.vel=v; inv.res=v;
+            }
             actualizarTablerosEquipos(); 
         }
     }
 
-    // Renderiza la lista combinada (Originales + Invitados)
     function renderizarListaSeleccion() {
         const contenedor = document.getElementById('players-checklist');
         contenedor.innerHTML = '';
 
-        // 1. Renderizar Invitados primero
         invitados.forEach(inv => {
             const div = document.createElement('div');
-            div.className = 'player-row guest-item selected'; // Siempre selected al crear
+            div.className = 'player-row guest-item selected'; // Siempre selected
             div.innerHTML = `
                 <input type="checkbox" class="player-check" checked value="${inv.id}" onchange="toggleSeleccion(${inv.id})">
                 <input type="text" class="guest-input-name" value="${inv.nombre}" oninput="editarInvitado(${inv.id}, 'nombre', this.value)" onclick="event.stopPropagation()">
@@ -468,11 +545,9 @@
             contenedor.appendChild(div);
         });
 
-        // 2. Renderizar Jugadores Originales (Ordenados alfabeticamente)
         const sorted = [...datosOriginales].sort((a,b) => a.nombre.localeCompare(b.nombre));
         
         sorted.forEach(j => {
-            // Verificar si ya está seleccionado (quizás venimos de una edición)
             const isSelected = isPlayerSelected(j.id);
             const rowClass = isSelected ? 'player-row selected' : 'player-row';
             
@@ -480,7 +555,6 @@
             div.className = rowClass;
             div.id = `row-${j.id}`;
             div.onclick = (e) => { 
-                // Click en la fila togglea el checkbox, salvo que toquemos el checkbox directo
                 if(e.target.type !== 'checkbox') {
                     const cb = div.querySelector('.player-check');
                     if(!cb.disabled) {
@@ -502,38 +576,27 @@
     }
 
     function isPlayerSelected(id) {
-        // Un jugador está seleccionado si está en equipo1, equipo2 o en el pool temporal
-        // Para simplificar, usamos el DOM state de los equipos o un array global de seleccionados.
-        // Usemos un array temporal derivado del DOM checkboxes? No, mejor consultar el estado actual.
-        // Simplemente verifiquemos si el checkbox estaba checkeado antes del re-render?
-        // En este diseño simple, "toggleSeleccion" maneja la lógica.
-        // Al renderizar de cero, asumimos desmarcado salvo los invitados.
-        // Corrección: Necesitamos persistir la selección si se hace scroll o búsqueda.
-        // Por simplicidad en este ejemplo de un archivo, confiaremos en el estado de los equipos.
         return equipo1.includes(id) || equipo2.includes(id); 
     }
 
     function toggleSeleccion(id) {
         const checkbox = document.querySelector(`.player-check[value="${id}"]`);
-        const isChecked = checkbox.checked;
-        const row = checkbox.closest('.player-row');
+        const isChecked = checkbox ? checkbox.checked : true; // Fallback for auto-add
+        const row = document.getElementById(`row-${id}`);
 
         if (isChecked) {
-            row.classList.add('selected');
-            // Al seleccionar, lo mandamos al "Limbo" o lo asignamos a un equipo por defecto?
-            // El usuario pidió "manual por defecto".
-            // Estrategia: Asignar alternativamente para llenar 5 vs 5 visualmente y que el user arregle.
+            if(row) row.classList.add('selected');
             asignarJugadorAutomaticamente(id);
         } else {
-            row.classList.remove('selected');
+            if(row) row.classList.remove('selected');
             removerJugadorDeEquipos(id);
         }
-        
         actualizarContadorEquipos();
     }
 
     function asignarJugadorAutomaticamente(id) {
-        // Lógica simple: Llenar equipo 1 hasta 5, luego equipo 2.
+        if(isPlayerSelected(id)) return;
+        // Llenar huecos visuales 5 vs 5
         if (equipo1.length < 5) equipo1.push(id);
         else equipo2.push(id);
         actualizarTablerosEquipos();
@@ -559,7 +622,6 @@
             btnGen.style.pointerEvents = 'auto';
             btnShare.style.display = 'block';
             
-            // Deshabilitar no seleccionados
             document.querySelectorAll('.player-check:not(:checked)').forEach(cb => {
                 cb.disabled = true;
                 cb.closest('.player-row').classList.add('disabled');
@@ -568,9 +630,9 @@
             txt.classList.remove('complete');
             btnGen.style.opacity = '0.5';
             btnGen.style.pointerEvents = 'none';
+            btnGen.innerText = "GENERAR AUTOMÁTICO"; // Reset texto
             btnShare.style.display = 'none';
             
-            // Habilitar todos
             document.querySelectorAll('.player-check').forEach(cb => {
                 cb.disabled = false;
                 cb.closest('.player-row').classList.remove('disabled');
@@ -589,7 +651,6 @@
     // ====================================================================
 
     function getPlayerData(id) {
-        // Buscar en originales o invitados
         if (id >= 9000) return invitados.find(i => i.id === id);
         return datosOriginales.find(d => d.id === id);
     }
@@ -604,7 +665,6 @@
         ul.innerHTML = '';
         let suma = 0;
         
-        // Ordenar alfabéticamente para prolijidad
         const jugadores = ids.map(id => getPlayerData(id)).filter(x=>x);
         jugadores.sort((a,b) => a.nombre.localeCompare(b.nombre));
 
@@ -615,9 +675,7 @@
             li.draggable = true;
             li.innerHTML = `<span>${p.nombre}</span> <span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
             
-            // Eventos Drag
             li.ondragstart = (e) => dragStart(e, p.id);
-            // Evento Click (Tap to move)
             li.onclick = () => clickToMove(p.id);
             
             ul.appendChild(li);
@@ -634,28 +692,24 @@
         return STAT_COLORS.bronze;
     }
 
-    // --- LÓGICA DRAG & DROP ---
     function dragStart(e, id) {
         draggingId = id;
         e.dataTransfer.effectAllowed = "move";
-        // Estilo fantasma transparente
         e.target.style.opacity = '0.5';
     }
 
     function permitirDrop(e) {
-        e.preventDefault(); // Necesario para permitir drop
+        e.preventDefault(); 
         const box = e.currentTarget;
         box.classList.add('drag-over');
     }
 
-    // Limpiar estilo drag-over cuando sale (opcional para polish, pero ondrop limpia)
     function dropJugador(e, targetTeam) {
         e.preventDefault();
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('drag-over'));
         
         if (draggingId === null) return;
 
-        // Quitar de donde esté y poner en target
         equipo1 = equipo1.filter(id => id !== draggingId);
         equipo2 = equipo2.filter(id => id !== draggingId);
 
@@ -666,9 +720,7 @@
         actualizarTablerosEquipos();
     }
 
-    // --- LÓGICA CLICK TO MOVE (Alternativa a Drag) ---
     function clickToMove(id) {
-        // Si está en el 1, va al 2. Si está en el 2, va al 1.
         if (equipo1.includes(id)) {
             equipo1 = equipo1.filter(x => x !== id);
             equipo2.push(id);
@@ -680,37 +732,54 @@
     }
 
     // ====================================================================
-    //   GENERACIÓN AUTOMÁTICA
+    //   GENERACIÓN AUTOMÁTICA (ALGORITMO ORIGINAL RESTAURADO)
     // ====================================================================
+    function getImpactScore(p) { return (p.prom * 6) + (p.res * 3) + (p.tec * 2) - (p.edad * 0.5); }
+
     function generarAutomatico() {
-        // Juntar todos los seleccionados
-        const pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
+        const btn = document.getElementById('btn-generate');
+        btn.innerText = "REGENERAR AUTOMÁTICO";
+
+        // Obtener pool actual de seleccionados
+        let pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
+        if (pool.length !== 10) return;
+
+        let teamA = []; 
+        let teamB = []; 
+        let scoreA = 0; 
+        let scoreB = 0;
+
+        // Ordenar por arquero (solo si hay dato ARQ significativo, sino usa prom)
+        // Como los invitados tienen ARQ 50 por defecto, no romperán la lógica si no son arqueros
+        pool.sort((a, b) => b.arq - a.arq);
         
-        if (pool.length !== 10) return alert("Selecciona exactamente 10 jugadores.");
+        let portero1 = pool[0];
+        let portero2 = pool[1];
+        let resto = pool.slice(2);
 
-        // Lógica de balanceo simple (Snake draft basado en promedio)
-        pool.sort((a,b) => b.prom - a.prom); // Ordenar por valoración
+        teamA.push(portero1.id); scoreA += getImpactScore(portero1);
+        teamB.push(portero2.id); scoreB += getImpactScore(portero2);
 
-        const t1 = [];
-        const t2 = [];
-        let s1 = 0;
-        let s2 = 0;
-
-        // Distribución: 1-2-2-1 para arqueros/mejores y luego balanceo por suma
-        // Simplificado: Iterar y asignar al que tenga menos suma total
-        pool.forEach(p => {
-            if (s1 <= s2) {
-                t1.push(p.id);
-                s1 += p.prom;
-            } else {
-                t2.push(p.id);
-                s2 += p.prom;
-            }
+        // Algoritmo Random + Balance (Original)
+        resto.sort((a, b) => {
+            let impactA = getImpactScore(a) + (Math.random() * 4 - 2); 
+            let impactB = getImpactScore(b) + (Math.random() * 4 - 2);
+            return impactB - impactA;
         });
 
-        // Actualizar estados globales
-        equipo1 = t1;
-        equipo2 = t2;
+        resto.forEach(p => {
+            let impact = getImpactScore(p);
+            if (scoreA <= scoreB) { teamA.push(p.id); scoreA += impact; } 
+            else { teamB.push(p.id); scoreB += impact; }
+        });
+
+        // Asignación aleatoria de bando A/B a equipo 1/2
+        if (Math.random() > 0.5) {
+            equipo1 = teamA; equipo2 = teamB;
+        } else {
+            equipo1 = teamB; equipo2 = teamA;
+        }
+
         actualizarTablerosEquipos();
     }
 
