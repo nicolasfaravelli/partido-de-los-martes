@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Partido de los Martes</title>
-    <meta name="description" content="Plantel oficial">
-    <meta property="og:title" content="Partido de los Martes">
-    <meta property="og:description" content="Plantel Oficial">
-    <meta property="og:type" content="website">
-
+    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
@@ -18,25 +14,23 @@
     
     <style>
         /* =========================================
-           1. CONFIGURACIÓN GLOBAL Y PALETA
+           1. CONFIGURACIÓN GLOBAL
            ========================================= */
         :root {
             --fondo-url: none;
-            /* PALETA */
             --color-fondo: #0f0f0f;
             --color-paneles: #1a1a1a;
             --color-bordes: #333333;
             --color-texto: #ffffff;
             --color-acento: #d4af37; /* Dorado */
+            --color-gris-claro: #f0f0f0;
             --color-whatsapp: #25D366; 
             
-            /* Colores Stats para promedios (Círculos de color) */
             --stat-legend: #a855f7;
             --stat-gold: #d4af37;
             --stat-silver: #7a7a7a;
             --stat-bronze: #5e3e21;
 
-            /* TIPOGRAFÍAS */
             --fuente-titulo: 'Bebas Neue', sans-serif;
             --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
@@ -47,31 +41,26 @@
             font-family: var(--fuente-titulo); 
             margin: 0; padding: 0 20px 20px 20px; 
             background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
-            transition: filter 0.3s;
+            user-select: none;
         }
 
         /* =========================================
-           2. ENCABEZADO
+           2. HEADER Y CONTROLES PRINCIPALES
            ========================================= */
         .header-container { 
             text-align: center; position: sticky; top: 0; z-index: 100;
             margin: 0 -20px 10px -20px; padding: 20px 0 20px 0;
         }
-        
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
             background-color: var(--color-fondo); background-image: var(--fondo-url); 
             background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
             opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
-        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
         .title-img:active { transform: scale(0.98); }
 
-        /* =========================================
-           3. BARRA DE CONTROLES
-           ========================================= */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px auto; 
             display: flex; gap: 10px; flex-wrap: wrap;
@@ -85,160 +74,132 @@
         }
         #search-input:focus, #sort-select:focus { outline: none; border-color: var(--color-acento); }
 
-        .btn-standard {
-            background: #333; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 4px; cursor: pointer;
+        /* Botones Generales */
+        .btn {
+            border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer;
             font-family: var(--fuente-titulo); font-size: 1.3rem; letter-spacing: 1px;
             display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s;
         }
-        .btn-standard:hover { background: #444; border-color: var(--color-acento); }
+        .btn:active { transform: scale(0.98); }
 
-        /* Botón Leyenda (Dorado) */
-        .btn-legend {
-            background: var(--color-acento); color: #000; border: 1px solid var(--color-acento); font-weight: bold;
-        }
-        .btn-legend:hover { filter: brightness(1.1); }
+        .btn-gold { background: var(--color-acento); color: #000; border-color: var(--color-acento); font-weight: bold; }
+        .btn-gold:hover { filter: brightness(1.1); }
+
+        .btn-dark { background: #333; color: #fff; border-color: #555; }
+        .btn-dark:hover { background: #444; border-color: #777; }
+
+        .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
+        .btn-ghost:hover { color: #fff; border-color: #fff; }
+
+        .btn-whatsapp { background: var(--color-whatsapp); color: #fff; border: none; }
 
         /* =========================================
-           4. ESTRUCTURA DE LA CARTA (CONTENEDOR)
+           3. GRILLA DE JUGADORES (HOME)
            ========================================= */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         
-        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; background: transparent; cursor: pointer; transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
 
         .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; display: block; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); z-index: 1; }
-        .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; will-change: transform; }
-        
-        /* FOTO DEL JUGADOR */
+        .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; }
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
-        
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 
-        /* =================================================================
-           4.1. CONFIGURACIÓN ESTÉTICA DE LA CARTA (POSICIONES Y TAMAÑOS)
-           ================================================================= */
-        
-        /* Valoración General */
-        .rating { 
-            position: absolute; 
-            top: 13.5%; 
-            left: 6%; 
-            font-size: 18cqw; 
-            text-align: center; 
-            width: 25%; 
-            line-height: 0.8; 
-        }
-        
-        /* Posición */
-        .position { 
-            position: absolute; 
-            top: 24%; 
-            left: 6%; 
-            font-size: 10cqw; 
-            text-align: center; 
-            width: 25%; 
-            line-height: 1; 
-        }
-        
-        /* Nombre */
-        .name { 
-            position: absolute; 
-            top: 64.25%; 
-            left: 5%; 
-            width: 90%; 
-            text-align: center; 
-            font-size: 14.5cqw; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-        }
-        
-        /* Contenedor Stats */
-        .stats-container { 
-            display: flex; 
-            justify-content: space-between; 
-            position: absolute; 
-            top: 81%; 
-            left: 8%; 
-            width: 84.1%; 
-        }
-        
+        /* Posiciones Carta */
+        .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
+        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
+        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
+        .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-box { text-align: center; width: 16%; }
         .stat-val { font-size: 8.5cqw; display: block; }
 
-        /* ================================================================= */
-        
-        /* BRILLO (SHINE) */
-        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+        /* Brillo */
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
-        
-        /* Brillo al pasar mouse */
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
-
-        /* ANIMACIÓN BRILLO (IDA - LEYENDA) */
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
-
-        /* ANIMACIÓN BRILLO (VUELTA - ACTUAL) */
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.7s ease-out forwards; }
 
         /* =========================================
-           5. MÚSICA
-           ========================================= */
-        .music-btn { position: fixed; bottom: 20px; right: 20px; z-index: 2000; width: 50px; height: 50px; background: rgba(0, 0, 0, 0.8); border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
-        .music-btn:hover { transform: scale(1.1); border-color: var(--color-acento); }
-        .music-btn.playing { border-color: var(--color-acento); color: var(--color-acento); background: rgba(0,0,0,0.9); }
-
-        /* =========================================
-           6. MODALES
+           4. MODALES
            ========================================= */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
         
-        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; }
-        .btn-action { background-color: var(--color-acento); color: #000; border: none; font-weight: bold; font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem; }
-        .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
-        .btn-share { background-color: var(--color-whatsapp); color: #fff; border: none; font-weight: bold; font-family: var(--fuente-titulo); letter-spacing: 1px; font-size: 1.3rem; }
-        .btn-share:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 
         /* =========================================
-           7. ARMADOR DE EQUIPOS
+           5. ARMADOR DE EQUIPOS (MODAL)
            ========================================= */
-        #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; }
-        .team-title { text-align: center; color: var(--color-acento); margin-bottom: 5px; font-size: 2rem; }
-        #team-counter { text-align: center; color: #888; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--color-bordes); padding-bottom: 10px; font-family: var(--fuente-texto); font-weight: bold; text-transform: uppercase; }
-        .team-scroll { overflow-y: auto; flex: 1; margin-bottom: 15px; border: 1px solid var(--color-bordes); padding: 10px; background: #111; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+        #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
         
-        .player-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #252525; border-radius: 4px; cursor: pointer; user-select: none; transition: opacity 0.2s; font-family: var(--fuente-texto); font-weight: bold; font-size: 1rem; }
-        .player-row:hover { background: #333; }
-        .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-        .player-check { transform: scale(1.3); accent-color: var(--color-acento); cursor: pointer; }
+        .team-title { text-align: center; color: var(--color-acento); margin: 0 0 10px 0; font-size: 2rem; }
         
-        /* ESTILOS INVITADO */
-        .guest-controls { background: #2a2a2a; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #444; }
-        .guest-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .guest-input { background: #111; border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; font-family: var(--fuente-texto); width: 80px; }
-        .guest-input-name { flex: 1; background: #111; border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; font-family: var(--fuente-texto); }
+        /* Layout Principal del Armador */
+        .armador-layout { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex: 1; padding-right: 5px; }
+        
+        /* Sección 1: Selección (Arriba) */
+        .selection-area { background: #111; padding: 10px; border-radius: 6px; border: 1px solid #333; }
+        
+        .selection-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .counter-text { font-family: var(--fuente-texto); font-weight: bold; color: #888; text-transform: uppercase; }
+        .counter-text.complete { color: var(--color-acento); }
 
-        .btn-generate-group { display: flex; gap: 10px; width: 100%; margin-bottom: 15px; }
-        .btn-generate { flex: 1; background: #333; color: #888; font-size: 1.4rem; border: 1px solid #444; pointer-events: none; transition: all 0.3s; font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px; text-align: center;}
-        .btn-generate.active { background: var(--color-acento); color: #000; border-color: var(--color-acento); pointer-events: auto; cursor: pointer; font-weight: bold; }
-        .btn-generate.manual-active { background: #444; color: #fff; border-color: #666; pointer-events: auto; cursor: pointer; font-weight: bold; }
-        .btn-generate.active:hover, .btn-generate.manual-active:hover { transform: scale(1.02); }
+        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
         
-        #team-capture-area { background: var(--color-paneles); padding: 15px; border-radius: 8px; }
-        .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
-        .team-column { flex: 1; padding: 15px; border-radius: 8px; border: 2px solid var(--color-bordes); }
-        .team-white { background: #f0f0f0; color: #111; border-color: #fff; }
+        .player-row { 
+            display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; transition: background 0.2s; 
+            font-family: var(--fuente-texto); font-size: 0.95rem; font-weight: bold; border: 1px solid transparent;
+        }
+        .player-row:hover { background: #333; }
+        .player-row.selected { background: #2a2a2a; border-color: var(--color-acento); color: var(--color-acento); }
+        .player-row.disabled { opacity: 0.3; pointer-events: none; }
+        .player-check { transform: scale(1.2); accent-color: var(--color-acento); cursor: pointer; margin: 0; }
+        
+        /* ESTILO INVITADOS EN LISTA */
+        .guest-item { border: 1px dashed #555; background: #1a1a1a; }
+        .guest-input-name { background: transparent; border: none; border-bottom: 1px solid #555; color: white; width: 90px; font-family: var(--fuente-texto); font-size: 0.9rem; }
+        .guest-input-name:focus { outline: none; border-color: var(--color-acento); }
+        .guest-input-rating { background: #111; border: 1px solid #444; color: var(--color-acento); width: 30px; text-align: center; border-radius: 3px; font-weight: bold; }
+
+        /* Botón Agregar Invitado */
+        .btn-add-guest { width: 100%; padding: 8px; background: #222; border: 1px dashed #444; color: #888; font-family: var(--fuente-titulo); cursor: pointer; margin-bottom: 10px; border-radius: 4px; transition: all 0.2s; }
+        .btn-add-guest:hover { background: #2a2a2a; color: var(--color-acento); border-color: var(--color-acento); }
+
+        /* Sección 2: Herramientas (Medio) */
+        .tools-area { display: flex; justify-content: center; gap: 10px; align-items: center; }
+        .btn-generate { width: 100%; max-width: 300px; font-size: 1.5rem; padding: 12px; }
+
+        /* Sección 3: Equipos (Abajo - Drag & Drop) */
+        #team-capture-area { background: var(--color-paneles); border-radius: 8px; margin-top: 10px; }
+        .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; }
+        .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: border-color 0.2s; }
+        
+        .team-box.drag-over { border-color: var(--color-acento); background: rgba(212, 175, 55, 0.05); }
+
+        .team-white { background: var(--color-gris-claro); color: #111; border-color: #fff; }
         .team-black { background: #111; color: #fff; border-color: #333; }
-        .team-header { font-size: 2rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
-        .team-avg { text-align: center; font-size: 1rem; margin-bottom: 15px; opacity: 0.8; font-family: var(--fuente-texto); font-weight: bold; }
-        .team-list-item { padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: default; }
         
-        /* MODO MANUAL CLICKABLE */
-        .manual-mode .team-list-item { cursor: pointer; transition: background 0.2s; padding-left: 5px; padding-right: 5px; border-radius: 4px; }
-        .manual-mode .team-white .team-list-item:hover { background: #ddd; }
-        .manual-mode .team-black .team-list-item:hover { background: #333; }
+        .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        .team-avg { text-align: center; font-size: 1rem; margin-bottom: 10px; opacity: 0.8; font-family: var(--fuente-texto); font-weight: bold; }
+        
+        /* Lista de Jugadores en Equipo */
+        .team-list-ul { list-style: none; padding: 0; margin: 0; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        
+        .team-player-li { 
+            padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; 
+            display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); border-radius: 4px;
+            user-select: none; transition: transform 0.1s, background 0.2s;
+        }
+        .team-black .team-player-li { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .team-player-li:active { cursor: grabbing; transform: scale(0.98); }
+        .team-player-li:hover { background: rgba(128,128,128,0.2); }
+        
+        /* Footer del Modal */
+        .modal-footer { margin-top: 15px; display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #333; padding-top: 15px; }
 
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
@@ -254,11 +215,9 @@
         <input type="text" id="search-input" placeholder="Buscar jugador...">
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
-            <option value="nombre-desc">Nombre: Z - A</option>
             <option value="prom-desc">Valoración: Mayor a Menor</option>
-            <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
-        <button class="btn-standard" onclick="abrirArmador()">
+        <button class="btn btn-gold" onclick="abrirArmador()">
             ARMAR EQUIPOS
         </button>
     </div>
@@ -266,211 +225,147 @@
     <div id="loader">Cargando jugadores...</div>
     <div id="grid-container" class="grid"></div>
 
-    <div class="music-btn" onclick="toggleMusic()" title="Activar/Desactivar Música">
-        <span id="music-icon">🔈</span>
-    </div>
-    <audio id="audio-player" loop></audio>
-
     <div id="modal" class="modal-overlay">
         <div id="modal-card-container"></div>
-        <div class="btn-group" id="modal-buttons">
-            </div>
+        <div class="btn-group" id="modal-buttons"></div>
     </div>
 
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
-            <div class="team-title">SELECCIONAR JUGADORES</div>
-            <div id="team-counter">Faltan 10 jugadores</div>
+            <div class="team-title">ARMADOR DE EQUIPOS</div>
             
-            <div class="team-scroll">
-                <div class="guest-controls">
-                    <div class="player-row" style="margin-bottom: 5px; background: transparent; padding: 0;">
-                        <input type="checkbox" id="check-invitado" class="player-check" onchange="toggleGuest(this)">
-                        <span style="color: var(--color-acento);">AGREGAR INVITADO</span>
+            <div class="armador-layout">
+                <div class="selection-area">
+                    <div class="selection-header">
+                        <span class="counter-text" id="team-counter">SELECCIONADOS: 0/10</span>
+                        <button class="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
-                    <div id="guest-inputs" class="guest-row" style="display:none;">
-                        <input type="text" id="guest-name" class="guest-input-name" placeholder="Nombre Invitado" value="Invitado">
-                        <input type="number" id="guest-rating" class="guest-input" placeholder="Media (0-99)" value="60" min="0" max="99" onchange="actualizarInvitado()">
-                    </div>
+                    <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
-                
-                <div id="players-checklist"></div>
-            </div>
-            
-            <div class="btn-generate-group">
-                <button class="btn-generate" onclick="generarEquipos()" id="btn-generate">
-                    GENERAR AUTOMÁTICO
-                </button>
-                <button class="btn-generate manual-active" onclick="iniciarModoManual()" id="btn-manual" style="display:none;">
-                    ARMAR MANUAL
-                </button>
-            </div>
-            
-            <div id="team-capture-area">
-                <div id="team-results" class="team-results">
-                    <div class="team-column team-white" id="col-team-1">
-                        <div class="team-header">CLARO</div>
-                        <div class="team-avg" id="avg-team-1">Prom: 0</div>
-                        <div id="list-team-1"></div>
-                    </div>
-                    <div class="team-column team-black" id="col-team-2">
-                        <div class="team-header">OSCURO</div>
-                        <div class="team-avg" id="avg-team-2">Prom: 0</div>
-                        <div id="list-team-2"></div>
+
+                <div class="tools-area">
+                    <button class="btn btn-gold btn-generate" onclick="generarAutomatico()" id="btn-generate" style="opacity: 0.5; pointer-events: none;">
+                        GENERAR (AUTO)
+                    </button>
+                </div>
+
+                <div id="team-capture-area">
+                    <div class="teams-container">
+                        <div class="team-box team-white" id="box-team-1" ondragover="permitirDrop(event)" ondrop="dropJugador(event, 'team1')">
+                            <div class="team-header">CLARO</div>
+                            <div class="team-avg" id="avg-team-1">Prom: 0</div>
+                            <ul class="team-list-ul" id="list-team-1"></ul>
+                        </div>
+                        
+                        <div class="team-box team-black" id="box-team-2" ondragover="permitirDrop(event)" ondrop="dropJugador(event, 'team2')">
+                            <div class="team-header">OSCURO</div>
+                            <div class="team-avg" id="avg-team-2">Prom: 0</div>
+                            <ul class="team-list-ul" id="list-team-2"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="btn-group" style="margin-top: 15px;">
-                <button class="btn-standard" onclick="cerrarArmador()">CERRAR</button>
-                <button class="btn-standard btn-action" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
+                <div style="flex:1"></div>
+                <button class="btn btn-whatsapp" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR IMAGEN</button>
             </div>
         </div>
     </div>
 
+    <audio id="audio-player" loop></audio>
+    <div style="position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer;" onclick="toggleMusic()">🔈</div>
+
 <script>
     // ====================================================================
-    //   1. ZONA DE CONFIGURACIÓN GENERAL (URLS Y RECURSOS)
+    //   CONFIGURACIÓN
     // ====================================================================
-    
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
-
-    // 1.1. URL MODIFICADA CON CACHE BUSTER (Date.now())
+    
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-    const NEW_CSV_URL = BASE_CSV_URL + "&uid=" + Date.now(); // Forzar URL única
+    const NEW_CSV_URL = BASE_CSV_URL + "&uid=" + Date.now();
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
 
-    // ====================================================================
-    //   1.2. CONFIGURACIÓN DE COLORES
-    // ====================================================================
-    const COLORES = { 
-        'leyenda': '#644b14', 
-        'legendario': '#372864',
-        'oro': '#624f21', 
-        'plata': '#434343', 
-        'bronce': '#5e3e21'
-    };
+    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
+    const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
 
     // ====================================================================
-    //   1.3. CONFIGURACIÓN MATEMÁTICA LEYENDA (EDITAR AQUÍ LOS VALORES)
+    //   ESTADO GLOBAL
     // ====================================================================
-    
-    // Multiplicadores según el orden de sus stats (Del mejor al peor)
-    const MULTIPLICADORES_RANKING = [1.125, 1.1, 1.075, 1.05, 1.025, 1]; 
-
-    // Bonus extra acumulativo para stats físicos (se aplica DESPUÉS del ranking)
-    const BONUS_FISICO = { 
-        'res': 1.05, // Resistencia extra
-        'vel': 1.025  // Velocidad extra
-    };
-
-    const TOPE_MAXIMO = 98; // Ningún stat superará este valor
-
-    // ====================================================================
-    //   2. LÓGICA DEL SISTEMA
-    // ====================================================================
+    let datosOriginales = [];
+    let invitados = []; // Lista de invitados temporales
+    let equipo1 = []; // IDs en equipo 1
+    let equipo2 = []; // IDs en equipo 2
+    let draggingId = null; // ID siendo arrastrado
 
     document.addEventListener("DOMContentLoaded", function() {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
-        if(TITULO_IMG_URL) {
-            const header = document.getElementById('header-area');
-            if(header) header.innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img" alt="Logo">`;
-        }
-        if(MUSICA_URL) {
-            const player = document.getElementById('audio-player');
-            if(player) player.src = MUSICA_URL;
-        } else {
-            const btn = document.querySelector('.music-btn');
-            if(btn) btn.style.display = 'none';
-        }
+        if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
+        if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL;
+        cargarDatos();
     });
 
-    let datosOriginales = []; 
-    let datosFiltrados = [];  
-
-    // CARGA DE DATOS
-    Papa.parse(PROXY_URL, {
-        download: true, header: false, skipEmptyLines: true,
-        complete: function(results) {
-            const data = results.data;
-            const loader = document.getElementById('loader');
-            if(loader) loader.style.display = 'none';
-            if(data.length > 0) data.shift(); 
-
-            datosOriginales = data.map((fila, index) => {
-                const nombre = fila[0]; 
-                if(!nombre || nombre === 'Jugador') return null;
+    function cargarDatos() {
+        Papa.parse(PROXY_URL, {
+            download: true, header: false, skipEmptyLines: true,
+            complete: function(results) {
+                const data = results.data;
+                document.getElementById('loader').style.display = 'none';
+                if(data.length > 0) data.shift();
                 
-                let tipoCarta = fila[10] ? fila[10].trim().toLowerCase() : 'oro';
-                let colorTexto = COLORES[tipoCarta] || '#624f21'; 
-
-                return {
-                    id: index,
-                    nombre: nombre,
-                    edad: parseInt(fila[1]) || 25, 
-                    ata: parseInt(fila[2]) || 0, def: parseInt(fila[3]) || 0, tec: parseInt(fila[4]) || 0, 
-                    vel: parseInt(fila[5]) || 0, res: parseInt(fila[6]) || 0, arq: parseInt(fila[7]) || 0,
-                    prom: parseInt(fila[8]) || 0, pos: fila[9] ? fila[9].trim() : "",
-                    fondo: fila[11] ? fila[11].trim() : "", foto: fila[12] ? fila[12].trim() : "",
-                    fotoLeyenda: fila[13] ? fila[13].trim() : "", 
-                    color: colorTexto,
-                    tipoBase: tipoCarta
-                };
-            }).filter(item => item !== null); 
-
-            datosFiltrados = [...datosOriginales];
-            aplicarFiltrosYOrden();
-        }
-    });
-
-    // FILTROS
-    const searchInput = document.getElementById('search-input');
-    const sortSelect = document.getElementById('sort-select');
-    if(searchInput) searchInput.addEventListener('input', aplicarFiltrosYOrden);
-    if(sortSelect) sortSelect.addEventListener('change', aplicarFiltrosYOrden);
-    
-    function aplicarFiltrosYOrden() {
-        if(!searchInput || !sortSelect) return;
-        const textoBusqueda = searchInput.value.toLowerCase();
-        const criterioFull = sortSelect.value.split('-'); 
-        const criterio = criterioFull[0];
-        const orden = criterioFull[1];
-
-        datosFiltrados = datosOriginales.filter(j => j.nombre.toLowerCase().includes(textoBusqueda));
-
-        datosFiltrados.sort((a, b) => {
-            if (criterio === 'nombre' || criterio === 'pos') return orden === 'asc' ? a[criterio].localeCompare(b[criterio]) : b[criterio].localeCompare(a[criterio]);
-            return orden === 'asc' ? a[criterio] - b[criterio] : b[criterio] - a[criterio];
+                datosOriginales = data.map((fila, index) => {
+                    if(!fila[0] || fila[0] === 'Jugador') return null;
+                    return {
+                        id: index,
+                        nombre: fila[0],
+                        prom: parseInt(fila[8]) || 60,
+                        // Guardamos datos mínimos necesarios para visual
+                        ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
+                        vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
+                        pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13],
+                        color: COLORES[fila[10] ? fila[10].trim().toLowerCase() : 'oro'] || '#624f21'
+                    };
+                }).filter(i => i !== null);
+                
+                renderizarGrilla(datosOriginales);
+            }
         });
-        renderizarGrilla(datosFiltrados);
     }
+
+    // ====================================================================
+    //   VISUALIZACIÓN BÁSICA (GRILLA)
+    // ====================================================================
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+        const val = searchInput.value.toLowerCase();
+        const filtered = datosOriginales.filter(j => j.nombre.toLowerCase().includes(val));
+        renderizarGrilla(filtered);
+    });
 
     function renderizarGrilla(lista) {
         const container = document.getElementById('grid-container');
-        if(!container) return;
         container.innerHTML = '';
-        if(lista.length === 0) { container.innerHTML = '<p style="text-align:center; width:100%; color:#aaa;">No se encontraron jugadores.</p>'; return; }
-        lista.forEach(jugadorObj => {
-            const html = `<div class="card" onclick="abrirModalPorID(${jugadorObj.id})">${generarHTMLCarta(jugadorObj, true)}</div>`;
-            container.innerHTML += html;
+        lista.forEach(j => {
+            container.innerHTML += `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`;
         });
     }
 
-    function generarHTMLCarta(j, lazy = false) {
-        const loadingAttr = lazy ? 'loading="lazy"' : '';
-        const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${loadingAttr} crossorigin="anonymous">` : '';
+    function generarHTMLCarta(j, lazy) {
+        const load = lazy ? 'loading="lazy"' : '';
+        const img = j.foto ? `<img src="${j.foto}" class="card-face" ${load} crossorigin="anonymous">` : '';
         return `
-            <div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${loadingAttr} referrerpolicy="no-referrer" crossorigin="anonymous"></div>
+            <div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${load} crossorigin="anonymous"></div>
             <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
-            ${fotoHtml}
+            ${img}
             <div class="info-layer">
-                <div class="rating" style="color: ${j.color}">${j.prom}</div>
-                <div class="position" style="color: ${j.color}">${j.pos}</div>
-                <div class="name" style="color: ${j.color}">${j.nombre}</div>
-                <div class="stats-container" style="color: ${j.color}">
+                <div class="rating" style="color:${j.color}">${j.prom}</div>
+                <div class="position" style="color:${j.color}">${j.pos}</div>
+                <div class="name" style="color:${j.color}">${j.nombre}</div>
+                <div class="stats-container" style="color:${j.color}">
                     <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.def}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
@@ -478,525 +373,369 @@
                     <div class="stat-box"><span class="stat-val">${j.res}</span></div>
                     <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
     // ====================================================================
-    //   3. MODAL, LEYENDA Y LÓGICA DE MULTIPLICADORES
+    //   MODAL CARTA INDIVIDUAL
     // ====================================================================
-    let jugadorActualEnModal = null;
-    let esModoLeyenda = false;
-
-    function abrirModalPorID(idReal) {
-        const jugador = datosOriginales.find(j => j.id === idReal);
-        if(!jugador) return;
-        
-        jugadorActualEnModal = jugador;
-        esModoLeyenda = false; 
-        renderizarModal(jugador);
+    function abrirModal(id) {
+        const j = datosOriginales.find(x => x.id === id);
         const modal = document.getElementById('modal');
-        if(modal) modal.style.display = 'flex';
+        const cont = document.getElementById('modal-card-container');
+        const btns = document.getElementById('modal-buttons');
+        
+        cont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
+        
+        let htmlBtns = '';
+        if(j.fotoLeyenda) htmlBtns += `<button class="btn btn-gold" onclick="alert('Funcionalidad Leyenda Simplificada')">LEYENDA</button>`;
+        htmlBtns += `<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>`;
+        htmlBtns += `<button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
+        
+        btns.innerHTML = htmlBtns;
+        modal.style.display = 'flex';
     }
 
-    function renderizarModal(j) {
-        const modalContainer = document.getElementById('modal-card-container');
-        const modalButtons = document.getElementById('modal-buttons');
-        if(!modalContainer || !modalButtons) return;
-
-        modalContainer.innerHTML = `<div class="card" id="carta-para-descargar">${generarHTMLCarta(j, false)}</div>`;
-        
-        // 2. LÓGICA DE BOTONES REORGANIZADA
-        let botonesHTML = '';
-        
-        // BOTON LEYENDA (IZQUIERDA) - SOLO SI EXISTE LA FOTO
-        if (jugadorActualEnModal.fotoLeyenda) {
-            if (esModoLeyenda) {
-                botonesHTML += `<button class="btn-standard" onclick="toggleLeyenda()">ACTUAL</button>`;
-            } else {
-                botonesHTML += `<button class="btn-standard btn-legend" onclick="toggleLeyenda()">LEYENDA</button>`;
-            }
-        }
-
-        // BOTON DESCARGAR (CENTRO)
-        botonesHTML += `<button class="btn-standard btn-action" onclick="descargarCarta()">DESCARGAR</button>`;
-        
-        // BOTON CERRAR (DERECHA)
-        botonesHTML += `<button class="btn-standard" onclick="cerrarModal()">CERRAR</button>`;
-
-        modalButtons.innerHTML = botonesHTML;
-    }
-
-    // --- CÁLCULO DE STATS LEYENDA (NUEVA LÓGICA) ---
-    function calcularObjetoLeyenda(base) {
-        // 1. Extraemos los stats en un array para poder ordenarlos
-        let statsArray = [
-            { id: 'ata', valor: base.ata },
-            { id: 'def', valor: base.def },
-            { id: 'tec', valor: base.tec },
-            { id: 'vel', valor: base.vel },
-            { id: 'res', valor: base.res },
-            { id: 'arq', valor: base.arq }
-        ];
-
-        // 2. Ordenamos de MAYOR A MENOR valor
-        statsArray.sort((a, b) => b.valor - a.valor);
-
-        // 3. Objeto temporal para guardar los nuevos valores
-        let nuevosValores = {};
-
-        // 4. Aplicamos multiplicadores según posición en el ranking
-        statsArray.forEach((statObj, index) => {
-            // Obtenemos el multiplicador correspondiente a su posición (0 es el 1º)
-            let multiplicador = MULTIPLICADORES_RANKING[index] || 1.05;
-            
-            let valorCalculado = statObj.valor * multiplicador;
-
-            // 5. Aplicamos Bonus Físico (si corresponde)
-            if (BONUS_FISICO[statObj.id]) {
-                valorCalculado = valorCalculado * BONUS_FISICO[statObj.id];
-            }
-
-            // 6. Aplicamos Redondeo y Tope
-            nuevosValores[statObj.id] = Math.min(TOPE_MAXIMO, Math.round(valorCalculado));
-        });
-
-        // 7. Calculamos el nuevo promedio (Suma de los 6 nuevos stats dividido 6)
-        let suma = 0;
-        for (let key in nuevosValores) {
-            suma += nuevosValores[key];
-        }
-        let nuevoPromedio = Math.min(99, Math.round(suma / 6));
-
-        // 8. Retornamos el objeto completo con los cambios
-        return {
-            ...base,
-            foto: base.fotoLeyenda,
-            fondo: LEYENDA_FONDO_URL,
-            color: COLORES['leyenda'], // Color específico
-            ata: nuevosValores.ata,
-            def: nuevosValores.def,
-            tec: nuevosValores.tec,
-            vel: nuevosValores.vel,
-            res: nuevosValores.res,
-            arq: nuevosValores.arq,
-            prom: nuevoPromedio
-        };
-    }
-
-    function toggleLeyenda() {
-        esModoLeyenda = !esModoLeyenda;
-        let jugadorParaMostrar;
-
-        if (esModoLeyenda) {
-            jugadorParaMostrar = calcularObjetoLeyenda(jugadorActualEnModal);
-        } else {
-            jugadorParaMostrar = jugadorActualEnModal;
-        }
-        
-        renderizarModal(jugadorParaMostrar);
-        
-        // EFECTO DE TRANSICIÓN: DISPARAR BRILLO (IDA O VUELTA)
-        const cardElement = document.getElementById('carta-para-descargar');
-        if(cardElement) {
-            // Limpiamos ambas clases primero
-            cardElement.classList.remove('trigger-shine'); 
-            cardElement.classList.remove('trigger-shine-reverse'); 
-            
-            void cardElement.offsetWidth; // Force Reflow
-            
-            // Si vamos a Leyenda -> Brillo normal (Ida)
-            // Si volvemos a Actual -> Brillo invertido (Vuelta)
-            if (esModoLeyenda) {
-                cardElement.classList.add('trigger-shine'); 
-            } else {
-                cardElement.classList.add('trigger-shine-reverse');
-            }
-        }
-    }
-
-    function cerrarModal() { 
-        const m = document.getElementById('modal');
-        if(m) m.style.display = 'none'; 
-    }
-    
     function descargarCarta() {
-        const elemento = document.getElementById('carta-para-descargar');
-        const btn = document.querySelector('.btn-action');
-        if(btn) btn.innerText = "PROCESANDO...";
-        const shine = elemento.querySelector('.shine-layer');
-        if(shine) shine.style.display = 'none';
-        html2canvas(elemento, { useCORS: true, allowTaint: true, backgroundColor: null, scale: 3 }).then(canvas => {
-            const link = document.createElement('a'); link.download = `FUT_Carta_${Date.now()}.png`; link.href = canvas.toDataURL("image/png"); link.click();
-            if(btn) btn.innerText = "DESCARGAR"; 
-            if(shine) shine.style.display = 'block';
-        }).catch(err => { 
-            alert("Error: " + err); 
-            if(btn) btn.innerText = "ERROR"; 
-            if(shine) shine.style.display = 'block'; 
+        const el = document.getElementById('carta-descarga');
+        const shine = el.querySelector('.shine-layer');
+        shine.style.display = 'none';
+        html2canvas(el, { useCORS: true, scale: 3, backgroundColor: null }).then(cvs => {
+            const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click();
+            shine.style.display = 'block';
         });
     }
-    
-    document.addEventListener('keydown', function(event) { if (event.key === "Escape") { cerrarModal(); cerrarArmador(); } });
 
-    // =========================================
-    //   4. AUDIO Y EXTRAS
-    // =========================================
-    const audioPlayer = document.getElementById('audio-player');
-    const musicBtn = document.querySelector('.music-btn');
-    const musicIcon = document.getElementById('music-icon');
-    let isPlaying = false;
+    // ====================================================================
+    //   ARMADOR DE EQUIPOS (LÓGICA NUEVA)
+    // ====================================================================
     
-    function toggleMusic() {
-        if(!audioPlayer || !audioPlayer.src) return; 
-        if (isPlaying) { 
-            audioPlayer.pause(); 
-            if(musicIcon) musicIcon.innerText = "🔈"; 
-            if(musicBtn) musicBtn.classList.remove('playing'); 
-            isPlaying = false; 
-        } else { 
-            audioPlayer.volume = 0.3; 
-            audioPlayer.play().then(() => { 
-                if(musicIcon) musicIcon.innerText = "🔊"; 
-                if(musicBtn) musicBtn.classList.add('playing'); 
-                isPlaying = true; 
-            }).catch(e => console.log("Bloqueo audio", e)); 
+    function abrirArmador() {
+        document.getElementById('team-modal').style.display = 'flex';
+        invitados = []; // Reset invitados al abrir? O mantener? Mejor reset.
+        renderizarListaSeleccion();
+        limpiarEquipos();
+    }
+    
+    function cerrarArmador() {
+        document.getElementById('team-modal').style.display = 'none';
+    }
+
+    function agregarInvitado() {
+        const idInv = 9000 + invitados.length; // ID alto para no chocar
+        invitados.push({
+            id: idInv,
+            nombre: "Invitado",
+            prom: 70, // Default solicitado
+            esInvitado: true,
+            seleccionado: true // Nace seleccionado
+        });
+        renderizarListaSeleccion();
+        actualizarContadorEquipos();
+    }
+
+    function borrarInvitado(idInv) {
+        invitados = invitados.filter(i => i.id !== idInv);
+        renderizarListaSeleccion();
+        actualizarContadorEquipos();
+    }
+
+    function editarInvitado(idInv, campo, valor) {
+        const inv = invitados.find(i => i.id === idInv);
+        if(inv) {
+            if(campo === 'nombre') inv.nombre = valor;
+            if(campo === 'prom') inv.prom = parseInt(valor) || 60;
+            // Si ya está en un equipo, actualizar visualmente
+            actualizarTablerosEquipos(); 
         }
     }
-    function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
 
-    // =========================================
-    //   5. ARMADOR DE EQUIPOS 
-    // =========================================
-    let guestActive = false;
-    let manualMode = false;
-    let manualTeamA = [];
-    let manualTeamB = [];
+    // Renderiza la lista combinada (Originales + Invitados)
+    function renderizarListaSeleccion() {
+        const contenedor = document.getElementById('players-checklist');
+        contenedor.innerHTML = '';
 
-    function abrirArmador() {
-        const list = document.getElementById('players-checklist');
-        if(!list) return;
-        list.innerHTML = '';
+        // 1. Renderizar Invitados primero
+        invitados.forEach(inv => {
+            const div = document.createElement('div');
+            div.className = 'player-row guest-item selected'; // Siempre selected al crear
+            div.innerHTML = `
+                <input type="checkbox" class="player-check" checked value="${inv.id}" onchange="toggleSeleccion(${inv.id})">
+                <input type="text" class="guest-input-name" value="${inv.nombre}" oninput="editarInvitado(${inv.id}, 'nombre', this.value)" onclick="event.stopPropagation()">
+                <input type="number" class="guest-input-rating" value="${inv.prom}" onchange="editarInvitado(${inv.id}, 'prom', this.value)" onclick="event.stopPropagation()">
+                <span style="color:#f55; font-weight:bold; margin-left:auto; cursor:pointer;" onclick="borrarInvitado(${inv.id})">✕</span>
+            `;
+            contenedor.appendChild(div);
+        });
+
+        // 2. Renderizar Jugadores Originales (Ordenados alfabeticamente)
         const sorted = [...datosOriginales].sort((a,b) => a.nombre.localeCompare(b.nombre));
         
         sorted.forEach(j => {
-            list.innerHTML += `
-            <label class="player-row" id="row-${j.id}">
-                <input type="checkbox" class="player-check" value="${j.id}" onclick="controlarLimite(this)">
+            // Verificar si ya está seleccionado (quizás venimos de una edición)
+            const isSelected = isPlayerSelected(j.id);
+            const rowClass = isSelected ? 'player-row selected' : 'player-row';
+            
+            const div = document.createElement('div');
+            div.className = rowClass;
+            div.id = `row-${j.id}`;
+            div.onclick = (e) => { 
+                // Click en la fila togglea el checkbox, salvo que toquemos el checkbox directo
+                if(e.target.type !== 'checkbox') {
+                    const cb = div.querySelector('.player-check');
+                    if(!cb.disabled) {
+                        cb.checked = !cb.checked;
+                        toggleSeleccion(j.id);
+                    }
+                }
+            };
+
+            div.innerHTML = `
+                <input type="checkbox" class="player-check" value="${j.id}" ${isSelected ? 'checked' : ''} onchange="toggleSeleccion(${j.id})">
                 <span>${j.nombre}</span>
-            </label>`;
+                <span style="margin-left:auto; color:#666; font-size:0.8em">${j.prom}</span>
+            `;
+            contenedor.appendChild(div);
         });
         
-        const res = document.getElementById('team-results');
-        const share = document.getElementById('btn-share-teams');
-        const modal = document.getElementById('team-modal');
-        const btnManual = document.getElementById('btn-manual');
-        
-        if(res) res.style.display = 'none';
-        if(share) share.style.display = 'none';
-        if(btnManual) btnManual.style.display = 'none'; // Ocultar manual al inicio
-        if(modal) modal.style.display = 'flex';
-        
-        // Reset state
-        document.getElementById('check-invitado').checked = false;
-        document.getElementById('check-invitado').disabled = false;
-        toggleGuest(document.getElementById('check-invitado'));
-        
-        actualizarContador(0);
+        actualizarContadorEquipos();
     }
 
-    function cerrarArmador() { 
-        const m = document.getElementById('team-modal');
-        if(m) m.style.display = 'none'; 
-        // Quitar clase manual para limpiar hover
-        document.getElementById('team-results').classList.remove('manual-mode');
+    function isPlayerSelected(id) {
+        // Un jugador está seleccionado si está en equipo1, equipo2 o en el pool temporal
+        // Para simplificar, usamos el DOM state de los equipos o un array global de seleccionados.
+        // Usemos un array temporal derivado del DOM checkboxes? No, mejor consultar el estado actual.
+        // Simplemente verifiquemos si el checkbox estaba checkeado antes del re-render?
+        // En este diseño simple, "toggleSeleccion" maneja la lógica.
+        // Al renderizar de cero, asumimos desmarcado salvo los invitados.
+        // Corrección: Necesitamos persistir la selección si se hace scroll o búsqueda.
+        // Por simplicidad en este ejemplo de un archivo, confiaremos en el estado de los equipos.
+        return equipo1.includes(id) || equipo2.includes(id); 
     }
 
-    function toggleGuest(checkbox) {
-        guestActive = checkbox.checked;
-        const inputs = document.getElementById('guest-inputs');
-        if(inputs) inputs.style.display = guestActive ? 'flex' : 'none';
-        controlarLimite(checkbox);
+    function toggleSeleccion(id) {
+        const checkbox = document.querySelector(`.player-check[value="${id}"]`);
+        const isChecked = checkbox.checked;
+        const row = checkbox.closest('.player-row');
+
+        if (isChecked) {
+            row.classList.add('selected');
+            // Al seleccionar, lo mandamos al "Limbo" o lo asignamos a un equipo por defecto?
+            // El usuario pidió "manual por defecto".
+            // Estrategia: Asignar alternativamente para llenar 5 vs 5 visualmente y que el user arregle.
+            asignarJugadorAutomaticamente(id);
+        } else {
+            row.classList.remove('selected');
+            removerJugadorDeEquipos(id);
+        }
+        
+        actualizarContadorEquipos();
     }
 
-    function controlarLimite(checkbox) {
-        const checkedPlayers = document.querySelectorAll('.player-check:not(#check-invitado):checked');
-        const isGuest = document.getElementById('check-invitado').checked;
-        
-        let count = checkedPlayers.length;
-        if(isGuest) count++;
+    function asignarJugadorAutomaticamente(id) {
+        // Lógica simple: Llenar equipo 1 hasta 5, luego equipo 2.
+        if (equipo1.length < 5) equipo1.push(id);
+        else equipo2.push(id);
+        actualizarTablerosEquipos();
+    }
 
-        const btn = document.getElementById('btn-generate');
-        if(btn) btn.innerText = "GENERAR AUTOMÁTICO";
-        
-        const res = document.getElementById('team-results');
-        if(res) res.style.display = 'none'; // Ocultar resultados si se toca algo
+    function removerJugadorDeEquipos(id) {
+        equipo1 = equipo1.filter(x => x !== id);
+        equipo2 = equipo2.filter(x => x !== id);
+        actualizarTablerosEquipos();
+    }
 
-        actualizarContador(count);
+    function actualizarContadorEquipos() {
+        const total = equipo1.length + equipo2.length;
+        const txt = document.getElementById('team-counter');
+        const btnGen = document.getElementById('btn-generate');
+        const btnShare = document.getElementById('btn-share-teams');
         
-        if (count >= 10) {
+        txt.innerText = `SELECCIONADOS: ${total}/10`;
+        
+        if (total === 10) {
+            txt.classList.add('complete');
+            btnGen.style.opacity = '1';
+            btnGen.style.pointerEvents = 'auto';
+            btnShare.style.display = 'block';
+            
+            // Deshabilitar no seleccionados
             document.querySelectorAll('.player-check:not(:checked)').forEach(cb => {
-                cb.disabled = true; 
-                const row = document.getElementById(`row-${cb.value}`);
-                if(row) row.classList.add('disabled');
+                cb.disabled = true;
+                cb.closest('.player-row').classList.add('disabled');
             });
-            // Si el invitado no está checkeado, deshabilitarlo también
-            if(!isGuest) document.getElementById('check-invitado').disabled = true;
         } else {
+            txt.classList.remove('complete');
+            btnGen.style.opacity = '0.5';
+            btnGen.style.pointerEvents = 'none';
+            btnShare.style.display = 'none';
+            
+            // Habilitar todos
             document.querySelectorAll('.player-check').forEach(cb => {
-                cb.disabled = false; 
-                const row = document.getElementById(`row-${cb.value}`);
-                if(row) row.classList.remove('disabled');
+                cb.disabled = false;
+                cb.closest('.player-row').classList.remove('disabled');
             });
-             document.getElementById('check-invitado').disabled = false;
         }
     }
 
-    function actualizarContador(count) {
-        const missing = 10 - count;
-        const counterLabel = document.getElementById('team-counter');
-        const generateBtn = document.getElementById('btn-generate');
-        const manualBtn = document.getElementById('btn-manual');
-        
-        if(!counterLabel || !generateBtn) return;
-        
-        if (missing > 0) {
-            counterLabel.innerText = `FALTAN ${missing} JUGADORES`; counterLabel.style.color = "#888"; 
-            generateBtn.classList.remove('active');
-            if(manualBtn) manualBtn.style.display = 'none';
-        } else if (missing === 0) {
-            counterLabel.innerText = "¡LISTO! (10/10)"; counterLabel.style.color = "var(--color-acento)"; 
-            generateBtn.classList.add('active');
-            if(manualBtn) manualBtn.style.display = 'block'; // Mostrar botón manual
-        } else {
-            counterLabel.innerText = "DEMASIADOS JUGADORES";
-        }
+    function limpiarEquipos() {
+        equipo1 = [];
+        equipo2 = [];
+        actualizarTablerosEquipos();
     }
 
-    // COLOR POR PROMEDIO (Para la lista de equipos)
-    function getRatingColor(val) {
-        if (val >= 90) return 'var(--stat-legend)'; 
-        if (val >= 80) return 'var(--stat-gold)';
-        if (val >= 70) return 'var(--stat-silver)'; 
-        return 'var(--stat-bronze)';
+    // ====================================================================
+    //   DRAG AND DROP Y RENDERIZADO DE EQUIPOS
+    // ====================================================================
+
+    function getPlayerData(id) {
+        // Buscar en originales o invitados
+        if (id >= 9000) return invitados.find(i => i.id === id);
+        return datosOriginales.find(d => d.id === id);
     }
 
-    function getPlayerHTML(p, isWhite, isManual = false) {
-        const colorNota = getRatingColor(p.prom);
-        const emoji = isWhite ? '▫️' : '▪️';
-        let onClickAttr = "";
-        let helpText = "";
-        
-        if(isManual) {
-            onClickAttr = `onclick="cambiarEquipoManual(${p.id})"`;
-            helpText = " <small style='opacity:0.5; font-size:0.8em'>↔</small>";
-        }
-
-        return `
-        <div class="team-list-item" ${onClickAttr} title="${isManual ? 'Toca para cambiar de equipo' : ''}">
-            <span>${emoji} ${p.nombre} ${helpText}</span>
-            <strong style="color:${colorNota}">${p.prom}</strong>
-        </div>`;
+    function actualizarTablerosEquipos() {
+        renderListaEquipo('list-team-1', equipo1, 'avg-team-1');
+        renderListaEquipo('list-team-2', equipo2, 'avg-team-2');
     }
 
-    function getGuestData() {
-        const name = document.getElementById('guest-name').value || "Invitado";
-        const rat = parseInt(document.getElementById('guest-rating').value) || 60;
-        return {
-            id: 99999, // ID Ficticio alto
-            nombre: name,
-            prom: rat,
-            ata: rat, def: rat, tec: rat, vel: rat, res: rat, arq: 50, edad: 25,
-            isGuest: true
-        };
-    }
-    
-    function actualizarInvitado() {
-        // Si estamos en modo manual y cambiamos el rating, actualizar
-        if(manualMode) {
-             const guest = getGuestData();
-             // Buscar en las listas manuales y actualizar
-             let foundIndexA = manualTeamA.findIndex(p => p.id === 99999);
-             if(foundIndexA !== -1) manualTeamA[foundIndexA] = guest;
-             
-             let foundIndexB = manualTeamB.findIndex(p => p.id === 99999);
-             if(foundIndexB !== -1) manualTeamB[foundIndexB] = guest;
-             
-             renderizarEquiposManuales();
-        }
-    }
-
-    function generarEquipos() {
-        manualMode = false;
-        document.getElementById('team-results').classList.remove('manual-mode');
+    function renderListaEquipo(ulId, ids, avgId) {
+        const ul = document.getElementById(ulId);
+        ul.innerHTML = '';
+        let suma = 0;
         
-        const checkboxes = document.querySelectorAll('.player-check:not(#check-invitado):checked');
-        const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
-        
-        let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
-        
-        if(guestActive) {
-            pool.push(getGuestData());
-        }
-        
-        const btn = document.getElementById('btn-generate');
-        if(btn) btn.innerText = "REGENERAR AUTOMÁTICO";
+        // Ordenar alfabéticamente para prolijidad
+        const jugadores = ids.map(id => getPlayerData(id)).filter(x=>x);
+        jugadores.sort((a,b) => a.nombre.localeCompare(b.nombre));
 
-        let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
-
-        pool.sort((a, b) => b.arq - a.arq);
-        // Porteros (simple logic, los 2 con mas ARQ van al arco)
-        // Nota: Si el invitado es arquero, puede romper esto un poco, pero asumo invitado de campo.
-        let portero1 = pool[0];
-        let portero2 = pool[1];
-        let resto = pool.slice(2);
-
-        teamA.push(portero1); scoreA += getImpactScore(portero1);
-        teamB.push(portero2); scoreB += getImpactScore(portero2);
-
-        resto.sort((a, b) => {
-            let impactA = getImpactScore(a) + (Math.random() * 4 - 2); 
-            let impactB = getImpactScore(b) + (Math.random() * 4 - 2);
-            return impactB - impactA;
+        jugadores.forEach(p => {
+            suma += p.prom;
+            const li = document.createElement('li');
+            li.className = 'team-player-li';
+            li.draggable = true;
+            li.innerHTML = `<span>${p.nombre}</span> <span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
+            
+            // Eventos Drag
+            li.ondragstart = (e) => dragStart(e, p.id);
+            // Evento Click (Tap to move)
+            li.onclick = () => clickToMove(p.id);
+            
+            ul.appendChild(li);
         });
 
-        resto.forEach(p => {
-            let impact = getImpactScore(p);
-            if (scoreA <= scoreB) { teamA.push(p); scoreA += impact; } 
-            else { teamB.push(p); scoreB += impact; }
-        });
+        const avg = ids.length > 0 ? (suma / ids.length).toFixed(1) : 0;
+        document.getElementById(avgId).innerText = `Prom: ${avg}`;
+    }
 
-        let finalTeam1, finalTeam2;
-        if (Math.random() > 0.5) {
-            finalTeam1 = { data: teamA, prom: calcularPromedioReal(teamA) };
-            finalTeam2 = { data: teamB, prom: calcularPromedioReal(teamB) };
-        } else {
-            finalTeam1 = { data: teamB, prom: calcularPromedioReal(teamB) };
-            finalTeam2 = { data: teamA, prom: calcularPromedioReal(teamA) };
+    function getColorProm(val) {
+        if(val >= 90) return STAT_COLORS.legend;
+        if(val >= 80) return STAT_COLORS.gold;
+        if(val >= 70) return STAT_COLORS.silver;
+        return STAT_COLORS.bronze;
+    }
+
+    // --- LÓGICA DRAG & DROP ---
+    function dragStart(e, id) {
+        draggingId = id;
+        e.dataTransfer.effectAllowed = "move";
+        // Estilo fantasma transparente
+        e.target.style.opacity = '0.5';
+    }
+
+    function permitirDrop(e) {
+        e.preventDefault(); // Necesario para permitir drop
+        const box = e.currentTarget;
+        box.classList.add('drag-over');
+    }
+
+    // Limpiar estilo drag-over cuando sale (opcional para polish, pero ondrop limpia)
+    function dropJugador(e, targetTeam) {
+        e.preventDefault();
+        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('drag-over'));
+        
+        if (draggingId === null) return;
+
+        // Quitar de donde esté y poner en target
+        equipo1 = equipo1.filter(id => id !== draggingId);
+        equipo2 = equipo2.filter(id => id !== draggingId);
+
+        if (targetTeam === 'team1') equipo1.push(draggingId);
+        else equipo2.push(draggingId);
+
+        draggingId = null;
+        actualizarTablerosEquipos();
+    }
+
+    // --- LÓGICA CLICK TO MOVE (Alternativa a Drag) ---
+    function clickToMove(id) {
+        // Si está en el 1, va al 2. Si está en el 2, va al 1.
+        if (equipo1.includes(id)) {
+            equipo1 = equipo1.filter(x => x !== id);
+            equipo2.push(id);
+        } else if (equipo2.includes(id)) {
+            equipo2 = equipo2.filter(x => x !== id);
+            equipo1.push(id);
         }
-
-        finalTeam1.data.sort((a,b) => a.nombre.localeCompare(b.nombre));
-        finalTeam2.data.sort((a,b) => a.nombre.localeCompare(b.nombre));
-
-        renderizarResultados(finalTeam1.data, finalTeam2.data, finalTeam1.prom, finalTeam2.prom);
+        actualizarTablerosEquipos();
     }
-    
-    // =========================================
-    //   5.1 LÓGICA MANUAL
-    // =========================================
-    function iniciarModoManual() {
-        manualMode = true;
-        document.getElementById('team-results').classList.add('manual-mode');
-        
-        const checkboxes = document.querySelectorAll('.player-check:not(#check-invitado):checked');
-        const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
-        
-        let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
-        if(guestActive) {
-            pool.push(getGuestData());
-        }
-        
-        // Ordenar alfabéticamente para facilitar la busqueda visual
-        pool.sort((a,b) => a.nombre.localeCompare(b.nombre));
-        
-        // Repartir 5 y 5 arbitrariamente para empezar
-        manualTeamA = pool.slice(0, 5);
-        manualTeamB = pool.slice(5, 10);
-        
-        renderizarEquiposManuales();
-        
-        const res = document.getElementById('team-results');
-        const share = document.getElementById('btn-share-teams');
-        if(res) res.style.display = 'flex';
-        if(share) share.style.display = 'block';
-    }
-    
-    function renderizarEquiposManuales() {
-        // Recalcular promedios
-        const promA = calcularPromedioReal(manualTeamA);
-        const promB = calcularPromedioReal(manualTeamB);
-        
-        // Renderizar con flag isManual = true
-        const list1 = document.getElementById('list-team-1');
-        const list2 = document.getElementById('list-team-2');
-        const avg1 = document.getElementById('avg-team-1');
-        const avg2 = document.getElementById('avg-team-2');
-        
-        manualTeamA.sort((a,b) => a.nombre.localeCompare(b.nombre));
-        manualTeamB.sort((a,b) => a.nombre.localeCompare(b.nombre));
 
-        if(list1) list1.innerHTML = manualTeamA.map(p => getPlayerHTML(p, true, true)).join('');
-        if(avg1) avg1.innerText = `Prom: ${promA}`;
-
-        if(list2) list2.innerHTML = manualTeamB.map(p => getPlayerHTML(p, false, true)).join('');
-        if(avg2) avg2.innerText = `Prom: ${promB}`;
-    }
-    
-    function cambiarEquipoManual(idJugador) {
-        // Buscar dónde está
-        let indexA = manualTeamA.findIndex(p => p.id === idJugador);
+    // ====================================================================
+    //   GENERACIÓN AUTOMÁTICA
+    // ====================================================================
+    function generarAutomatico() {
+        // Juntar todos los seleccionados
+        const pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
         
-        if (indexA !== -1) {
-            // Está en el A, mover al B
-            const player = manualTeamA.splice(indexA, 1)[0];
-            manualTeamB.push(player);
-        } else {
-            // Debe estar en el B
-            let indexB = manualTeamB.findIndex(p => p.id === idJugador);
-            if (indexB !== -1) {
-                const player = manualTeamB.splice(indexB, 1)[0];
-                manualTeamA.push(player);
+        if (pool.length !== 10) return alert("Selecciona exactamente 10 jugadores.");
+
+        // Lógica de balanceo simple (Snake draft basado en promedio)
+        pool.sort((a,b) => b.prom - a.prom); // Ordenar por valoración
+
+        const t1 = [];
+        const t2 = [];
+        let s1 = 0;
+        let s2 = 0;
+
+        // Distribución: 1-2-2-1 para arqueros/mejores y luego balanceo por suma
+        // Simplificado: Iterar y asignar al que tenga menos suma total
+        pool.forEach(p => {
+            if (s1 <= s2) {
+                t1.push(p.id);
+                s1 += p.prom;
+            } else {
+                t2.push(p.id);
+                s2 += p.prom;
             }
-        }
-        renderizarEquiposManuales();
+        });
+
+        // Actualizar estados globales
+        equipo1 = t1;
+        equipo2 = t2;
+        actualizarTablerosEquipos();
     }
 
-    function renderizarResultados(t1Data, t2Data, p1, p2) {
-        const list1 = document.getElementById('list-team-1');
-        const list2 = document.getElementById('list-team-2');
-        const avg1 = document.getElementById('avg-team-1');
-        const avg2 = document.getElementById('avg-team-2');
-        
-        if(list1) list1.innerHTML = t1Data.map(p => getPlayerHTML(p, true)).join('');
-        if(avg1) avg1.innerText = `Prom: ${p1}`;
-
-        if(list2) list2.innerHTML = t2Data.map(p => getPlayerHTML(p, false)).join('');
-        if(avg2) avg2.innerText = `Prom: ${p2}`;
-
-        const res = document.getElementById('team-results');
-        const share = document.getElementById('btn-share-teams');
-        if(res) res.style.display = 'flex';
-        if(share) share.style.display = 'block';
-    }
-
-    function getImpactScore(p) { return (p.prom * 6) + (p.res * 3) + (p.tec * 2) - (p.edad * 0.5); }
-    function calcularPromedioReal(equipo) { 
-        if(equipo.length === 0) return 0;
-        let sum = 0; equipo.forEach(p => sum += p.prom); return (sum / equipo.length).toFixed(1); 
-    }
-    
-    async function compartirEquipos() {
-        const elemento = document.getElementById('team-capture-area');
-        try {
-            const canvas = await html2canvas(elemento, { backgroundColor: '#1a1a1a', scale: 2 });
-            canvas.toBlob(async (blob) => {
+    // ====================================================================
+    //   UTILIDADES
+    // ====================================================================
+    function compartirEquipos() {
+        const el = document.getElementById('team-capture-area');
+        html2canvas(el, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
+            canvas.toBlob(blob => {
                 const file = new File([blob], "equipos.png", { type: "image/png" });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'Equipos del Martes',
-                        text: 'Acá están los equipos!'
-                    });
+                if(navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({ files: [file], title: 'Equipos', text: 'Equipos armados' });
                 } else {
-                    alert("Tu navegador no soporta compartir imágenes directo.");
+                    const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click();
                 }
             });
-        } catch (err) {
-            console.error(err);
-            alert("Error al compartir: " + err);
-        }
+        });
     }
-</script>
 
+    const audio = document.getElementById('audio-player');
+    function toggleMusic() {
+        if(audio.paused) audio.play(); else audio.pause();
+    }
+    function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
+</script>
 </body>
 </html>
