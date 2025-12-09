@@ -214,9 +214,17 @@
         .player-row.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
         .player-check { transform: scale(1.3); accent-color: var(--color-acento); cursor: pointer; }
         
-        .btn-generate { background: #333; color: #888; width: 100%; font-size: 1.8rem; margin-bottom: 15px; border: 1px solid #444; pointer-events: none; transition: all 0.3s; font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px; }
+        /* ESTILOS INVITADO */
+        .guest-controls { background: #2a2a2a; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #444; }
+        .guest-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .guest-input { background: #111; border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; font-family: var(--fuente-texto); width: 80px; }
+        .guest-input-name { flex: 1; background: #111; border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; font-family: var(--fuente-texto); }
+
+        .btn-generate-group { display: flex; gap: 10px; width: 100%; margin-bottom: 15px; }
+        .btn-generate { flex: 1; background: #333; color: #888; font-size: 1.4rem; border: 1px solid #444; pointer-events: none; transition: all 0.3s; font-family: var(--fuente-titulo); letter-spacing: 2px; border-radius: 4px; padding: 10px; text-align: center;}
         .btn-generate.active { background: var(--color-acento); color: #000; border-color: var(--color-acento); pointer-events: auto; cursor: pointer; font-weight: bold; }
-        .btn-generate.active:hover { transform: scale(1.02); }
+        .btn-generate.manual-active { background: #444; color: #fff; border-color: #666; pointer-events: auto; cursor: pointer; font-weight: bold; }
+        .btn-generate.active:hover, .btn-generate.manual-active:hover { transform: scale(1.02); }
         
         #team-capture-area { background: var(--color-paneles); padding: 15px; border-radius: 8px; }
         .team-results { display: none; flex-direction: row; gap: 15px; margin-top: 5px; }
@@ -225,7 +233,12 @@
         .team-black { background: #111; color: #fff; border-color: #333; }
         .team-header { font-size: 2rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
         .team-avg { text-align: center; font-size: 1rem; margin-bottom: 15px; opacity: 0.8; font-family: var(--fuente-texto); font-weight: bold; }
-        .team-list-item { padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .team-list-item { padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.3); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: default; }
+        
+        /* MODO MANUAL CLICKABLE */
+        .manual-mode .team-list-item { cursor: pointer; transition: background 0.2s; padding-left: 5px; padding-right: 5px; border-radius: 4px; }
+        .manual-mode .team-white .team-list-item:hover { background: #ddd; }
+        .manual-mode .team-black .team-list-item:hover { background: #333; }
 
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
@@ -268,11 +281,30 @@
         <div id="team-modal-content">
             <div class="team-title">SELECCIONAR JUGADORES</div>
             <div id="team-counter">Faltan 10 jugadores</div>
-            <div id="players-checklist" class="team-scroll"></div>
             
-            <button class="btn-generate" onclick="generarEquipos()" id="btn-generate">
-                GENERAR EQUIPOS
-            </button>
+            <div class="team-scroll">
+                <div class="guest-controls">
+                    <div class="player-row" style="margin-bottom: 5px; background: transparent; padding: 0;">
+                        <input type="checkbox" id="check-invitado" class="player-check" onchange="toggleGuest(this)">
+                        <span style="color: var(--color-acento);">AGREGAR INVITADO</span>
+                    </div>
+                    <div id="guest-inputs" class="guest-row" style="display:none;">
+                        <input type="text" id="guest-name" class="guest-input-name" placeholder="Nombre Invitado" value="Invitado">
+                        <input type="number" id="guest-rating" class="guest-input" placeholder="Media (0-99)" value="60" min="0" max="99" onchange="actualizarInvitado()">
+                    </div>
+                </div>
+                
+                <div id="players-checklist"></div>
+            </div>
+            
+            <div class="btn-generate-group">
+                <button class="btn-generate" onclick="generarEquipos()" id="btn-generate">
+                    GENERAR AUTOMÁTICO
+                </button>
+                <button class="btn-generate manual-active" onclick="iniciarModoManual()" id="btn-manual" style="display:none;">
+                    ARMAR MANUAL
+                </button>
+            </div>
             
             <div id="team-capture-area">
                 <div id="team-results" class="team-results">
@@ -636,6 +668,11 @@
     // =========================================
     //   5. ARMADOR DE EQUIPOS 
     // =========================================
+    let guestActive = false;
+    let manualMode = false;
+    let manualTeamA = [];
+    let manualTeamB = [];
+
     function abrirArmador() {
         const list = document.getElementById('players-checklist');
         if(!list) return;
@@ -653,36 +690,65 @@
         const res = document.getElementById('team-results');
         const share = document.getElementById('btn-share-teams');
         const modal = document.getElementById('team-modal');
+        const btnManual = document.getElementById('btn-manual');
         
         if(res) res.style.display = 'none';
         if(share) share.style.display = 'none';
+        if(btnManual) btnManual.style.display = 'none'; // Ocultar manual al inicio
         if(modal) modal.style.display = 'flex';
+        
+        // Reset state
+        document.getElementById('check-invitado').checked = false;
+        document.getElementById('check-invitado').disabled = false;
+        toggleGuest(document.getElementById('check-invitado'));
+        
         actualizarContador(0);
     }
 
     function cerrarArmador() { 
         const m = document.getElementById('team-modal');
         if(m) m.style.display = 'none'; 
+        // Quitar clase manual para limpiar hover
+        document.getElementById('team-results').classList.remove('manual-mode');
+    }
+
+    function toggleGuest(checkbox) {
+        guestActive = checkbox.checked;
+        const inputs = document.getElementById('guest-inputs');
+        if(inputs) inputs.style.display = guestActive ? 'flex' : 'none';
+        controlarLimite(checkbox);
     }
 
     function controlarLimite(checkbox) {
-        const checked = document.querySelectorAll('.player-check:checked');
-        const count = checked.length;
+        const checkedPlayers = document.querySelectorAll('.player-check:not(#check-invitado):checked');
+        const isGuest = document.getElementById('check-invitado').checked;
+        
+        let count = checkedPlayers.length;
+        if(isGuest) count++;
+
         const btn = document.getElementById('btn-generate');
-        if(btn) btn.innerText = "GENERAR EQUIPOS";
+        if(btn) btn.innerText = "GENERAR AUTOMÁTICO";
+        
+        const res = document.getElementById('team-results');
+        if(res) res.style.display = 'none'; // Ocultar resultados si se toca algo
+
         actualizarContador(count);
+        
         if (count >= 10) {
             document.querySelectorAll('.player-check:not(:checked)').forEach(cb => {
                 cb.disabled = true; 
                 const row = document.getElementById(`row-${cb.value}`);
                 if(row) row.classList.add('disabled');
             });
+            // Si el invitado no está checkeado, deshabilitarlo también
+            if(!isGuest) document.getElementById('check-invitado').disabled = true;
         } else {
             document.querySelectorAll('.player-check').forEach(cb => {
                 cb.disabled = false; 
                 const row = document.getElementById(`row-${cb.value}`);
                 if(row) row.classList.remove('disabled');
             });
+             document.getElementById('check-invitado').disabled = false;
         }
     }
 
@@ -690,14 +756,18 @@
         const missing = 10 - count;
         const counterLabel = document.getElementById('team-counter');
         const generateBtn = document.getElementById('btn-generate');
+        const manualBtn = document.getElementById('btn-manual');
+        
         if(!counterLabel || !generateBtn) return;
         
         if (missing > 0) {
             counterLabel.innerText = `FALTAN ${missing} JUGADORES`; counterLabel.style.color = "#888"; 
             generateBtn.classList.remove('active');
+            if(manualBtn) manualBtn.style.display = 'none';
         } else if (missing === 0) {
             counterLabel.innerText = "¡LISTO! (10/10)"; counterLabel.style.color = "var(--color-acento)"; 
             generateBtn.classList.add('active');
+            if(manualBtn) manualBtn.style.display = 'block'; // Mostrar botón manual
         } else {
             counterLabel.innerText = "DEMASIADOS JUGADORES";
         }
@@ -711,27 +781,72 @@
         return 'var(--stat-bronze)';
     }
 
-    function getPlayerHTML(p, isWhite) {
+    function getPlayerHTML(p, isWhite, isManual = false) {
         const colorNota = getRatingColor(p.prom);
         const emoji = isWhite ? '▫️' : '▪️';
+        let onClickAttr = "";
+        let helpText = "";
+        
+        if(isManual) {
+            onClickAttr = `onclick="cambiarEquipoManual(${p.id})"`;
+            helpText = " <small style='opacity:0.5; font-size:0.8em'>↔</small>";
+        }
+
         return `
-        <div class="team-list-item">
-            <span>${emoji} ${p.nombre}</span>
+        <div class="team-list-item" ${onClickAttr} title="${isManual ? 'Toca para cambiar de equipo' : ''}">
+            <span>${emoji} ${p.nombre} ${helpText}</span>
             <strong style="color:${colorNota}">${p.prom}</strong>
         </div>`;
     }
 
+    function getGuestData() {
+        const name = document.getElementById('guest-name').value || "Invitado";
+        const rat = parseInt(document.getElementById('guest-rating').value) || 60;
+        return {
+            id: 99999, // ID Ficticio alto
+            nombre: name,
+            prom: rat,
+            ata: rat, def: rat, tec: rat, vel: rat, res: rat, arq: 50, edad: 25,
+            isGuest: true
+        };
+    }
+    
+    function actualizarInvitado() {
+        // Si estamos en modo manual y cambiamos el rating, actualizar
+        if(manualMode) {
+             const guest = getGuestData();
+             // Buscar en las listas manuales y actualizar
+             let foundIndexA = manualTeamA.findIndex(p => p.id === 99999);
+             if(foundIndexA !== -1) manualTeamA[foundIndexA] = guest;
+             
+             let foundIndexB = manualTeamB.findIndex(p => p.id === 99999);
+             if(foundIndexB !== -1) manualTeamB[foundIndexB] = guest;
+             
+             renderizarEquiposManuales();
+        }
+    }
+
     function generarEquipos() {
-        const checkboxes = document.querySelectorAll('.player-check:checked');
+        manualMode = false;
+        document.getElementById('team-results').classList.remove('manual-mode');
+        
+        const checkboxes = document.querySelectorAll('.player-check:not(#check-invitado):checked');
         const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
         
-        const btn = document.getElementById('btn-generate');
-        if(btn) btn.innerText = "REGENERAR EQUIPOS";
-
         let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
+        
+        if(guestActive) {
+            pool.push(getGuestData());
+        }
+        
+        const btn = document.getElementById('btn-generate');
+        if(btn) btn.innerText = "REGENERAR AUTOMÁTICO";
+
         let teamA = []; let teamB = []; let scoreA = 0; let scoreB = 0;
 
         pool.sort((a, b) => b.arq - a.arq);
+        // Porteros (simple logic, los 2 con mas ARQ van al arco)
+        // Nota: Si el invitado es arquero, puede romper esto un poco, pero asumo invitado de campo.
         let portero1 = pool[0];
         let portero2 = pool[1];
         let resto = pool.slice(2);
@@ -763,16 +878,90 @@
         finalTeam1.data.sort((a,b) => a.nombre.localeCompare(b.nombre));
         finalTeam2.data.sort((a,b) => a.nombre.localeCompare(b.nombre));
 
+        renderizarResultados(finalTeam1.data, finalTeam2.data, finalTeam1.prom, finalTeam2.prom);
+    }
+    
+    // =========================================
+    //   5.1 LÓGICA MANUAL
+    // =========================================
+    function iniciarModoManual() {
+        manualMode = true;
+        document.getElementById('team-results').classList.add('manual-mode');
+        
+        const checkboxes = document.querySelectorAll('.player-check:not(#check-invitado):checked');
+        const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+        
+        let pool = datosOriginales.filter(j => selectedIds.includes(j.id));
+        if(guestActive) {
+            pool.push(getGuestData());
+        }
+        
+        // Ordenar alfabéticamente para facilitar la busqueda visual
+        pool.sort((a,b) => a.nombre.localeCompare(b.nombre));
+        
+        // Repartir 5 y 5 arbitrariamente para empezar
+        manualTeamA = pool.slice(0, 5);
+        manualTeamB = pool.slice(5, 10);
+        
+        renderizarEquiposManuales();
+        
+        const res = document.getElementById('team-results');
+        const share = document.getElementById('btn-share-teams');
+        if(res) res.style.display = 'flex';
+        if(share) share.style.display = 'block';
+    }
+    
+    function renderizarEquiposManuales() {
+        // Recalcular promedios
+        const promA = calcularPromedioReal(manualTeamA);
+        const promB = calcularPromedioReal(manualTeamB);
+        
+        // Renderizar con flag isManual = true
         const list1 = document.getElementById('list-team-1');
         const list2 = document.getElementById('list-team-2');
         const avg1 = document.getElementById('avg-team-1');
         const avg2 = document.getElementById('avg-team-2');
         
-        if(list1) list1.innerHTML = finalTeam1.data.map(p => getPlayerHTML(p, true)).join('');
-        if(avg1) avg1.innerText = `Prom: ${finalTeam1.prom}`;
+        manualTeamA.sort((a,b) => a.nombre.localeCompare(b.nombre));
+        manualTeamB.sort((a,b) => a.nombre.localeCompare(b.nombre));
 
-        if(list2) list2.innerHTML = finalTeam2.data.map(p => getPlayerHTML(p, false)).join('');
-        if(avg2) avg2.innerText = `Prom: ${finalTeam2.prom}`;
+        if(list1) list1.innerHTML = manualTeamA.map(p => getPlayerHTML(p, true, true)).join('');
+        if(avg1) avg1.innerText = `Prom: ${promA}`;
+
+        if(list2) list2.innerHTML = manualTeamB.map(p => getPlayerHTML(p, false, true)).join('');
+        if(avg2) avg2.innerText = `Prom: ${promB}`;
+    }
+    
+    function cambiarEquipoManual(idJugador) {
+        // Buscar dónde está
+        let indexA = manualTeamA.findIndex(p => p.id === idJugador);
+        
+        if (indexA !== -1) {
+            // Está en el A, mover al B
+            const player = manualTeamA.splice(indexA, 1)[0];
+            manualTeamB.push(player);
+        } else {
+            // Debe estar en el B
+            let indexB = manualTeamB.findIndex(p => p.id === idJugador);
+            if (indexB !== -1) {
+                const player = manualTeamB.splice(indexB, 1)[0];
+                manualTeamA.push(player);
+            }
+        }
+        renderizarEquiposManuales();
+    }
+
+    function renderizarResultados(t1Data, t2Data, p1, p2) {
+        const list1 = document.getElementById('list-team-1');
+        const list2 = document.getElementById('list-team-2');
+        const avg1 = document.getElementById('avg-team-1');
+        const avg2 = document.getElementById('avg-team-2');
+        
+        if(list1) list1.innerHTML = t1Data.map(p => getPlayerHTML(p, true)).join('');
+        if(avg1) avg1.innerText = `Prom: ${p1}`;
+
+        if(list2) list2.innerHTML = t2Data.map(p => getPlayerHTML(p, false)).join('');
+        if(avg2) avg2.innerText = `Prom: ${p2}`;
 
         const res = document.getElementById('team-results');
         const share = document.getElementById('btn-share-teams');
@@ -781,7 +970,10 @@
     }
 
     function getImpactScore(p) { return (p.prom * 6) + (p.res * 3) + (p.tec * 2) - (p.edad * 0.5); }
-    function calcularPromedioReal(equipo) { let sum = 0; equipo.forEach(p => sum += p.prom); return (sum / equipo.length).toFixed(1); }
+    function calcularPromedioReal(equipo) { 
+        if(equipo.length === 0) return 0;
+        let sum = 0; equipo.forEach(p => sum += p.prom); return (sum / equipo.length).toFixed(1); 
+    }
     
     async function compartirEquipos() {
         const elemento = document.getElementById('team-capture-area');
