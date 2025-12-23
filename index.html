@@ -115,12 +115,16 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="display:flex; justify-content:space-between; padding-top:15px;">
+            <div class="modal-footer" style="display:flex; justify-content:space-between; padding-top:15px; align-items: flex-end;">
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
-                <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+                    <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
+                    <span style="font-size: 0.7rem; color: #555; font-family: var(--fuente-texto);">Versión 1.8.0 (Resistencia + Penalización Acumulada)</span>
+                </div>
             </div>
         </div>
     </div>
+    <audio id="audio-player" loop></audio>
 <script>
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
@@ -217,7 +221,7 @@
     
     function agregarInvitado() {
         const id = 9000 + invitados.length + 1;
-        invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, esInvitado: true});
+        invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, res: 70, esInvitado: true});
         asignarJugadorAutomaticamente(id);
         renderizarListaSeleccion();
     }
@@ -226,7 +230,7 @@
     
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
-        if(inv) { if(campo === 'nombre') inv.nombre = valor; else inv.prom = parseInt(valor) || 60; actualizarTablerosEquipos(); }
+        if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
     }
 
     function isPlayerSelected(id) { const nid = parseInt(id); return equipo1.includes(nid) || equipo2.includes(nid); }
@@ -234,7 +238,6 @@
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
-
         let html = invitados.map(i => {
             const sel = isPlayerSelected(i.id);
             const can = total < 10 || sel;
@@ -245,7 +248,6 @@
                 <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span>
             </div>`;
         }).join('');
-
         html += [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => {
             const sel = isPlayerSelected(j.id);
             const can = total < 10 || sel;
@@ -254,7 +256,6 @@
                 <span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span>
             </div>`;
         }).join('');
-
         cont.innerHTML = html;
         actualizarContadorEquipos();
     }
@@ -309,28 +310,71 @@
 
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
+    // ====================================================================
+    //   GENERACIÓN AUTOMÁTICA (LÓGICA MEJORADA v1.8.0)
+    // ====================================================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
+
         const currentE1 = [...equipo1].sort().join(',');
-        const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
+
+        // 1. IDENTIFICAR GRUPOS POLARES
+        const sortedProm = [...pool].sort((a,b) => b.prom - a.prom);
+        const cracksIds = sortedProm.slice(0, 2).map(p => p.id);
+        const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
+        const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
+
+        // 2. SEPARAR LOS 2 MEJORES ARQUEROS (BASE)
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
-        let mejorE1 = [], mejorE2 = [], menorDiff = 999;
+
+        let mejorE1 = [], mejorE2 = [], menorFealdad = 9999;
+
+        // 3. SIMULACIÓN DE 100 ESCENARIOS
         for (let i = 0; i < 100; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
-            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 4 - 2) - (p.edad > (avgAge + 15) ? 4 : 0); });
+            
+            // Variabilidad sutil de nivel para permitir rotación
+            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
+
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
-                if (s1 <= s2 && t1.length < 5) { t1.push(p); s1 += p.prom; }
-                else if (t2.length < 5) { t2.push(p); s2 += p.prom; }
-                else { t1.push(p); s1 += p.prom; }
+                if ((s1 <= s2 && t1.length < 5) || t2.length >= 5) { t1.push(p); s1 += p.prom; }
+                else { t2.push(p); s2 += p.prom; }
             });
-            let diff = Math.abs(s1 - s2);
-            let checkE1 = t1.map(p => p.id).sort().join(',');
-            if (checkE1 !== currentE1 && diff < menorDiff) { menorDiff = diff; mejorE1 = t1.map(p => p.id); mejorE2 = t2.map(p => p.id); }
+
+            const idsT1 = t1.map(p => p.id);
+            const idsT2 = t2.map(p => p.id);
+
+            // 4. CÁLCULO DE FEALDAD (Puntos de castigo)
+            let fealdad = Math.abs(s1 - s2) * 2; // Diferencia de promedio pesa mucho
+
+            // Castigo acumulativo por Cracks juntos (0, 1 o 2)
+            let cracksEnT1 = cracksIds.filter(id => idsT1.includes(id)).length;
+            if (cracksEnT1 !== 1) fealdad += 15; // Penaliza si están los 2 juntos o los 2 separados
+
+            // Castigo por Resaca juntos
+            let resacaEnT1 = resacaIds.filter(id => idsT1.includes(id)).length;
+            if (resacaEnT1 !== 1) fealdad += 15;
+
+            // Castigo por Pulmones juntos (Gradiente: mejor 2 y 1 que 3 y 0)
+            let pulmonesEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
+            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 20; // Los 3 juntos es lo peor
+
+            // 5. FILTRO DE REPETICIÓN
+            let checkE1 = idsT1.sort().join(',');
+            if (checkE1 === currentE1) fealdad += 50; // Castigo extra para forzar cambio
+
+            if (fealdad < menorFealdad) {
+                menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2;
+            }
         }
-        if (mejorE1.length) { if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; } else { equipo1 = mejorE2; equipo2 = mejorE1; } }
+
+        if (mejorE1.length) {
+            if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; }
+            else { equipo1 = mejorE2; equipo2 = mejorE1; }
+        }
         actualizarTablerosEquipos();
     }
 
