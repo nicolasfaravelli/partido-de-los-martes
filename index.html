@@ -301,8 +301,8 @@
     // ====================================================================
     let datosOriginales = [];
     let invitados = []; 
-    let equipo1 = []; // IDs numéricos
-    let equipo2 = []; // IDs numéricos
+    let equipo1 = []; 
+    let equipo2 = []; 
     let draggingId = null;
     let jugadorActualEnModal = null;
     let esModoLeyenda = false;
@@ -646,22 +646,37 @@
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
         if (pool.length !== 10) return;
+        
+        // Promedio de edad
         const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
+        
+        // Separar arqueros (Stat + Posición)
         pool.sort((a, b) => ((b.arq || 50) + (b.pos === 'POR' ? 15 : 0)) - ((a.arq || 50) + (a.pos === 'POR' ? 15 : 0)));
         let arq1 = pool[0], arq2 = pool[1], resto = pool.slice(2);
+        
+        // Mezclado previo para romper empates y variar
+        resto.sort(() => Math.random() - 0.5);
+        
+        // Poder dinámico con margen +-3
         resto.forEach(p => {
-            let fluctuacion = (Math.random() * 2) - 1;
-            let penEdad = (p.edad > (avgAge + 15)) ? 3 : 0;
+            let fluctuacion = (Math.random() * 6) - 3;
+            let penEdad = (p.edad > (avgAge + 15)) ? 4 : 0;
             p._tempPower = p.prom + fluctuacion - penEdad;
         });
+        
+        // Ordenar por poder ajustado
         resto.sort((a, b) => b._tempPower - a._tempPower);
+        
         let teamA = [arq1.id], teamB = [arq2.id], totalA = arq1.prom, totalB = arq2.prom;
+        
         resto.forEach(p => {
             if (totalA <= totalB) { teamA.push(p.id); totalA += p.prom; }
             else { teamB.push(p.id); totalB += p.prom; }
         });
+        
         if (Math.random() > 0.5) { equipo1 = teamA; equipo2 = teamB; }
         else { equipo1 = teamB; equipo2 = teamA; }
+        
         actualizarTablerosEquipos();
     }
 
