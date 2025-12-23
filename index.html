@@ -3,211 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>Partido de los Martes</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    
     <style>
-        /* =========================================
-           1. CONFIGURACIÓN GLOBAL
-           ========================================= */
         :root {
-            --fondo-url: none;
-            --color-fondo: #0f0f0f;
-            --color-paneles: #1a1a1a;
-            --color-bordes: #333333;
-            --color-texto: #ffffff;
-            --color-acento: #d4af37; /* Dorado */
-            --color-gris-claro: #f0f0f0;
-            
-            --stat-legend: #a855f7;
-            --stat-gold: #d4af37;
-            --stat-silver: #7a7a7a;
-            --stat-bronze: #5e3e21;
-
-            --fuente-titulo: 'Bebas Neue', sans-serif;
-            --fuente-texto: 'Roboto', system-ui, sans-serif;
+            --fondo-url: none; --color-fondo: #0f0f0f; --color-paneles: #1a1a1a; --color-bordes: #333333;
+            --color-texto: #ffffff; --color-acento: #d4af37; --color-gris-claro: #f0f0f0;
+            --stat-legend: #a855f7; --stat-gold: #d4af37; --stat-silver: #7a7a7a; --stat-bronze: #5e3e21;
+            --fuente-titulo: 'Bebas Neue', sans-serif; --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
-
         body { 
-            background-color: var(--color-fondo); 
-            color: var(--color-texto); 
-            font-family: var(--fuente-titulo); 
-            margin: 0; padding: 0 20px 20px 20px; 
-            background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
-            user-select: none;
+            background-color: var(--color-fondo); color: var(--color-texto); font-family: var(--fuente-titulo); 
+            margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
+            background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
         }
-
-        /* =========================================
-           2. HEADER Y CONTROLES PRINCIPALES
-           ========================================= */
-        .header-container { 
-            text-align: center; position: sticky; top: 0; z-index: 100;
-            margin: 0 -20px 10px -20px; padding: 20px 0 20px 0;
-        }
+        .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
-            background-color: var(--color-fondo); background-image: var(--fondo-url); 
-            background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;
-            opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; 
+            background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
-        .title-img:active { transform: scale(0.98); }
-
         .controls-area {
-            max-width: 1200px; margin: 0 auto 20px auto; 
-            display: flex; gap: 10px; flex-wrap: wrap;
+            max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
             background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
             justify-content: space-between; align-items: center; position: relative; z-index: 50;
         }
-
-        #search-input, #sort-select {
-            flex: 1; padding: 10px 15px; font-family: var(--fuente-titulo); font-size: 1.1rem; letter-spacing: 1px;
-            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px;
-        }
-        #search-input:focus, #sort-select:focus { outline: none; border-color: var(--color-acento); }
-
-        .btn {
-            border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer;
-            font-family: var(--fuente-titulo); font-size: 1.3rem; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s;
-        }
-        .btn:active { transform: scale(0.98); }
-
-        .btn-gold { background: var(--color-acento); color: #000; border-color: var(--color-acento); font-weight: bold; }
-        .btn-gold:hover { filter: brightness(1.1); }
-
+        #search-input, #sort-select { flex: 1; padding: 10px 15px; font-family: var(--fuente-titulo); font-size: 1.1rem; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; }
+        .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
+        .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        .btn-ghost:hover { color: #fff; border-color: #fff; }
-
-        /* =========================================
-           3. GRILLA DE JUGADORES (HOME)
-           ========================================= */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
-        
-        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s ease-out; container-type: size; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
-
-        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; display: block; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); z-index: 1; }
-        .card-bg { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; display: block; }
+        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); }
+        .card-bg { width: 100%; height: 100%; object-fit: contain; }
+        .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; }
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
-
         .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
-        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; line-height: 1; }
-        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; letter-spacing: 1px; }
+        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
+        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
-        .stat-box { text-align: center; width: 16%; }
-        .stat-val { font-size: 8.5cqw; display: block; }
-
-        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: hidden; -webkit-mask-size: contain; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
-        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
-        .card:hover .shine-layer::after { left: 150%; transition: left 0.6s; }
-        
-        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
-        .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
-        
-        @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
-        .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.7s ease-out forwards; }
-
-        /* =========================================
-           4. MODALES
-           ========================================= */
+        .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
-        
-        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-
-        /* =========================================
-           5. ARMADOR DE EQUIPOS (MODAL)
-           ========================================= */
+        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
-        
-        .team-title { text-align: center; color: var(--color-acento); margin: 0 0 10px 0; font-size: 2rem; }
-        
-        .armador-layout { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex: 1; padding-right: 5px; }
-        
-        .selection-area { background: #111; padding: 10px; border-radius: 6px; border: 1px solid #333; }
-        
-        .selection-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; gap: 15px; }
-        .counter-text { font-family: var(--fuente-texto); font-weight: bold; color: #888; text-transform: uppercase; font-size: 1.1rem; }
-        .counter-text.complete { color: var(--color-acento); }
-
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
-        
-        .player-row { 
-            display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; transition: background 0.2s; 
-            font-family: var(--fuente-texto); font-size: 0.95rem; font-weight: bold; border: 1px solid transparent;
-        }
-        .player-row:hover { background: #333; }
-        .player-row.selected { background: #2a2a2a; border-color: var(--color-acento); color: var(--color-acento); }
-        .player-row.disabled { opacity: 0.3; pointer-events: none; }
-        .player-check { transform: scale(1.2); accent-color: var(--color-acento); cursor: pointer; margin: 0; }
-        
-        .guest-item { border: 1px dashed #555; background: #1a1a1a; }
-        .guest-input-name { background: transparent; border: none; border-bottom: 1px solid #555; color: white; width: 90px; font-family: var(--fuente-texto); font-size: 0.9rem; }
-        .guest-input-name:focus { outline: none; border-color: var(--color-acento); }
-        .guest-input-rating { background: #111; border: 1px solid #444; color: var(--color-acento); width: 30px; text-align: center; border-radius: 3px; font-weight: bold; }
-
-        .btn-add-guest { 
-            width: auto; 
-            padding: 8px 15px; 
-            background: #222; 
-            border: 1px dashed #444; 
-            color: #888; 
-            font-family: var(--fuente-titulo); 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            transition: all 0.2s; 
-            white-space: nowrap;
-        }
-        .btn-add-guest:hover { background: #2a2a2a; color: var(--color-acento); border-color: var(--color-acento); }
-
-        .tools-area { display: flex; justify-content: center; gap: 10px; align-items: center; }
-        .btn-generate { width: 100%; max-width: 300px; font-size: 1.5rem; padding: 12px; }
-
-        #team-capture-area { background: var(--color-paneles); border-radius: 8px; margin-top: 10px; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-texto); font-weight: bold; }
+        .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
         .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; }
-        .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: border-color 0.2s; }
-        
-        .team-box.drag-over { border-color: var(--color-acento); background: rgba(212, 175, 55, 0.05); }
-
+        .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
         .team-white { background: var(--color-gris-claro); color: #111; border-color: #fff; }
         .team-black { background: #111; color: #fff; border-color: #333; }
-        
-        .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
-        .team-avg { text-align: center; font-size: 1rem; margin-bottom: 10px; opacity: 0.8; font-family: var(--fuente-texto); font-weight: bold; }
-        
-        .team-list-ul { list-style: none; padding: 0; margin: 0; flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        
-        .team-player-li { 
-            padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; 
-            display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); border-radius: 4px;
-            user-select: none; transition: transform 0.1s, background 0.2s;
-        }
-        .team-black .team-player-li { border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .team-player-li:active { cursor: grabbing; transform: scale(0.98); }
-        .team-player-li:hover { background: rgba(128,128,128,0.2); }
-        
-        .modal-footer { margin-top: 15px; display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #333; padding-top: 15px; }
-
-        #loader { text-align: center; color: #666; margin-top: 50px; font-family: sans-serif;}
+        .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; font-weight: bold; }
+        .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
+        #loader { text-align: center; color: #666; margin-top: 50px; }
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
     </style>
 </head>
 <body>
-
-    <div class="header-container" id="header-area" ondblclick="activarModoRetro()" title="Doble click para Modo Retro">
+    <div class="header-container" id="header-area" ondblclick="activarModoRetro()">
         <h1 id="default-title">PARTIDO DE LOS MARTES</h1>
     </div>
-    
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
         <select id="sort-select">
@@ -216,98 +80,61 @@
             <option value="prom-desc">Valoración: Mayor a Menor</option>
             <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
-        <button class="btn btn-gold" onclick="abrirArmador()">
-            ARMAR EQUIPOS
-        </button>
+        <button class="btn btn-gold" onclick="abrirArmador()">ARMAR EQUIPOS</button>
     </div>
-
     <div id="loader">Cargando jugadores...</div>
     <div id="grid-container" class="grid"></div>
-
     <div id="modal" class="modal-overlay">
         <div id="modal-card-container"></div>
         <div class="btn-group" id="modal-buttons"></div>
     </div>
-
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
-            <div class="team-title">ARMADOR DE EQUIPOS</div>
-            
+            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2rem;">ARMADOR DE EQUIPOS</div>
             <div class="armador-layout">
-                <div class="selection-area">
-                    <div class="selection-header">
-                        <span class="counter-text" id="team-counter">SELECCIONADOS: 0/10</span>
+                <div class="selection-area" style="background:#111; padding:10px; border-radius:6px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span id="team-counter" style="font-weight:bold; color:#888;">SELECCIONADOS: 0/10</span>
                         <button class="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
-
-                <div class="tools-area">
-                    <button class="btn btn-gold btn-generate" onclick="generarAutomatico()" id="btn-generate" style="opacity: 0.5; pointer-events: none;">
-                        GENERAR AUTOMÁTICO
-                    </button>
-                </div>
-
+                <div style="text-align:center;"><button class="btn btn-gold" style="width:100%;" onclick="generarAutomatico()" id="btn-generate">GENERAR AUTOMÁTICO</button></div>
                 <div id="team-capture-area">
                     <div class="teams-container">
-                        <div class="team-box team-white" id="box-team-1" ondragover="permitirDrop(event)" ondrop="dropJugador(event, 'team1')">
+                        <div class="team-box team-white" id="box-team-1" ondragover="event.preventDefault()" ondrop="dropJugador(event, 'team1')">
                             <div class="team-header">CLARO</div>
-                            <div class="team-avg" id="avg-team-1">Prom: 0</div>
-                            <ul class="team-list-ul" id="list-team-1"></ul>
+                            <div id="avg-team-1" style="text-align:center; font-weight:bold;">Prom: 0</div>
+                            <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0;"></ul>
                         </div>
-                        
-                        <div class="team-box team-black" id="box-team-2" ondragover="permitirDrop(event)" ondrop="dropJugador(event, 'team2')">
+                        <div class="team-box team-black" id="box-team-2" ondragover="event.preventDefault()" ondrop="dropJugador(event, 'team2')">
                             <div class="team-header">OSCURO</div>
-                            <div class="team-avg" id="avg-team-2">Prom: 0</div>
-                            <ul class="team-list-ul" id="list-team-2"></ul>
+                            <div id="avg-team-2" style="text-align:center; font-weight:bold;">Prom: 0</div>
+                            <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0;"></ul>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="modal-footer">
+            <div class="modal-footer" style="display:flex; justify-content:space-between; padding-top:15px;">
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
-                <div style="flex:1"></div>
                 <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
             </div>
         </div>
     </div>
-
     <audio id="audio-player" loop></audio>
-    <div style="position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer;" onclick="toggleMusic()">🔈</div>
-
 <script>
-    // ====================================================================
-    //   CONFIGURACIÓN
-    // ====================================================================
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
-    
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-    const NEW_CSV_URL = BASE_CSV_URL + "&uid=" + Date.now();
-    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(NEW_CSV_URL);
-
+    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
+    
+    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], draggingId = null, jugadorActualEnModal = null, esModoLeyenda = false;
 
-    const MULTIPLICADORES_RANKING = [1.125, 1.1, 1.075, 1.05, 1.025, 1]; 
-    const BONUS_FISICO = { 'res': 1.05, 'vel': 1.025 };
-    const TOPE_MAXIMO = 98;
-
-    // ====================================================================
-    //   ESTADO GLOBAL
-    // ====================================================================
-    let datosOriginales = [];
-    let invitados = []; 
-    let equipo1 = []; 
-    let equipo2 = []; 
-    let draggingId = null;
-    let jugadorActualEnModal = null;
-    let esModoLeyenda = false;
-
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
         if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL;
@@ -317,372 +144,180 @@
     function cargarDatos() {
         Papa.parse(PROXY_URL, {
             download: true, header: false, skipEmptyLines: true,
-            complete: function(results) {
+            complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
-                const data = results.data;
-                if(data.length > 0) data.shift();
-                
+                const data = results.data; if(data.length > 0) data.shift();
                 datosOriginales = data.map((fila, index) => {
                     if(!fila[0] || fila[0] === 'Jugador') return null;
                     return {
-                        id: index,
-                        nombre: fila[0],
-                        prom: parseInt(fila[8]) || 60,
+                        id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60,
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
                         vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
-                        edad: parseInt(fila[1]) || 25,
-                        pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13],
-                        color: COLORES[fila[10] ? fila[10].trim().toLowerCase() : 'oro'] || '#624f21'
+                        edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11],
+                        foto: fila[12], fotoLeyenda: fila[13], color: COLORES[fila[10]?.trim().toLowerCase() || 'oro'] || '#624f21'
                     };
                 }).filter(i => i !== null);
-                
                 aplicarFiltrosYOrden();
-            },
-            error: function() {
-                document.getElementById('loader').style.display = 'none';
             }
         });
     }
-
-    const searchInput = document.getElementById('search-input');
-    const sortSelect = document.getElementById('sort-select');
-    
-    if(searchInput) searchInput.addEventListener('input', aplicarFiltrosYOrden);
-    if(sortSelect) sortSelect.addEventListener('change', aplicarFiltrosYOrden);
 
     function aplicarFiltrosYOrden() {
-        const texto = searchInput.value.toLowerCase();
-        const val = sortSelect.value.split('-');
-        const criterio = val[0];
-        const orden = val[1];
-
+        const texto = document.getElementById('search-input').value.toLowerCase();
+        const [criterio, orden] = document.getElementById('sort-select').value.split('-');
         let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(texto));
-
-        lista.sort((a,b) => {
-            if(criterio === 'nombre') {
-                return orden === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre);
-            }
-            if(criterio === 'prom') {
-                return orden === 'asc' ? a.prom - b.prom : b.prom - a.prom;
-            }
-        });
-        
-        renderizarGrilla(lista);
-    }
-
-    function renderizarGrilla(lista) {
+        lista.sort((a,b) => criterio === 'nombre' ? (orden === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (orden === 'asc' ? a.prom - b.prom : b.prom - a.prom));
         const container = document.getElementById('grid-container');
-        container.innerHTML = '';
-        if(lista.length === 0) { container.innerHTML = '<p style="text-align:center;color:#aaa">No se encontraron jugadores.</p>'; return; }
-        lista.forEach(j => {
-            container.innerHTML += `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`;
-        });
+        container.innerHTML = lista.length ? lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('') : '<p style="text-align:center;color:#aaa">No se encontraron jugadores.</p>';
     }
 
     function generarHTMLCarta(j, lazy) {
-        const load = lazy ? 'loading="lazy"' : '';
-        const fotoHtml = j.foto ? `<img src="${j.foto}" class="card-face" ${load} crossorigin="anonymous">` : '';
-        return `
-            <div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${load} crossorigin="anonymous"></div>
-            <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
-            ${fotoHtml}
-            <div class="info-layer">
-                <div class="rating" style="color:${j.color}">${j.prom}</div>
-                <div class="position" style="color:${j.color}">${j.pos}</div>
-                <div class="name" style="color:${j.color}">${j.nombre}</div>
-                <div class="stats-container" style="color:${j.color}">
-                    <div class="stat-box"><span class="stat-val">${j.ata}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.def}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.tec}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.vel}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.res}</span></div>
-                    <div class="stat-box"><span class="stat-val">${j.arq}</span></div>
-                </div>
+        return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy ? 'loading="lazy"' : ''} crossorigin="anonymous"></div>
+            <div class="shine-layer" style="mask-image: url('${j.fondo}');"></div>
+            ${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}
+            <div class="info-layer" style="color:${j.color}">
+                <div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div>
+                <div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div>
             </div>`;
     }
 
     function abrirModal(id) {
-        const j = datosOriginales.find(x => x.id === parseInt(id));
-        jugadorActualEnModal = j;
+        jugadorActualEnModal = datosOriginales.find(x => x.id === parseInt(id));
         esModoLeyenda = false;
-        const modal = document.getElementById('modal');
-        modal.style.display = 'flex';
-        renderizarModal(j);
+        document.getElementById('modal').style.display = 'flex';
+        renderizarModal(jugadorActualEnModal);
     }
 
     function renderizarModal(j) {
-        const cont = document.getElementById('modal-card-container');
-        const btns = document.getElementById('modal-buttons');
-        cont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
-        let htmlBtns = '';
-        if (jugadorActualEnModal.fotoLeyenda) {
-            const txt = esModoLeyenda ? "ACTUAL" : "LEYENDA";
-            const cls = esModoLeyenda ? "btn-ghost" : "btn-gold";
-            htmlBtns += `<button class="btn ${cls}" onclick="toggleLeyenda()">${txt}</button>`;
-        }
-        htmlBtns += `<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>`;
-        htmlBtns += `<button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
-        btns.innerHTML = htmlBtns;
+        document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
+        document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda ? 'btn-ghost' : 'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda ? "ACTUAL" : "LEYENDA"}</button>` : ''}
+            <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
     }
 
     function toggleLeyenda() {
         esModoLeyenda = !esModoLeyenda;
-        let mostrar = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
-        renderizarModal(mostrar);
-        const card = document.getElementById('carta-descarga');
-        if(card) {
-            card.classList.remove('trigger-shine', 'trigger-shine-reverse');
-            void card.offsetWidth;
-            card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
-        }
+        renderizarModal(esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal);
     }
 
     function calcularObjetoLeyenda(base) {
-        let stats = [
-            { id: 'ata', valor: base.ata }, { id: 'def', valor: base.def },
-            { id: 'tec', valor: base.tec }, { id: 'vel', valor: base.vel },
-            { id: 'res', valor: base.res }, { id: 'arq', valor: base.arq }
-        ];
-        stats.sort((a, b) => b.valor - a.valor);
-        let nuevos = {};
-        stats.forEach((obj, idx) => {
-            let mult = MULTIPLICADORES_RANKING[idx] || 1.05;
-            let val = obj.valor * mult;
-            if (BONUS_FISICO[obj.id]) val *= BONUS_FISICO[obj.id];
-            nuevos[obj.id] = Math.min(TOPE_MAXIMO, Math.round(val));
+        const stats = ['ata','def','tec','vel','res','arq'].map(id => ({id, val: base[id]})).sort((a,b)=>b.val-a.val);
+        let nuevos = {}, suma = 0;
+        stats.forEach((s, i) => {
+            let v = s.val * ([1.125, 1.1, 1.075, 1.05, 1.025, 1][i] || 1);
+            if(s.id === 'res') v *= 1.05; if(s.id === 'vel') v *= 1.025;
+            nuevos[s.id] = Math.min(98, Math.round(v)); suma += nuevos[s.id];
         });
-        let suma = 0; 
-        for(let k in nuevos) suma += nuevos[k];
-        return {
-            ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'],
-            ata: nuevos.ata, def: nuevos.def, tec: nuevos.tec, vel: nuevos.vel, res: nuevos.res, arq: nuevos.arq, prom: Math.min(99, Math.round(suma/6))
-        };
+        return {...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(99, Math.round(suma/6))};
     }
 
     function descargarCarta() {
-        const el = document.getElementById('carta-descarga');
-        const shine = el.querySelector('.shine-layer');
-        shine.style.display = 'none';
-        html2canvas(el, { useCORS: true, scale: 3, backgroundColor: null }).then(cvs => {
+        const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none';
+        html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => {
             const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click();
-            shine.style.display = 'block';
+            el.querySelector('.shine-layer').style.display = 'block';
         });
     }
 
-    function abrirArmador() {
-        document.getElementById('team-modal').style.display = 'flex';
-        invitados = []; 
-        equipo1 = []; equipo2 = [];
-        renderizarListaSeleccion();
-        actualizarTablerosEquipos();
-    }
-    
-    function cerrarArmador() {
-        document.getElementById('team-modal').style.display = 'none';
-    }
-
+    function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); actualizarTablerosEquipos(); }
+    function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
-        const num = invitados.length + 1;
-        const idInv = 9000 + num; 
-        invitados.push({
-            id: idInv, nombre: `Invitado ${num}`, prom: 70, esInvitado: true,
-            ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25
-        });
-        asignarJugadorAutomaticamente(idInv);
-        renderizarListaSeleccion();
-        actualizarContadorEquipos();
+        const id = 9000 + invitados.length + 1;
+        invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, esInvitado: true});
+        asignarJugadorAutomaticamente(id); renderizarListaSeleccion(); actualizarContadorEquipos();
     }
-
-    function borrarInvitado(idInv) {
-        invitados = invitados.filter(i => i.id !== parseInt(idInv));
-        removerJugadorDeEquipos(idInv);
-        renderizarListaSeleccion();
-        actualizarContadorEquipos();
+    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); actualizarContadorEquipos(); }
+    function editarInvitado(id, campo, valor) {
+        const inv = invitados.find(i => i.id === parseInt(id));
+        if(inv) { if(campo === 'nombre') inv.nombre = valor; else inv.prom = parseInt(valor) || 60; actualizarTablerosEquipos(); }
     }
-
-    function editarInvitado(idInv, campo, valor) {
-        const inv = invitados.find(i => i.id === parseInt(idInv));
-        if(inv) {
-            if(campo === 'nombre') inv.nombre = valor;
-            if(campo === 'prom') {
-                const v = parseInt(valor) || 60;
-                inv.prom = v; inv.ata=v; inv.def=v; inv.tec=v; inv.vel=v; inv.res=v;
-            }
-            actualizarTablerosEquipos(); 
-        }
-    }
-
     function renderizarListaSeleccion() {
-        const contenedor = document.getElementById('players-checklist');
-        contenedor.innerHTML = '';
-        invitados.forEach(inv => {
-            const div = document.createElement('div');
-            div.className = 'player-row guest-item selected';
-            div.innerHTML = `
-                <input type="checkbox" class="player-check" checked value="${inv.id}" onchange="toggleSeleccion(this.value)">
-                <input type="text" class="guest-input-name" value="${inv.nombre}" oninput="editarInvitado(${inv.id}, 'nombre', this.value)" onclick="event.stopPropagation()">
-                <input type="number" class="guest-input-rating" value="${inv.prom}" onchange="editarInvitado(${inv.id}, 'prom', this.value)" onclick="event.stopPropagation()">
-                <span style="color:#f55; font-weight:bold; margin-left:auto; cursor:pointer;" onclick="borrarInvitado(${inv.id})">✕</span>`;
-            contenedor.appendChild(div);
-        });
-        const sorted = [...datosOriginales].sort((a,b) => a.nombre.localeCompare(b.nombre));
-        sorted.forEach(j => {
-            const isSelected = isPlayerSelected(j.id);
-            const div = document.createElement('div');
-            div.className = isSelected ? 'player-row selected' : 'player-row';
-            div.id = `row-${j.id}`;
-            div.onclick = (e) => { 
-                if(e.target.type !== 'checkbox') {
-                    const cb = div.querySelector('.player-check');
-                    if(!cb.disabled) { cb.checked = !cb.checked; toggleSeleccion(cb.value); }
-                }
-            };
-            div.innerHTML = `
-                <input type="checkbox" class="player-check" value="${j.id}" ${isSelected ? 'checked' : ''} onchange="toggleSeleccion(this.value)">
-                <span>${j.nombre}</span> <span style="margin-left:auto; color:#666; font-size:0.8em">${j.prom}</span>`;
-            contenedor.appendChild(div);
-        });
+        const cont = document.getElementById('players-checklist');
+        cont.innerHTML = invitados.map(i => `<div class="player-row guest-item"><input type="checkbox" checked onchange="toggleSeleccion(${i.id})"><input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" style="background:transparent;border:none;color:white;width:80px;"><input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" style="width:40px;"><span onclick="borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span></div>`).join('') +
+            [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => `<div class="player-row ${isPlayerSelected(j.id)?'selected':''}" onclick="toggleSeleccion(${j.id})"><input type="checkbox" ${isPlayerSelected(j.id)?'checked':''} onclick="event.stopPropagation()"><span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span></div>`).join('');
         actualizarContadorEquipos();
     }
-
-    function isPlayerSelected(id) {
-        const nid = parseInt(id);
-        return equipo1.includes(nid) || equipo2.includes(nid); 
-    }
-
-    function toggleSeleccion(id) {
-        const nid = parseInt(id);
-        const checkbox = document.querySelector(`.player-check[value="${nid}"]`);
-        const isChecked = checkbox ? checkbox.checked : true;
-        if (isChecked) asignarJugadorAutomaticamente(nid);
-        else removerJugadorDeEquipos(nid);
-        renderizarListaSeleccion();
-        actualizarContadorEquipos();
-    }
-
-    function asignarJugadorAutomaticamente(id) {
-        const nid = parseInt(id);
-        if(isPlayerSelected(nid)) return;
-        if (equipo1.length < 5) equipo1.push(nid);
-        else equipo2.push(nid);
-        actualizarTablerosEquipos();
-    }
-
-    function removerJugadorDeEquipos(id) {
-        const nid = parseInt(id);
-        equipo1 = equipo1.filter(x => x !== nid);
-        equipo2 = equipo2.filter(x => x !== nid);
-        actualizarTablerosEquipos();
-    }
-
+    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
+    function toggleSeleccion(id) { const nid = parseInt(id); isPlayerSelected(nid) ? removerJugadorDeEquipos(nid) : asignarJugadorAutomaticamente(nid); renderizarListaSeleccion(); actualizarContadorEquipos(); }
+    function asignarJugadorAutomaticamente(id) { const nid = parseInt(id); if(!isPlayerSelected(nid)) (equipo1.length < 5 ? equipo1 : equipo2).push(nid); actualizarTablerosEquipos(); }
+    function removerJugadorDeEquipos(id) { const nid = parseInt(id); equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); actualizarTablerosEquipos(); }
     function actualizarContadorEquipos() {
-        const total = equipo1.length + equipo2.length;
-        const txt = document.getElementById('team-counter');
-        const btnGen = document.getElementById('btn-generate');
-        const btnShare = document.getElementById('btn-share-teams');
-        txt.innerText = `SELECCIONADOS: ${total}/10`;
-        if (total === 10) {
-            txt.classList.add('complete'); btnGen.style.opacity = '1'; btnGen.style.pointerEvents = 'auto'; btnShare.style.display = 'block';
-            document.querySelectorAll('.player-check:not(:checked)').forEach(cb => { cb.disabled = true; cb.closest('.player-row').classList.add('disabled'); });
-        } else {
-            txt.classList.remove('complete'); btnGen.style.opacity = '0.5'; btnGen.style.pointerEvents = 'none'; btnShare.style.display = 'none';
-            document.querySelectorAll('.player-check').forEach(cb => { cb.disabled = false; cb.closest('.player-row').classList.remove('disabled'); });
-        }
+        const total = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
+        const ok = total === 10; document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
+        document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
+        document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
-
-    function getPlayerData(id) {
-        const nid = parseInt(id);
-        if (nid >= 9000) return invitados.find(i => i.id === nid);
-        return datosOriginales.find(d => d.id === nid);
-    }
-
-    function actualizarTablerosEquipos() {
-        renderListaEquipo('list-team-1', equipo1, 'avg-team-1');
-        renderListaEquipo('list-team-2', equipo2, 'avg-team-2');
-    }
-
+    function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
+    function actualizarTablerosEquipos() { renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); renderListaEquipo('list-team-2', equipo2, 'avg-team-2'); }
     function renderListaEquipo(ulId, ids, avgId) {
-        const ul = document.getElementById(ulId);
-        ul.innerHTML = ''; let suma = 0;
-        const jugadores = ids.map(id => getPlayerData(id)).filter(x=>x);
-        jugadores.sort((a,b) => a.nombre.localeCompare(b.nombre));
-        jugadores.forEach(p => {
-            suma += p.prom;
-            const li = document.createElement('li');
-            li.className = 'team-player-li'; li.draggable = true;
-            li.innerHTML = `<span>${p.nombre}</span> <span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
-            li.ondragstart = (e) => { draggingId = p.id; e.dataTransfer.effectAllowed = "move"; };
-            li.onclick = () => clickToMove(p.id);
+        const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0;
+        ids.map(getPlayerData).filter(x=>x).sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => {
+            suma += p.prom; const li = document.createElement('li'); li.className = 'team-player-li';
+            li.innerHTML = `<span>${p.nombre}</span><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
+            li.onclick = () => { if(equipo1.includes(p.id)){equipo1=equipo1.filter(x=>x!==p.id);equipo2.push(p.id);}else{equipo2=equipo2.filter(x=>x!==p.id);equipo1.push(p.id);} actualizarTablerosEquipos(); };
             ul.appendChild(li);
         });
-        document.getElementById(avgId).innerText = `Prom: ${ids.length > 0 ? (suma / ids.length).toFixed(1) : 0}`;
+        document.getElementById(avgId).innerText = `Prom: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
     }
+    function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
-    function getColorProm(val) {
-        if(val >= 90) return STAT_COLORS.legend;
-        if(val >= 80) return STAT_COLORS.gold;
-        if(val >= 70) return STAT_COLORS.silver;
-        return STAT_COLORS.bronze;
-    }
-
-    function permitirDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-
-    function dropJugador(e, targetTeam) {
-        e.preventDefault();
-        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('drag-over'));
-        if (draggingId === null) return;
-        removerJugadorDeEquipos(draggingId);
-        if (targetTeam === 'team1') equipo1.push(draggingId); else equipo2.push(draggingId);
-        draggingId = null; actualizarTablerosEquipos();
-    }
-
-    function clickToMove(id) {
-        const nid = parseInt(id);
-        if (equipo1.includes(nid)) { equipo1 = equipo1.filter(x => x !== nid); equipo2.push(nid); }
-        else { equipo2 = equipo2.filter(x => x !== nid); equipo1.push(nid); }
-        actualizarTablerosEquipos();
-    }
-
+    // ====================================================================
+    //   GENERACIÓN AUTOMÁTICA (LÓGICA MEJORADA)
+    // ====================================================================
     function generarAutomatico() {
-        let pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
+        const pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-        
-        // Promedio de edad
+
+        const currentE1 = [...equipo1].sort().join(',');
         const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
-        
+
         // Separar arqueros (Stat + Posición)
         pool.sort((a, b) => ((b.arq || 50) + (b.pos === 'POR' ? 15 : 0)) - ((a.arq || 50) + (a.pos === 'POR' ? 15 : 0)));
-        let arq1 = pool[0], arq2 = pool[1], resto = pool.slice(2);
-        
-        // Mezclado previo para romper empates y variar
-        resto.sort(() => Math.random() - 0.5);
-        
-        // Poder dinámico con margen +-3
-        resto.forEach(p => {
-            let fluctuacion = (Math.random() * 6) - 3;
-            let penEdad = (p.edad > (avgAge + 15)) ? 4 : 0;
-            p._tempPower = p.prom + fluctuacion - penEdad;
-        });
-        
-        // Ordenar por poder ajustado
-        resto.sort((a, b) => b._tempPower - a._tempPower);
-        
-        let teamA = [arq1.id], teamB = [arq2.id], totalA = arq1.prom, totalB = arq2.prom;
-        
-        resto.forEach(p => {
-            if (totalA <= totalB) { teamA.push(p.id); totalA += p.prom; }
-            else { teamB.push(p.id); totalB += p.prom; }
-        });
-        
-        if (Math.random() > 0.5) { equipo1 = teamA; equipo2 = teamB; }
-        else { equipo1 = teamB; equipo2 = teamA; }
-        
+        const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
+
+        let mejorE1 = [], mejorE2 = [], menorDiff = 999;
+
+        // Intentamos 100 combinaciones al azar para buscar paridad y variedad
+        for (let i = 0; i < 100; i++) {
+            let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
+            
+            // Calculamos "poder" con variabilidad +-2 y penalización de edad dinámica
+            tempResto.forEach(p => {
+                p._pwr = p.prom + (Math.random() * 4 - 2) - (p.edad > (avgAge + 15) ? 4 : 0);
+            });
+
+            // Reparto greedy sobre la mezcla al azar
+            let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
+            tempResto.forEach(p => {
+                if (s1 <= s2 && t1.length < 5) { t1.push(p); s1 += p.prom; }
+                else if (t2.length < 5) { t2.push(p); s2 += p.prom; }
+                else { t1.push(p); s1 += p.prom; }
+            });
+
+            let diff = Math.abs(s1 - s2);
+            let checkE1 = t1.map(p => p.id).sort().join(',');
+
+            // Si la combinación es distinta a la actual y es más pareja que la mejor hallada...
+            if (checkE1 !== currentE1 && diff < menorDiff) {
+                menorDiff = diff; mejorE1 = t1.map(p => p.id); mejorE2 = t2.map(p => p.id);
+            }
+        }
+
+        // Si después de 100 intentos no hallamos algo distinto (raro), forzamos un swap
+        if (mejorE1.length === 0) {
+            equipo1 = restoOriginal.slice(0,4).map(p=>p.id).concat(arqA.id);
+            equipo2 = restoOriginal.slice(4).map(p=>p.id).concat(arqB.id);
+        } else {
+            // Sorteo final de quién es Claro y quién Oscuro
+            if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; }
+            else { equipo1 = mejorE2; equipo2 = mejorE1; }
+        }
+
         actualizarTablerosEquipos();
     }
 
     function compartirEquipos() {
-        const el = document.getElementById('team-capture-area');
-        html2canvas(el, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
+        html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
             canvas.toBlob(blob => {
                 const file = new File([blob], "equipos.png", { type: "image/png" });
                 if(navigator.share) navigator.share({ files: [file], title: 'Equipos' });
@@ -690,10 +325,8 @@
             });
         });
     }
-
-    const audio = document.getElementById('audio-player');
-    function toggleMusic() { if(audio.paused) audio.play(); else audio.pause(); }
     function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
+    function toggleMusic() { const a = document.getElementById('audio-player'); a.paused ? a.play() : a.pause(); }
 </script>
 </body>
 </html>
