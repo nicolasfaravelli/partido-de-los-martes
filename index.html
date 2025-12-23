@@ -119,7 +119,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.7rem; color: #555; font-family: var(--fuente-texto);">Versión 1.8.0 (Resistencia + Penalización Acumulada)</span>
+                    <span style="font-size: 0.7rem; color: #555; font-family: var(--fuente-texto);">Versión 1.9.0 (Regla Graneros + Paridad)</span>
                 </div>
             </div>
         </div>
@@ -311,7 +311,7 @@
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
     // ====================================================================
-    //   GENERACIÓN AUTOMÁTICA (LÓGICA MEJORADA v1.8.0)
+    //   GENERACIÓN AUTOMÁTICA (v1.9.0 - REGLA GRANEROS)
     // ====================================================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
@@ -319,23 +319,27 @@
 
         const currentE1 = [...equipo1].sort().join(',');
 
-        // 1. IDENTIFICAR GRUPOS POLARES
+        // 1. IDENTIFICAR GRUPOS POLARES Y CONDICIÓN GRANEROS
         const sortedProm = [...pool].sort((a,b) => b.prom - a.prom);
         const cracksIds = sortedProm.slice(0, 2).map(p => p.id);
         const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
         const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
+        
+        // Regla específica: Graneros juntos
+        const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
+        const hayDosGraneros = granerosIds.length === 2;
 
         // 2. SEPARAR LOS 2 MEJORES ARQUEROS (BASE)
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
 
-        let mejorE1 = [], mejorE2 = [], menorFealdad = 9999;
+        let mejorE1 = [], mejorE2 = [], menorFealdad = 99999;
 
         // 3. SIMULACIÓN DE 100 ESCENARIOS
         for (let i = 0; i < 100; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
             
-            // Variabilidad sutil de nivel para permitir rotación
+            // Variabilidad sutil para rotación
             tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
 
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
@@ -348,23 +352,30 @@
             const idsT2 = t2.map(p => p.id);
 
             // 4. CÁLCULO DE FEALDAD (Puntos de castigo)
-            let fealdad = Math.abs(s1 - s2) * 2; // Diferencia de promedio pesa mucho
+            let fealdad = Math.abs(s1 - s2) * 5; // La paridad de promedio es importante
 
-            // Castigo acumulativo por Cracks juntos (0, 1 o 2)
+            // REGLA GRANEROS: Si hay 2 y están separados, castigo masivo (200 puntos)
+            if (hayDosGraneros) {
+                const g1EnT1 = idsT1.includes(granerosIds[0]);
+                const g2EnT1 = idsT1.includes(granerosIds[1]);
+                if (g1EnT1 !== g2EnT1) fealdad += 200;
+            }
+
+            // Castigo por Cracks juntos
             let cracksEnT1 = cracksIds.filter(id => idsT1.includes(id)).length;
-            if (cracksEnT1 !== 1) fealdad += 15; // Penaliza si están los 2 juntos o los 2 separados
+            if (cracksEnT1 !== 1) fealdad += 20; 
 
             // Castigo por Resaca juntos
             let resacaEnT1 = resacaIds.filter(id => idsT1.includes(id)).length;
-            if (resacaEnT1 !== 1) fealdad += 15;
+            if (resacaEnT1 !== 1) fealdad += 20;
 
-            // Castigo por Pulmones juntos (Gradiente: mejor 2 y 1 que 3 y 0)
+            // Castigo por Pulmones juntos
             let pulmonesEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
-            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 20; // Los 3 juntos es lo peor
+            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 25; 
 
-            // 5. FILTRO DE REPETICIÓN
+            // FILTRO DE REPETICIÓN
             let checkE1 = idsT1.sort().join(',');
-            if (checkE1 === currentE1) fealdad += 50; // Castigo extra para forzar cambio
+            if (checkE1 === currentE1) fealdad += 100; // Castigo para forzar cambio
 
             if (fealdad < menorFealdad) {
                 menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2;
