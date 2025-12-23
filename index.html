@@ -301,8 +301,8 @@
     // ====================================================================
     let datosOriginales = [];
     let invitados = []; 
-    let equipo1 = []; // IDs en equipo 1
-    let equipo2 = []; // IDs en equipo 2
+    let equipo1 = []; // IDs numéricos
+    let equipo2 = []; // IDs numéricos
     let draggingId = null;
     let jugadorActualEnModal = null;
     let esModoLeyenda = false;
@@ -318,8 +318,8 @@
         Papa.parse(PROXY_URL, {
             download: true, header: false, skipEmptyLines: true,
             complete: function(results) {
-                const data = results.data;
                 document.getElementById('loader').style.display = 'none';
+                const data = results.data;
                 if(data.length > 0) data.shift();
                 
                 datosOriginales = data.map((fila, index) => {
@@ -337,6 +337,9 @@
                 }).filter(i => i !== null);
                 
                 aplicarFiltrosYOrden();
+            },
+            error: function() {
+                document.getElementById('loader').style.display = 'none';
             }
         });
     }
@@ -399,10 +402,9 @@
     }
 
     function abrirModal(id) {
-        const j = datosOriginales.find(x => x.id === id);
+        const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = j;
         esModoLeyenda = false;
-        
         const modal = document.getElementById('modal');
         modal.style.display = 'flex';
         renderizarModal(j);
@@ -411,30 +413,22 @@
     function renderizarModal(j) {
         const cont = document.getElementById('modal-card-container');
         const btns = document.getElementById('modal-buttons');
-        
         cont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
-        
         let htmlBtns = '';
         if (jugadorActualEnModal.fotoLeyenda) {
             const txt = esModoLeyenda ? "ACTUAL" : "LEYENDA";
             const cls = esModoLeyenda ? "btn-ghost" : "btn-gold";
             htmlBtns += `<button class="btn ${cls}" onclick="toggleLeyenda()">${txt}</button>`;
         }
-        
         htmlBtns += `<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>`;
         htmlBtns += `<button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
-        
         btns.innerHTML = htmlBtns;
     }
 
     function toggleLeyenda() {
         esModoLeyenda = !esModoLeyenda;
-        let mostrar;
-        if(esModoLeyenda) mostrar = calcularObjetoLeyenda(jugadorActualEnModal);
-        else mostrar = jugadorActualEnModal;
-        
+        let mostrar = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
         renderizarModal(mostrar);
-
         const card = document.getElementById('carta-descarga');
         if(card) {
             card.classList.remove('trigger-shine', 'trigger-shine-reverse');
@@ -450,7 +444,6 @@
             { id: 'res', valor: base.res }, { id: 'arq', valor: base.arq }
         ];
         stats.sort((a, b) => b.valor - a.valor);
-        
         let nuevos = {};
         stats.forEach((obj, idx) => {
             let mult = MULTIPLICADORES_RANKING[idx] || 1.05;
@@ -458,19 +451,11 @@
             if (BONUS_FISICO[obj.id]) val *= BONUS_FISICO[obj.id];
             nuevos[obj.id] = Math.min(TOPE_MAXIMO, Math.round(val));
         });
-
         let suma = 0; 
         for(let k in nuevos) suma += nuevos[k];
-        let prom = Math.min(99, Math.round(suma/6));
-
         return {
-            ...base,
-            foto: base.fotoLeyenda,
-            fondo: LEYENDA_FONDO_URL,
-            color: COLORES['leyenda'],
-            ata: nuevos.ata, def: nuevos.def, tec: nuevos.tec,
-            vel: nuevos.vel, res: nuevos.res, arq: nuevos.arq,
-            prom: prom
+            ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'],
+            ata: nuevos.ata, def: nuevos.def, tec: nuevos.tec, vel: nuevos.vel, res: nuevos.res, arq: nuevos.arq, prom: Math.min(99, Math.round(suma/6))
         };
     }
 
@@ -487,8 +472,9 @@
     function abrirArmador() {
         document.getElementById('team-modal').style.display = 'flex';
         invitados = []; 
+        equipo1 = []; equipo2 = [];
         renderizarListaSeleccion();
-        limpiarEquipos();
+        actualizarTablerosEquipos();
     }
     
     function cerrarArmador() {
@@ -498,36 +484,29 @@
     function agregarInvitado() {
         const num = invitados.length + 1;
         const idInv = 9000 + num; 
-        
-        const nuevoInvitado = {
-            id: idInv,
-            nombre: `Invitado ${num}`,
-            prom: 70,
-            esInvitado: true,
+        invitados.push({
+            id: idInv, nombre: `Invitado ${num}`, prom: 70, esInvitado: true,
             ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25
-        };
-
-        invitados.push(nuevoInvitado);
+        });
         asignarJugadorAutomaticamente(idInv);
         renderizarListaSeleccion();
         actualizarContadorEquipos();
     }
 
     function borrarInvitado(idInv) {
-        invitados = invitados.filter(i => i.id !== idInv);
+        invitados = invitados.filter(i => i.id !== parseInt(idInv));
         removerJugadorDeEquipos(idInv);
         renderizarListaSeleccion();
         actualizarContadorEquipos();
     }
 
     function editarInvitado(idInv, campo, valor) {
-        const inv = invitados.find(i => i.id === idInv);
+        const inv = invitados.find(i => i.id === parseInt(idInv));
         if(inv) {
             if(campo === 'nombre') inv.nombre = valor;
             if(campo === 'prom') {
                 const v = parseInt(valor) || 60;
-                inv.prom = v;
-                inv.ata=v; inv.def=v; inv.tec=v; inv.vel=v; inv.res=v;
+                inv.prom = v; inv.ata=v; inv.def=v; inv.tec=v; inv.vel=v; inv.res=v;
             }
             actualizarTablerosEquipos(); 
         }
@@ -536,66 +515,170 @@
     function renderizarListaSeleccion() {
         const contenedor = document.getElementById('players-checklist');
         contenedor.innerHTML = '';
-
         invitados.forEach(inv => {
             const div = document.createElement('div');
             div.className = 'player-row guest-item selected';
             div.innerHTML = `
-                <input type="checkbox" class="player-check" checked value="${inv.id}" onchange="toggleSeleccion(${inv.id})">
+                <input type="checkbox" class="player-check" checked value="${inv.id}" onchange="toggleSeleccion(this.value)">
                 <input type="text" class="guest-input-name" value="${inv.nombre}" oninput="editarInvitado(${inv.id}, 'nombre', this.value)" onclick="event.stopPropagation()">
                 <input type="number" class="guest-input-rating" value="${inv.prom}" onchange="editarInvitado(${inv.id}, 'prom', this.value)" onclick="event.stopPropagation()">
-                <span style="color:#f55; font-weight:bold; margin-left:auto; cursor:pointer;" onclick="borrarInvitado(${inv.id})">✕</span>
-            `;
+                <span style="color:#f55; font-weight:bold; margin-left:auto; cursor:pointer;" onclick="borrarInvitado(${inv.id})">✕</span>`;
             contenedor.appendChild(div);
         });
-
         const sorted = [...datosOriginales].sort((a,b) => a.nombre.localeCompare(b.nombre));
-        
         sorted.forEach(j => {
             const isSelected = isPlayerSelected(j.id);
-            const rowClass = isSelected ? 'player-row selected' : 'player-row';
-            
             const div = document.createElement('div');
-            div.className = rowClass;
+            div.className = isSelected ? 'player-row selected' : 'player-row';
             div.id = `row-${j.id}`;
             div.onclick = (e) => { 
                 if(e.target.type !== 'checkbox') {
                     const cb = div.querySelector('.player-check');
-                    if(!cb.disabled) {
-                        cb.checked = !cb.checked;
-                        toggleSeleccion(j.id);
-                    }
+                    if(!cb.disabled) { cb.checked = !cb.checked; toggleSeleccion(cb.value); }
                 }
             };
-
             div.innerHTML = `
-                <input type="checkbox" class="player-check" value="${j.id}" ${isSelected ? 'checked' : ''} onchange="toggleSeleccion(${j.id})">
-                <span>${j.nombre}</span>
-                <span style="margin-left:auto; color:#666; font-size:0.8em">${j.prom}</span>
-            `;
+                <input type="checkbox" class="player-check" value="${j.id}" ${isSelected ? 'checked' : ''} onchange="toggleSeleccion(this.value)">
+                <span>${j.nombre}</span> <span style="margin-left:auto; color:#666; font-size:0.8em">${j.prom}</span>`;
             contenedor.appendChild(div);
         });
-        
         actualizarContadorEquipos();
     }
 
     function isPlayerSelected(id) {
-        return equipo1.includes(id) || equipo2.includes(id); 
+        const nid = parseInt(id);
+        return equipo1.includes(nid) || equipo2.includes(nid); 
     }
 
     function toggleSeleccion(id) {
-        const checkbox = document.querySelector(`.player-check[value="${id}"]`);
+        const nid = parseInt(id);
+        const checkbox = document.querySelector(`.player-check[value="${nid}"]`);
         const isChecked = checkbox ? checkbox.checked : true;
-        const row = document.getElementById(`row-${id}`);
-
-        if (isChecked) {
-            if(row) row.classList.add('selected');
-            asignarJugadorAutomaticamente(id);
-        } else {
-            if(row) row.classList.remove('selected');
-            removerJugadorDeEquipos(id);
-        }
+        if (isChecked) asignarJugadorAutomaticamente(nid);
+        else removerJugadorDeEquipos(nid);
+        renderizarListaSeleccion();
         actualizarContadorEquipos();
     }
 
-    function asignar
+    function asignarJugadorAutomaticamente(id) {
+        const nid = parseInt(id);
+        if(isPlayerSelected(nid)) return;
+        if (equipo1.length < 5) equipo1.push(nid);
+        else equipo2.push(nid);
+        actualizarTablerosEquipos();
+    }
+
+    function removerJugadorDeEquipos(id) {
+        const nid = parseInt(id);
+        equipo1 = equipo1.filter(x => x !== nid);
+        equipo2 = equipo2.filter(x => x !== nid);
+        actualizarTablerosEquipos();
+    }
+
+    function actualizarContadorEquipos() {
+        const total = equipo1.length + equipo2.length;
+        const txt = document.getElementById('team-counter');
+        const btnGen = document.getElementById('btn-generate');
+        const btnShare = document.getElementById('btn-share-teams');
+        txt.innerText = `SELECCIONADOS: ${total}/10`;
+        if (total === 10) {
+            txt.classList.add('complete'); btnGen.style.opacity = '1'; btnGen.style.pointerEvents = 'auto'; btnShare.style.display = 'block';
+            document.querySelectorAll('.player-check:not(:checked)').forEach(cb => { cb.disabled = true; cb.closest('.player-row').classList.add('disabled'); });
+        } else {
+            txt.classList.remove('complete'); btnGen.style.opacity = '0.5'; btnGen.style.pointerEvents = 'none'; btnShare.style.display = 'none';
+            document.querySelectorAll('.player-check').forEach(cb => { cb.disabled = false; cb.closest('.player-row').classList.remove('disabled'); });
+        }
+    }
+
+    function getPlayerData(id) {
+        const nid = parseInt(id);
+        if (nid >= 9000) return invitados.find(i => i.id === nid);
+        return datosOriginales.find(d => d.id === nid);
+    }
+
+    function actualizarTablerosEquipos() {
+        renderListaEquipo('list-team-1', equipo1, 'avg-team-1');
+        renderListaEquipo('list-team-2', equipo2, 'avg-team-2');
+    }
+
+    function renderListaEquipo(ulId, ids, avgId) {
+        const ul = document.getElementById(ulId);
+        ul.innerHTML = ''; let suma = 0;
+        const jugadores = ids.map(id => getPlayerData(id)).filter(x=>x);
+        jugadores.sort((a,b) => a.nombre.localeCompare(b.nombre));
+        jugadores.forEach(p => {
+            suma += p.prom;
+            const li = document.createElement('li');
+            li.className = 'team-player-li'; li.draggable = true;
+            li.innerHTML = `<span>${p.nombre}</span> <span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
+            li.ondragstart = (e) => { draggingId = p.id; e.dataTransfer.effectAllowed = "move"; };
+            li.onclick = () => clickToMove(p.id);
+            ul.appendChild(li);
+        });
+        document.getElementById(avgId).innerText = `Prom: ${ids.length > 0 ? (suma / ids.length).toFixed(1) : 0}`;
+    }
+
+    function getColorProm(val) {
+        if(val >= 90) return STAT_COLORS.legend;
+        if(val >= 80) return STAT_COLORS.gold;
+        if(val >= 70) return STAT_COLORS.silver;
+        return STAT_COLORS.bronze;
+    }
+
+    function permitirDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+
+    function dropJugador(e, targetTeam) {
+        e.preventDefault();
+        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('drag-over'));
+        if (draggingId === null) return;
+        removerJugadorDeEquipos(draggingId);
+        if (targetTeam === 'team1') equipo1.push(draggingId); else equipo2.push(draggingId);
+        draggingId = null; actualizarTablerosEquipos();
+    }
+
+    function clickToMove(id) {
+        const nid = parseInt(id);
+        if (equipo1.includes(nid)) { equipo1 = equipo1.filter(x => x !== nid); equipo2.push(nid); }
+        else { equipo2 = equipo2.filter(x => x !== nid); equipo1.push(nid); }
+        actualizarTablerosEquipos();
+    }
+
+    function generarAutomatico() {
+        let pool = [...equipo1, ...equipo2].map(id => getPlayerData(id));
+        if (pool.length !== 10) return;
+        const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
+        pool.sort((a, b) => ((b.arq || 50) + (b.pos === 'POR' ? 15 : 0)) - ((a.arq || 50) + (a.pos === 'POR' ? 15 : 0)));
+        let arq1 = pool[0], arq2 = pool[1], resto = pool.slice(2);
+        resto.forEach(p => {
+            let fluctuacion = (Math.random() * 2) - 1;
+            let penEdad = (p.edad > (avgAge + 15)) ? 3 : 0;
+            p._tempPower = p.prom + fluctuacion - penEdad;
+        });
+        resto.sort((a, b) => b._tempPower - a._tempPower);
+        let teamA = [arq1.id], teamB = [arq2.id], totalA = arq1.prom, totalB = arq2.prom;
+        resto.forEach(p => {
+            if (totalA <= totalB) { teamA.push(p.id); totalA += p.prom; }
+            else { teamB.push(p.id); totalB += p.prom; }
+        });
+        if (Math.random() > 0.5) { equipo1 = teamA; equipo2 = teamB; }
+        else { equipo1 = teamB; equipo2 = teamA; }
+        actualizarTablerosEquipos();
+    }
+
+    function compartirEquipos() {
+        const el = document.getElementById('team-capture-area');
+        html2canvas(el, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
+            canvas.toBlob(blob => {
+                const file = new File([blob], "equipos.png", { type: "image/png" });
+                if(navigator.share) navigator.share({ files: [file], title: 'Equipos' });
+                else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); }
+            });
+        });
+    }
+
+    const audio = document.getElementById('audio-player');
+    function toggleMusic() { if(audio.paused) audio.play(); else audio.pause(); }
+    function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
+</script>
+</body>
+</html>
