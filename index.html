@@ -56,8 +56,9 @@
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
-        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-texto); font-weight: bold; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-texto); font-weight: bold; border: 1px solid transparent; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
+        .player-row.disabled { opacity: 0.3; pointer-events: none; }
         .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; }
         .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
         .team-white { background: var(--color-gris-claro); color: #111; border-color: #fff; }
@@ -65,11 +66,10 @@
         .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; font-weight: bold; }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
         #loader { text-align: center; color: #666; margin-top: 50px; }
-        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
     </style>
 </head>
 <body>
-    <div class="header-container" id="header-area" ondblclick="activarModoRetro()">
+    <div class="header-container" id="header-area" ondblclick="document.body.classList.toggle('retro-mode')">
         <h1 id="default-title">PARTIDO DE LOS MARTES</h1>
     </div>
     <div class="controls-area">
@@ -102,12 +102,12 @@
                 <div style="text-align:center;"><button class="btn btn-gold" style="width:100%;" onclick="generarAutomatico()" id="btn-generate">GENERAR AUTOMÁTICO</button></div>
                 <div id="team-capture-area">
                     <div class="teams-container">
-                        <div class="team-box team-white" id="box-team-1" ondragover="event.preventDefault()" ondrop="dropJugador(event, 'team1')">
+                        <div class="team-box team-white" id="box-team-1">
                             <div class="team-header">CLARO</div>
                             <div id="avg-team-1" style="text-align:center; font-weight:bold;">Prom: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0;"></ul>
                         </div>
-                        <div class="team-box team-black" id="box-team-2" ondragover="event.preventDefault()" ondrop="dropJugador(event, 'team2')">
+                        <div class="team-box team-black" id="box-team-2">
                             <div class="team-header">OSCURO</div>
                             <div id="avg-team-2" style="text-align:center; font-weight:bold;">Prom: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0;"></ul>
@@ -121,12 +121,7 @@
             </div>
         </div>
     </div>
-    <audio id="audio-player" loop></audio>
 <script>
-    const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
-    const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
-    const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
-    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
@@ -135,10 +130,9 @@
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], draggingId = null, jugadorActualEnModal = null, esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", () => {
-        if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
-        if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
-        if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL;
         cargarDatos();
+        document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
+        document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
     });
 
     function cargarDatos() {
@@ -167,8 +161,7 @@
         const [criterio, orden] = document.getElementById('sort-select').value.split('-');
         let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(texto));
         lista.sort((a,b) => criterio === 'nombre' ? (orden === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (orden === 'asc' ? a.prom - b.prom : b.prom - a.prom));
-        const container = document.getElementById('grid-container');
-        container.innerHTML = lista.length ? lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('') : '<p style="text-align:center;color:#aaa">No se encontraron jugadores.</p>';
+        document.getElementById('grid-container').innerHTML = lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('');
     }
 
     function generarHTMLCarta(j, lazy) {
@@ -219,45 +212,90 @@
         });
     }
 
-    function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); actualizarTablerosEquipos(); }
+    function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
+    
     function agregarInvitado() {
         const id = 9000 + invitados.length + 1;
         invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, esInvitado: true});
-        asignarJugadorAutomaticamente(id); renderizarListaSeleccion(); actualizarContadorEquipos();
+        asignarJugadorAutomaticamente(id);
+        renderizarListaSeleccion();
     }
-    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); actualizarContadorEquipos(); }
+
+    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); }
+    
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
         if(inv) { if(campo === 'nombre') inv.nombre = valor; else inv.prom = parseInt(valor) || 60; actualizarTablerosEquipos(); }
     }
+
+    function isPlayerSelected(id) { const nid = parseInt(id); return equipo1.includes(nid) || equipo2.includes(nid); }
+
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
-        cont.innerHTML = invitados.map(i => `<div class="player-row guest-item"><input type="checkbox" checked onchange="toggleSeleccion(${i.id})"><input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" style="background:transparent;border:none;color:white;width:80px;"><input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" style="width:40px;"><span onclick="borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span></div>`).join('') +
-            [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => `<div class="player-row ${isPlayerSelected(j.id)?'selected':''}" onclick="toggleSeleccion(${j.id})"><input type="checkbox" ${isPlayerSelected(j.id)?'checked':''} onclick="event.stopPropagation()"><span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span></div>`).join('');
+        const total = equipo1.length + equipo2.length;
+
+        let html = invitados.map(i => {
+            const sel = isPlayerSelected(i.id);
+            const can = total < 10 || sel;
+            return `<div class="player-row guest-item ${sel?'selected':''} ${!can?'disabled':''}" onclick="${can?`toggleSeleccion(${i.id})`:''}">
+                <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
+                <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;">
+                <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:40px;">
+                <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span>
+            </div>`;
+        }).join('');
+
+        html += [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => {
+            const sel = isPlayerSelected(j.id);
+            const can = total < 10 || sel;
+            return `<div class="player-row ${sel?'selected':''} ${!can?'disabled':''}" onclick="${can?`toggleSeleccion(${j.id})`:''}">
+                <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
+                <span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span>
+            </div>`;
+        }).join('');
+
+        cont.innerHTML = html;
         actualizarContadorEquipos();
     }
-    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
-    
-    // REPARTIJA UNO Y UNO CORREGIDA
+
+    function toggleSeleccion(id) {
+        const nid = parseInt(id);
+        const sel = isPlayerSelected(nid);
+        if (sel) removerJugadorDeEquipos(nid);
+        else if ((equipo1.length + equipo2.length) < 10) asignarJugadorAutomaticamente(nid);
+        renderizarListaSeleccion();
+    }
+
     function asignarJugadorAutomaticamente(id) {
         const nid = parseInt(id);
         if(isPlayerSelected(nid)) return;
-        if (equipo1.length <= equipo2.length) equipo1.push(nid);
-        else equipo2.push(nid);
+        if (equipo1.length <= equipo2.length) equipo1.push(nid); else equipo2.push(nid);
         actualizarTablerosEquipos();
     }
 
-    function toggleSeleccion(id) { const nid = parseInt(id); isPlayerSelected(nid) ? removerJugadorDeEquipos(nid) : asignarJugadorAutomaticamente(nid); renderizarListaSeleccion(); actualizarContadorEquipos(); }
-    function removerJugadorDeEquipos(id) { const nid = parseInt(id); equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); actualizarTablerosEquipos(); }
+    function removerJugadorDeEquipos(id) {
+        const nid = parseInt(id);
+        equipo1 = equipo1.filter(x => x !== nid); equipo2 = equipo2.filter(x => x !== nid);
+        actualizarTablerosEquipos();
+    }
+
     function actualizarContadorEquipos() {
-        const total = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
-        const ok = total === 10; document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
+        const total = equipo1.length + equipo2.length;
+        document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
+        const ok = total === 10;
+        document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
         document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
+
     function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
-    function actualizarTablerosEquipos() { renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); renderListaEquipo('list-team-2', equipo2, 'avg-team-2'); }
+    
+    function actualizarTablerosEquipos() {
+        renderListaEquipo('list-team-1', equipo1, 'avg-team-1');
+        renderListaEquipo('list-team-2', equipo2, 'avg-team-2');
+    }
+
     function renderListaEquipo(ulId, ids, avgId) {
         const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0;
         ids.map(getPlayerData).filter(x=>x).sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => {
@@ -268,54 +306,31 @@
         });
         document.getElementById(avgId).innerText = `Prom: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
     }
+
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
-    // ====================================================================
-    //   GENERACIÓN AUTOMÁTICA (LÓGICA MEJORADA)
-    // ====================================================================
     function generarAutomatico() {
-        const pool = [...equipo1, ...equipo2].map(getPlayerData);
+        let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-
         const currentE1 = [...equipo1].sort().join(',');
         const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
-
-        // SEPARA A LOS DOS QUE MEJOR ATAJAN (PARA EQUILIBRIO DEFENSIVO)
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
-
         let mejorE1 = [], mejorE2 = [], menorDiff = 999;
-
         for (let i = 0; i < 100; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
-            
-            tempResto.forEach(p => {
-                p._pwr = p.prom + (Math.random() * 4 - 2) - (p.edad > (avgAge + 15) ? 4 : 0);
-            });
-
+            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 4 - 2) - (p.edad > (avgAge + 15) ? 4 : 0); });
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
                 if (s1 <= s2 && t1.length < 5) { t1.push(p); s1 += p.prom; }
                 else if (t2.length < 5) { t2.push(p); s2 += p.prom; }
                 else { t1.push(p); s1 += p.prom; }
             });
-
             let diff = Math.abs(s1 - s2);
             let checkE1 = t1.map(p => p.id).sort().join(',');
-
-            if (checkE1 !== currentE1 && diff < menorDiff) {
-                menorDiff = diff; mejorE1 = t1.map(p => p.id); mejorE2 = t2.map(p => p.id);
-            }
+            if (checkE1 !== currentE1 && diff < menorDiff) { menorDiff = diff; mejorE1 = t1.map(p => p.id); mejorE2 = t2.map(p => p.id); }
         }
-
-        if (mejorE1.length === 0) {
-            equipo1 = restoOriginal.slice(0,4).map(p=>p.id).concat(arqA.id);
-            equipo2 = restoOriginal.slice(4).map(p=>p.id).concat(arqB.id);
-        } else {
-            if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; }
-            else { equipo1 = mejorE2; equipo2 = mejorE1; }
-        }
-
+        if (mejorE1.length) { if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; } else { equipo1 = mejorE2; equipo2 = mejorE1; } }
         actualizarTablerosEquipos();
     }
 
@@ -328,8 +343,6 @@
             });
         });
     }
-    function activarModoRetro() { document.body.classList.toggle('retro-mode'); }
-    function toggleMusic() { const a = document.getElementById('audio-player'); a.paused ? a.play() : a.pause(); }
 </script>
 </body>
 </html>
