@@ -238,8 +238,17 @@
         actualizarContadorEquipos();
     }
     function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
+    
+    // REPARTIJA UNO Y UNO CORREGIDA
+    function asignarJugadorAutomaticamente(id) {
+        const nid = parseInt(id);
+        if(isPlayerSelected(nid)) return;
+        if (equipo1.length <= equipo2.length) equipo1.push(nid);
+        else equipo2.push(nid);
+        actualizarTablerosEquipos();
+    }
+
     function toggleSeleccion(id) { const nid = parseInt(id); isPlayerSelected(nid) ? removerJugadorDeEquipos(nid) : asignarJugadorAutomaticamente(nid); renderizarListaSeleccion(); actualizarContadorEquipos(); }
-    function asignarJugadorAutomaticamente(id) { const nid = parseInt(id); if(!isPlayerSelected(nid)) (equipo1.length < 5 ? equipo1 : equipo2).push(nid); actualizarTablerosEquipos(); }
     function removerJugadorDeEquipos(id) { const nid = parseInt(id); equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); actualizarTablerosEquipos(); }
     function actualizarContadorEquipos() {
         const total = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
@@ -271,22 +280,19 @@
         const currentE1 = [...equipo1].sort().join(',');
         const avgAge = pool.reduce((acc, p) => acc + (p.edad || 25), 0) / 10;
 
-        // Separar arqueros (Stat + Posición)
-        pool.sort((a, b) => ((b.arq || 50) + (b.pos === 'POR' ? 15 : 0)) - ((a.arq || 50) + (a.pos === 'POR' ? 15 : 0)));
+        // SEPARA A LOS DOS QUE MEJOR ATAJAN (PARA EQUILIBRIO DEFENSIVO)
+        pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
 
         let mejorE1 = [], mejorE2 = [], menorDiff = 999;
 
-        // Intentamos 100 combinaciones al azar para buscar paridad y variedad
         for (let i = 0; i < 100; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
             
-            // Calculamos "poder" con variabilidad +-2 y penalización de edad dinámica
             tempResto.forEach(p => {
                 p._pwr = p.prom + (Math.random() * 4 - 2) - (p.edad > (avgAge + 15) ? 4 : 0);
             });
 
-            // Reparto greedy sobre la mezcla al azar
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
                 if (s1 <= s2 && t1.length < 5) { t1.push(p); s1 += p.prom; }
@@ -297,18 +303,15 @@
             let diff = Math.abs(s1 - s2);
             let checkE1 = t1.map(p => p.id).sort().join(',');
 
-            // Si la combinación es distinta a la actual y es más pareja que la mejor hallada...
             if (checkE1 !== currentE1 && diff < menorDiff) {
                 menorDiff = diff; mejorE1 = t1.map(p => p.id); mejorE2 = t2.map(p => p.id);
             }
         }
 
-        // Si después de 100 intentos no hallamos algo distinto (raro), forzamos un swap
         if (mejorE1.length === 0) {
             equipo1 = restoOriginal.slice(0,4).map(p=>p.id).concat(arqA.id);
             equipo2 = restoOriginal.slice(4).map(p=>p.id).concat(arqB.id);
         } else {
-            // Sorteo final de quién es Claro y quién Oscuro
             if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; }
             else { equipo1 = mejorE2; equipo2 = mejorE1; }
         }
