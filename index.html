@@ -39,6 +39,8 @@
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
         
+        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+
         .btn-add-guest { 
             background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
             cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
@@ -127,7 +129,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.0</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.1 (Fix Layout + 500 Escenarios)</span>
                 </div>
             </div>
         </div>
@@ -328,73 +330,43 @@
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-
         const currentE1 = [...equipo1].sort().join(',');
-
-        // 1. IDENTIFICAR GRUPOS POLARES Y CONDICIÓN GRANEROS
         const sortedProm = [...pool].sort((a,b) => b.prom - a.prom);
         const cracksIds = sortedProm.slice(0, 2).map(p => p.id);
         const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
         const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
-        
         const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
         const hayDosGraneros = granerosIds.length === 2;
-
-        // 2. SEPARAR LOS 2 MEJORES ARQUEROS (BASE)
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
-
         let mejorE1 = [], mejorE2 = [], menorFealdad = 999999;
-
-        // 3. SIMULACIÓN DE 500 ESCENARIOS (MÁS VARIANTES)
         for (let i = 0; i < 500; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
-            
-            // Variabilidad moderada para permitir rotación genuina
             tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 4 - 2); });
-
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
                 if ((s1 <= s2 && t1.length < 5) || t2.length >= 5) { t1.push(p); s1 += p.prom; }
                 else { t2.push(p); s2 += p.prom; }
             });
-
             const idsT1 = t1.map(p => p.id);
             const idsT2 = t2.map(p => p.id);
-
-            // 4. CÁLCULO DE FEALDAD
             let fealdad = Math.abs(s1 - s2) * 10; 
-
-            // REGLA GRANEROS
             if (hayDosGraneros) {
                 const g1EnT1 = idsT1.includes(granerosIds[0]);
                 const g2EnT1 = idsT1.includes(granerosIds[1]);
                 if (g1EnT1 !== g2EnT1) fealdad += 500;
             }
-
-            // Castigos acumulativos
             let cracksEnT1 = cracksIds.filter(id => idsT1.includes(id)).length;
             if (cracksEnT1 !== 1) fealdad += 50; 
-
             let resacaEnT1 = resacaIds.filter(id => idsT1.includes(id)).length;
             if (resacaEnT1 !== 1) fealdad += 50;
-
             let pulmonesEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
             if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 60; 
-
-            // FILTRO DE REPETICIÓN (Para forzar variantes si existen)
             let checkE1 = idsT1.sort().join(',');
             if (checkE1 === currentE1) fealdad += 200; 
-
-            if (fealdad < menorFealdad) {
-                menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2;
-            }
+            if (fealdad < menorFealdad) { menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2; }
         }
-
-        if (mejorE1.length) {
-            if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; }
-            else { equipo1 = mejorE2; equipo2 = mejorE1; }
-        }
+        if (mejorE1.length) { if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; } else { equipo1 = mejorE2; equipo2 = mejorE1; } }
         actualizarTablerosEquipos();
     }
 
@@ -407,8 +379,6 @@
             });
         });
     }
-    function toggleMusic() { const a = document.getElementById('audio-player'); a.paused ? a.play() : a.pause(); }
 </script>
 </body>
 </html>
-
