@@ -38,6 +38,13 @@
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
+        
+        .btn-add-guest { 
+            background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
+            cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -66,6 +73,7 @@
         .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; font-weight: bold; }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
         #loader { text-align: center; color: #666; margin-top: 50px; }
+        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
     </style>
 </head>
 <body>
@@ -119,13 +127,17 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.7rem; color: #555; font-family: var(--fuente-texto);">Versión 1.9.0 (Regla Graneros + Paridad)</span>
+                    <span style="font-size: 0.7rem; color: #555; font-family: var(--fuente-texto);">Versión 2.0.0 (Assets Restaurados + 500 Simulaciones)</span>
                 </div>
             </div>
         </div>
     </div>
     <audio id="audio-player" loop></audio>
 <script>
+    const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
+    const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
+    const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
+    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
@@ -134,6 +146,9 @@
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], draggingId = null, jugadorActualEnModal = null, esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", () => {
+        if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
+        if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
+        if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL;
         cargarDatos();
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
         document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
@@ -310,9 +325,6 @@
 
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
-    // ====================================================================
-    //   GENERACIÓN AUTOMÁTICA (v1.9.0 - REGLA GRANEROS)
-    // ====================================================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
@@ -325,7 +337,6 @@
         const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
         const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
         
-        // Regla específica: Graneros juntos
         const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
         const hayDosGraneros = granerosIds.length === 2;
 
@@ -333,14 +344,14 @@
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
 
-        let mejorE1 = [], mejorE2 = [], menorFealdad = 99999;
+        let mejorE1 = [], mejorE2 = [], menorFealdad = 999999;
 
-        // 3. SIMULACIÓN DE 100 ESCENARIOS
-        for (let i = 0; i < 100; i++) {
+        // 3. SIMULACIÓN DE 500 ESCENARIOS (MÁS VARIANTES)
+        for (let i = 0; i < 500; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
             
-            // Variabilidad sutil para rotación
-            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
+            // Variabilidad moderada para permitir rotación genuina
+            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 4 - 2); });
 
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
@@ -351,31 +362,29 @@
             const idsT1 = t1.map(p => p.id);
             const idsT2 = t2.map(p => p.id);
 
-            // 4. CÁLCULO DE FEALDAD (Puntos de castigo)
-            let fealdad = Math.abs(s1 - s2) * 5; // La paridad de promedio es importante
+            // 4. CÁLCULO DE FEALDAD
+            let fealdad = Math.abs(s1 - s2) * 10; 
 
-            // REGLA GRANEROS: Si hay 2 y están separados, castigo masivo (200 puntos)
+            // REGLA GRANEROS
             if (hayDosGraneros) {
                 const g1EnT1 = idsT1.includes(granerosIds[0]);
                 const g2EnT1 = idsT1.includes(granerosIds[1]);
-                if (g1EnT1 !== g2EnT1) fealdad += 200;
+                if (g1EnT1 !== g2EnT1) fealdad += 500;
             }
 
-            // Castigo por Cracks juntos
+            // Castigos acumulativos
             let cracksEnT1 = cracksIds.filter(id => idsT1.includes(id)).length;
-            if (cracksEnT1 !== 1) fealdad += 20; 
+            if (cracksEnT1 !== 1) fealdad += 50; 
 
-            // Castigo por Resaca juntos
             let resacaEnT1 = resacaIds.filter(id => idsT1.includes(id)).length;
-            if (resacaEnT1 !== 1) fealdad += 20;
+            if (resacaEnT1 !== 1) fealdad += 50;
 
-            // Castigo por Pulmones juntos
             let pulmonesEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
-            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 25; 
+            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 60; 
 
-            // FILTRO DE REPETICIÓN
+            // FILTRO DE REPETICIÓN (Para forzar variantes si existen)
             let checkE1 = idsT1.sort().join(',');
-            if (checkE1 === currentE1) fealdad += 100; // Castigo para forzar cambio
+            if (checkE1 === currentE1) fealdad += 200; 
 
             if (fealdad < menorFealdad) {
                 menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2;
@@ -398,6 +407,7 @@
             });
         });
     }
+    function toggleMusic() { const a = document.getElementById('audio-player'); a.paused ? a.play() : a.pause(); }
 </script>
 </body>
 </html>
