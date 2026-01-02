@@ -123,7 +123,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.2 ( Coherente + Audio System)</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.2 (Leyenda Coherente + Audio System)</span>
                 </div>
             </div>
         </div>
@@ -138,13 +138,13 @@
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const SFX_CLICK_URL = "LINK_A_TU_SONIDO_AQUI"; // Pegá acá el link del sonido para los botones
-    const _FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/.png";
+    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
-    const COLORES = { '': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
+    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
     
-    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModo = false;
+    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
     let musicStage = 0; // 0: Bajo, 1: Alto, 2: Silencio
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -197,7 +197,7 @@
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
                         vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
                         edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11],
-                        foto: fila[12], foto: fila[13], color: COLORES[fila[10]?.trim().toLowerCase() || 'oro'] || '#624f21'
+                        foto: fila[12], fotoLeyenda: fila[13], color: COLORES[fila[10]?.trim().toLowerCase() || 'oro'] || '#624f21'
                     };
                 }).filter(i => i !== null);
                 aplicarFiltrosYOrden();
@@ -225,24 +225,24 @@
 
     function abrirModal(id) {
         jugadorActualEnModal = datosOriginales.find(x => x.id === parseInt(id));
-        esModo = false;
+        esModoLeyenda = false;
         document.getElementById('modal').style.display = 'flex';
         renderizarModal(jugadorActualEnModal);
     }
 
     function renderizarModal(j) {
         document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
-        document.getElementById('modal-buttons').innerHTML = `${j.foto ? `<button class="btn ${esModo ? 'btn-ghost' : 'btn-gold'}" onclick="toggle()">${esModo ? "ACTUAL" : ""}</button>` : ''}
+        document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda ? 'btn-ghost' : 'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda ? "ACTUAL" : "LEYENDA"}</button>` : ''}
             <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
             <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
     }
 
-    function toggle() {
-        esModo = !esModo;
-        renderizarModal(esModo ? calcularObjeto(jugadorActualEnModal) : jugadorActualEnModal);
+    function toggleLeyenda() {
+        esModoLeyenda = !esModoLeyenda;
+        renderizarModal(esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal);
     }
 
-    function calcularObjeto(base) {
+    function calcularObjetoLeyenda(base) {
         const statsKeys = ['ata','def','tec','vel','res','arq'];
         const stats = statsKeys.map(id => ({id, val: base[id]})).sort((a,b)=>b.val-a.val);
         
@@ -250,12 +250,12 @@
         const plusEdad = Math.max(0, (base.edad - 28) * 0.005); // Plus de crecimiento por edad
         
         stats.forEach((s, i) => {
-            let mult = [1.175, 1.15, 1.125, 1.10, 1.075, 1.05][i] || 1.05;
+            let mult = [1.22, 1.18, 1.14, 1.10, 1.08, 1.06][i] || 1.06;
             let v = s.val * (mult + plusEdad);
             
             // Ajustes específicos para balance
             if(s.id === 'res') v *= 1.05;
-            if(s.id === 'vel') v *= 1.025;
+            if(s.id === 'vel') v *= 1.03;
             if(s.id === 'arq' && i > 2) v = Math.min(v, s.val + 10); // Si no es portero, sube pero con límite
 
             nuevos[s.id] = Math.min(99, Math.round(v));
@@ -264,9 +264,9 @@
 
         return {
             ...base, 
-            foto: base.foto, 
-            fondo: _FONDO_URL, 
-            color: COLORES[''], 
+            foto: base.fotoLeyenda, 
+            fondo: LEYENDA_FONDO_URL, 
+            color: COLORES['leyenda'], 
             ...nuevos, 
             prom: Math.min(99, Math.round(suma/6))
         };
@@ -428,4 +428,3 @@
 </script>
 </body>
 </html>
-
