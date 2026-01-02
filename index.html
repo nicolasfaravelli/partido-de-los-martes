@@ -20,8 +20,6 @@
             margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
         }
-
-        /* HEADER Y CONTROLES */
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
@@ -29,6 +27,7 @@
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
+        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
@@ -36,15 +35,17 @@
             justify-content: space-between; align-items: center; position: relative; z-index: 50;
         }
         #search-input, #sort-select { flex: 1; padding: 10px 15px; font-family: var(--fuente-titulo); font-size: 1.1rem; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; }
-        
-        /* BOTONES */
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        .btn-add-guest { background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s; }
         
-        /* GRILLA Y CARTAS */
+        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+        .btn-add-guest { 
+            background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
+            cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -58,22 +59,18 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* EFECTO BRILLO */
-        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; pointer-events: none; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
-        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
+        /* BRILLOS */
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s ease-in-out; }
-
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.7s ease-out forwards; }
 
-        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
-        
-        /* ARMADOR */
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-texto); font-weight: bold; border: 1px solid transparent; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
@@ -84,8 +81,6 @@
         .team-black { background: #111; color: #fff; border-color: #333; }
         .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; font-weight: bold; }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
-        
-        /* OTROS */
         #loader { text-align: center; color: #666; margin-top: 50px; }
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
@@ -100,8 +95,8 @@
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
             <option value="nombre-desc">Nombre: Z - A</option>
-            <option value="prom-desc">Valoración: Mayor a Menor</option>
-            <option value="prom-asc">Valoración: Menor a Mayor</option>
+            <option value="prom-desc">Valoración: mayor a menor</option>
+            <option value="prom-asc">Valoración: menor a mayor</option>
         </select>
         <button class="btn btn-gold" onclick="playClickSfx(); abrirArmador()">ARMAR EQUIPOS</button>
     </div>
@@ -150,17 +145,14 @@
 
 <script>
     // ==========================================
-    // BLOQUE AJUSTES: CONFIGURACIÓN MODO LEYENDA
+    // BLOQUE AJUSTES: LEYENDA Y ASSETS
     // ==========================================
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
-    const PLUS_EDAD_COEF = 0.003;
+    const PLUS_EDAD_COEF = 0.0028; 
     const BONUS_RESISTENCIA = 1.05;
     const BONUS_VELOCIDAD = 1.03;
     const TOPE_STAT_LEYENDA = 98;
 
-    // ==========================================
-    // BLOQUE CONFIG: ASSETS Y LINKS
-    // ==========================================
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
@@ -171,22 +163,24 @@
     // BLOQUE AUDIO: SISTEMA DE SONIDO
     // ==========================================
     let musicStage = 0; 
-    function startAudioOnce() {
+    function initAudioOnInteraction() {
         const player = document.getElementById('audio-player');
         if(player.src !== MUSICA_URL) player.src = MUSICA_URL;
         player.volume = 0.05;
         player.play().catch(() => {});
-        window.removeEventListener('click', startAudioOnce);
-        window.removeEventListener('scroll', startAudioOnce);
+        window.removeEventListener('click', initAudioOnInteraction);
+        window.removeEventListener('touchstart', initAudioOnInteraction);
     }
+
     function rotateMusic() {
         const player = document.getElementById('audio-player');
         const control = document.getElementById('music-control');
         musicStage = (musicStage + 1) % 2;
         if (musicStage === 0) { player.volume = 0.05; control.innerText = "🔈"; }
-        else { player.volume = 0.7; control.innerText = "🔊"; }
+        else { player.volume = 0.75; control.innerText = "🔊"; }
         player.play();
     }
+
     function playClickSfx() {
         const sfx = document.getElementById('sfx-player');
         if (SFX_CLICK_URL) { sfx.src = SFX_CLICK_URL; sfx.play(); }
@@ -201,16 +195,19 @@
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
         
-        window.addEventListener('click', startAudioOnce);
-        window.addEventListener('scroll', startAudioOnce);
+        window.addEventListener('click', initAudioOnInteraction);
+        window.addEventListener('touchstart', initAudioOnInteraction);
 
         cargarDatos();
+        document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
+        document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
     });
 
     function cargarDatos() {
-        const CSV_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CSV_LINK + "&uid=" + Date.now());
-        Papa.parse(PROXY_URL, {
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+        const PROXY = "https://corsproxy.io/?" + encodeURIComponent(CSV_URL + "&cache=" + Date.now());
+        
+        Papa.parse(PROXY, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
@@ -240,7 +237,7 @@
 
     function generarHTMLCarta(j, lazy) {
         return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy ? 'loading="lazy"' : ''} crossorigin="anonymous"></div>
-            <div class="shine-layer" style="-webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>
+            <div class="shine-layer" style="mask-image: url('${j.fondo}'); -webkit-mask-image: url('${j.fondo}');"></div>
             ${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}
             <div class="info-layer" style="color:${j.color}">
                 <div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div>
@@ -248,9 +245,6 @@
             </div>`;
     }
 
-    // ==========================================
-    // BLOQUE LEYENDA: EFECTOS Y CÁLCULO
-    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -270,11 +264,10 @@
         esModoLeyenda = !esModoLeyenda;
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
         renderizarModal(j);
-        
         const card = document.getElementById('carta-descarga');
         if(card) {
             card.classList.remove('trigger-shine', 'trigger-shine-reverse');
-            void card.offsetWidth; // Force reflow
+            void card.offsetWidth;
             card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
         }
     }
@@ -304,9 +297,6 @@
         });
     }
 
-    // ==========================================
-    // BLOQUE ARMADOR: REPARTO DE EQUIPOS
-    // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
@@ -384,6 +374,7 @@
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
         let mejorE1 = [], menorFealdad = 999999;
+
         for (let i = 0; i < 500; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
             tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
