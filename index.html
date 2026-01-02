@@ -27,7 +27,6 @@
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
@@ -38,15 +37,11 @@
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-
         .btn-add-guest { 
             background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
             cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
         }
-        .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -80,7 +75,6 @@
 </head>
 <body>
     <div class="header-container" id="header-area" ondblclick="document.body.classList.toggle('retro-mode')">
-        <h1 id="default-title">PARTIDO DE LOS MARTES</h1>
     </div>
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
@@ -90,7 +84,7 @@
             <option value="prom-desc">Valoración: Mayor a Menor</option>
             <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
-        <button class="btn btn-gold" onclick="abrirArmador()">ARMAR EQUIPOS</button>
+        <button class="btn btn-gold" onclick="playClickSfx(); abrirArmador()">ARMAR EQUIPOS</button>
     </div>
     <div id="loader">Cargando jugadores...</div>
     <div id="grid-container" class="grid"></div>
@@ -129,32 +123,66 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.1 (Fix Layout + 500 Escenarios)</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.2 (Leyenda Coherente + Audio System)</span>
                 </div>
             </div>
         </div>
     </div>
+
     <audio id="audio-player" loop></audio>
+    <audio id="sfx-player"></audio>
+    <div id="music-control" style="position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000;" onclick="rotateMusic()">🔈</div>
+
 <script>
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
+    const SFX_CLICK_URL = "LINK_A_TU_SONIDO_AQUI"; // Pegá acá el link del sonido para los botones
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
     const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
     const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
     
-    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], draggingId = null, jugadorActualEnModal = null, esModoLeyenda = false;
+    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
+    let musicStage = 0; // 0: Bajo, 1: Alto, 2: Silencio
 
     document.addEventListener("DOMContentLoaded", () => {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
-        if(MUSICA_URL) document.getElementById('audio-player').src = MUSICA_URL;
+        
+        const player = document.getElementById('audio-player');
+        player.src = MUSICA_URL;
+        player.volume = 0.15;
+        
         cargarDatos();
-        document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
-        document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
     });
+
+    function rotateMusic() {
+        const player = document.getElementById('audio-player');
+        const control = document.getElementById('music-control');
+        musicStage = (musicStage + 1) % 3;
+
+        if (musicStage === 0) {
+            player.volume = 0.15;
+            player.play();
+            control.innerText = "🔈";
+        } else if (musicStage === 1) {
+            player.volume = 0.8;
+            control.innerText = "🔊";
+        } else {
+            player.pause();
+            control.innerText = "🔇";
+        }
+    }
+
+    function playClickSfx() {
+        const sfx = document.getElementById('sfx-player');
+        if (SFX_CLICK_URL !== "LINK_A_TU_SONIDO_AQUI") {
+            sfx.src = SFX_CLICK_URL;
+            sfx.play();
+        }
+    }
 
     function cargarDatos() {
         Papa.parse(PROXY_URL, {
@@ -215,14 +243,33 @@
     }
 
     function calcularObjetoLeyenda(base) {
-        const stats = ['ata','def','tec','vel','res','arq'].map(id => ({id, val: base[id]})).sort((a,b)=>b.val-a.val);
+        const statsKeys = ['ata','def','tec','vel','res','arq'];
+        const stats = statsKeys.map(id => ({id, val: base[id]})).sort((a,b)=>b.val-a.val);
+        
         let nuevos = {}, suma = 0;
+        const plusEdad = Math.max(0, (base.edad - 28) * 0.005); // Plus de crecimiento por edad
+        
         stats.forEach((s, i) => {
-            let v = s.val * ([1.125, 1.1, 1.075, 1.05, 1.025, 1][i] || 1);
-            if(s.id === 'res') v *= 1.05; if(s.id === 'vel') v *= 1.025;
-            nuevos[s.id] = Math.min(98, Math.round(v)); suma += nuevos[s.id];
+            let mult = [1.22, 1.18, 1.14, 1.10, 1.08, 1.06][i] || 1.06;
+            let v = s.val * (mult + plusEdad);
+            
+            // Ajustes específicos para balance
+            if(s.id === 'res') v *= 1.05;
+            if(s.id === 'vel') v *= 1.03;
+            if(s.id === 'arq' && i > 2) v = Math.min(v, s.val + 10); // Si no es portero, sube pero con límite
+
+            nuevos[s.id] = Math.min(99, Math.round(v));
+            suma += nuevos[s.id];
         });
-        return {...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(99, Math.round(suma/6))};
+
+        return {
+            ...base, 
+            foto: base.fotoLeyenda, 
+            fondo: LEYENDA_FONDO_URL, 
+            color: COLORES['leyenda'], 
+            ...nuevos, 
+            prom: Math.min(99, Math.round(suma/6))
+        };
     }
 
     function descargarCarta() {
@@ -244,7 +291,6 @@
     }
 
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); }
-    
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
         if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
@@ -260,8 +306,8 @@
             const can = total < 10 || sel;
             return `<div class="player-row guest-item ${sel?'selected':''} ${!can?'disabled':''}" onclick="${can?`toggleSeleccion(${i.id})`:''}">
                 <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
-                <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;">
-                <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:40px;">
+                <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-texto);">
+                <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:40px;font-family:var(--fuente-texto);">
                 <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span>
             </div>`;
         }).join('');
@@ -349,24 +395,24 @@
                 else { t2.push(p); s2 += p.prom; }
             });
             const idsT1 = t1.map(p => p.id);
-            const idsT2 = t2.map(p => p.id);
             let fealdad = Math.abs(s1 - s2) * 10; 
             if (hayDosGraneros) {
                 const g1EnT1 = idsT1.includes(granerosIds[0]);
                 const g2EnT1 = idsT1.includes(granerosIds[1]);
                 if (g1EnT1 !== g2EnT1) fealdad += 500;
             }
-            let cracksEnT1 = cracksIds.filter(id => idsT1.includes(id)).length;
-            if (cracksEnT1 !== 1) fealdad += 50; 
-            let resacaEnT1 = resacaIds.filter(id => idsT1.includes(id)).length;
-            if (resacaEnT1 !== 1) fealdad += 50;
-            let pulmonesEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
-            if (pulmonesEnT1 === 3 || pulmonesEnT1 === 0) fealdad += 60; 
-            let checkE1 = idsT1.sort().join(',');
-            if (checkE1 === currentE1) fealdad += 200; 
-            if (fealdad < menorFealdad) { menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = idsT2; }
+            if (cracksIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50; 
+            if (resacaIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50;
+            let pulmEnT1 = pulmonesIds.filter(id => idsT1.includes(id)).length;
+            if (pulmEnT1 === 3 || pulmEnT1 === 0) fealdad += 60; 
+            if (idsT1.sort().join(',') === currentE1) fealdad += 200; 
+            if (fealdad < menorFealdad) { menorFealdad = fealdad; mejorE1 = idsT1; mejorE2 = t1.length === 5 ? t2.map(p=>p.id) : t1.map(p=>p.id); }
         }
-        if (mejorE1.length) { if (Math.random() > 0.5) { equipo1 = mejorE1; equipo2 = mejorE2; } else { equipo1 = mejorE2; equipo2 = mejorE1; } }
+        if (mejorE1.length) { 
+            const finalE1 = mejorE1;
+            const finalE2 = pool.map(p=>p.id).filter(id => !finalE1.includes(id));
+            if (Math.random() > 0.5) { equipo1 = finalE1; equipo2 = finalE2; } else { equipo1 = finalE2; equipo2 = finalE1; }
+        }
         actualizarTablerosEquipos();
     }
 
