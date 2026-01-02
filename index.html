@@ -57,6 +57,7 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
+        /* BRILLOS 0.5s */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
@@ -65,6 +66,7 @@
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
 
+        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
@@ -72,7 +74,16 @@
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-texto); font-weight: bold; border: 1px solid transparent; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
         .player-row.disabled { opacity: 0.3; pointer-events: none; }
+        
+        /* FIX MOBILE ARMADOR */
         .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; }
+        @media (max-width: 600px) {
+            .teams-container { flex-direction: column; overflow-y: auto; }
+            #team-modal-content { width: 98%; padding: 10px; }
+            .team-header { font-size: 1.4rem; }
+            .btn { font-size: 1.1rem; padding: 8px 12px; }
+        }
+
         .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
         .team-white { background: var(--color-gris-claro); color: #111; border-color: #fff; }
         .team-black { background: #111; color: #fff; border-color: #333; }
@@ -85,7 +96,7 @@
     </style>
 </head>
 <body>
-    <div id="version-tag">Versión 1</div>
+    <div id="version-tag">Versión 3</div>
     <div class="header-container" id="header-area" ondblclick="document.body.classList.toggle('retro-mode')"></div>
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
@@ -106,7 +117,7 @@
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
             <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2rem;">ARMADOR DE EQUIPOS</div>
-            <div class="armador-layout">
+            <div class="armador-layout" style="overflow-y:auto; flex:1;">
                 <div class="selection-area" style="background:#111; padding:10px; border-radius:6px; margin-bottom:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span id="team-counter" style="font-weight:bold; color:#888;">SELECCIONADOS: 0/10</span>
@@ -139,11 +150,11 @@
     <audio id="audio-player" loop></audio>
     <audio id="sfx-hover-player"></audio>
     <audio id="sfx-click-player"></audio>
-    <div id="music-control" onclick="rotateMusic()">🔈</div>
+    <div id="music-control" onclick="rotateMusic()">🔉</div>
 
 <script>
     // ==========================================
-    // 1. AJUSTES: LEYENDA Y AUDIO
+    // 1. CONFIGURACIÓN
     // ==========================================
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
     const PLUS_EDAD_COEF = 0.0028; 
@@ -158,73 +169,71 @@
     const SFX_HOVER_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 1.mp3";
     const SFX_CLICK_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3";
 
-    const VOL_MUSICA_BAJO = 0.03;
-    const VOL_MUSICA_ALTO = 0.3;
-    const VOL_SFX_HOVER = 0.03;
-    const VOL_SFX_CLICK = 0.03;
+    // ==========================================
+    // 2. AUDIO SYSTEM
+    // ==========================================
+    const VOL_SERIES = [0.05, 0, 0.05, 0.25];
+    const ICON_SERIES = ["🔉", "🔈", "🔉", "🔊"];
+    const SFX_MAP = { 0: 0.01, 0.05: 0.025, 0.25: 0.05 };
+    let volIndex = 0;
 
-    // ==========================================
-    // 2. SISTEMA DE AUDIO
-    // ==========================================
-    let musicStage = 0; 
-    function handleFirstInteraction() {
+    function initAudio() {
         const p = document.getElementById('audio-player');
         if(!p.src) p.src = MUSICA_URL;
-        p.volume = VOL_MUSICA_BAJO;
+        p.volume = VOL_SERIES[volIndex];
         p.play().catch(() => {});
-        window.removeEventListener('click', handleFirstInteraction);
-        window.removeEventListener('touchstart', handleFirstInteraction);
+        window.removeEventListener('click', initAudio);
+        window.removeEventListener('touchstart', initAudio);
     }
+
     function rotateMusic() {
         const p = document.getElementById('audio-player');
         const c = document.getElementById('music-control');
-        musicStage = (musicStage + 1) % 2;
-        if (musicStage === 0) { p.volume = VOL_MUSICA_BAJO; c.innerText = "🔈"; }
-        else { p.volume = VOL_MUSICA_ALTO; c.innerText = "🔊"; }
-        p.play();
+        volIndex = (volIndex + 1) % VOL_SERIES.length;
+        p.volume = VOL_SERIES[volIndex];
+        c.innerText = ICON_SERIES[volIndex];
+        if (p.volume > 0) p.play(); else p.pause();
     }
+
     function playHoverSfx() {
         const s = document.getElementById('sfx-hover-player');
-        if(SFX_HOVER_URL) { s.src = SFX_HOVER_URL; s.volume = VOL_SFX_HOVER; s.play().catch(()=>{}); }
+        s.src = SFX_HOVER_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{});
     }
+
     function playClickSfx() {
         const s = document.getElementById('sfx-click-player');
-        if(SFX_CLICK_URL) { s.src = SFX_CLICK_URL; s.volume = VOL_SFX_CLICK; s.play().catch(()=>{}); }
+        s.src = SFX_CLICK_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{});
     }
 
     function attachSounds() {
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
                 el.addEventListener('mouseenter', playHoverSfx);
-                if(el.classList.contains('player-row')) {
-                    el.addEventListener('mousedown', playHoverSfx);
-                } else {
-                    el.addEventListener('mousedown', playClickSfx);
-                }
+                if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx);
+                else el.addEventListener('mousedown', playClickSfx);
                 el.dataset.soundAttached = "true";
             }
         });
     }
 
     // ==========================================
-    // 3. CARGA DE DATOS
+    // 3. CARGA Y LOGICA
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", () => {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
-        window.addEventListener('click', handleFirstInteraction);
-        window.addEventListener('touchstart', handleFirstInteraction);
+        window.addEventListener('click', initAudio);
+        window.addEventListener('touchstart', initAudio);
         cargarDatos();
-        const observer = new MutationObserver(attachSounds);
-        observer.observe(document.body, { childList: true, subtree: true });
+        new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
     });
 
     function cargarDatos() {
-        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        const PROXY = "https://corsproxy.io/?" + encodeURIComponent(CSV + "&uid=" + Date.now());
-        Papa.parse(PROXY, {
+        const GOOGLE_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+        const FINAL_URL = "https://corsproxy.io/?" + encodeURIComponent(GOOGLE_CSV + "&uid=" + Date.now());
+        Papa.parse(FINAL_URL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
@@ -266,9 +275,6 @@
             </div>`;
     }
 
-    // ==========================================
-    // 4. LEYENDA Y MODAL
-    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -299,8 +305,7 @@
         let nuevos = {}, suma = 0;
         const plus = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF);
         sorted.forEach((s, i) => {
-            let m = MULT_LEYENDA[i] || 1.05;
-            let val = s.v * (m + plus);
+            let val = s.v * ((MULT_LEYENDA[i] || 1.05) + plus);
             if(s.k === 'res') val *= BONUS_RESISTENCIA;
             if(s.k === 'vel') val *= BONUS_VELOCIDAD;
             if(s.k === 'arq' && i > 2) val = Math.min(val, s.v + 12);
@@ -317,9 +322,6 @@
         });
     }
 
-    // ==========================================
-    // 5. ARMADOR
-    // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
@@ -411,4 +413,3 @@
 </script>
 </body>
 </html>
-
