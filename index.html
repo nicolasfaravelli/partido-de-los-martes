@@ -161,7 +161,7 @@
     function handleFirstInteraction() {
         const p = document.getElementById('audio-player');
         if(!p.src) p.src = MUSICA_URL;
-        p.volume = 0.05;
+        p.volume = 0.03;
         p.play().catch(() => {});
         window.removeEventListener('click', handleFirstInteraction);
     }
@@ -169,8 +169,8 @@
         const p = document.getElementById('audio-player');
         const c = document.getElementById('music-control');
         musicStage = (musicStage + 1) % 2;
-        if (musicStage === 0) { p.volume = 0.05; c.innerText = "🔈"; }
-        else { p.volume = 0.75; c.innerText = "🔊"; }
+        if (musicStage === 0) { p.volume = 0.03; c.innerText = "🔈"; }
+        else { p.volume = 0.6; c.innerText = "🔊"; }
         p.play();
     }
     function playClickSfx() {
@@ -377,4 +377,5 @@
 </script>
 </body>
 </html>
+
 
