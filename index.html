@@ -38,12 +38,14 @@
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
+        
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn-add-guest { 
             background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
             cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
         }
         .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -125,7 +127,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.3.0 (Fixed Legend & Audio stage)</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.4.0 (Organización & Fix Audio)</span>
                 </div>
             </div>
         </div>
@@ -135,30 +137,42 @@
     <div id="music-control" onclick="rotateMusic()">🔈</div>
 
 <script>
+    // ==========================================
+    // 1. CONFIGURACIÓN Y AUDIO
+    // ==========================================
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
-    const SFX_CLICK_URL = ""; 
-    
-    const MULTIPLICADORES_LEYENDA = [1.16, 1.13, 1.10, 1.08, 1.07, 1.06];
-    const PLUS_EDAD_FACTOR = 0.0035; 
-    
-    const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-    const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(BASE_CSV_URL + "&uid=" + Date.now());
+    const SFX_CLICK_URL = ""; // Link a tu sonido aquí
+
+    // ==========================================
+    // 2. CONFIGURACIÓN MODO LEYENDA
+    // (Buscá 'LEYENDA' para editar multiplicadores)
+    // ==========================================
+    const MULT_LEYENDA = [1.16, 1.13, 1.10, 1.08, 1.07, 1.06]; // Escalonado del mejor al peor stat
+    const PLUS_EDAD_COEF = 0.0035; // Cuanto más viejo es hoy, más sube
+
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
     
+    // ==========================================
+    // 3. ESTADO GLOBAL
+    // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
-    let musicStage = 0; 
+    let musicStage = 0; // 0: Bajo (0.1), 1: Alto (0.7)
 
     document.addEventListener("DOMContentLoaded", () => {
+        // Carga de Textura y Título
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
+        
+        // Inicialización de Música
         const player = document.getElementById('audio-player');
         player.src = MUSICA_URL;
         player.volume = 0.1;
-        player.play().catch(() => console.log("Audio block bypass needed"));
+        player.play().catch(() => console.log("Interacción necesaria para play"));
+
         cargarDatos();
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
         document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
@@ -170,6 +184,7 @@
         musicStage = (musicStage + 1) % 2;
         if (musicStage === 0) { player.volume = 0.1; control.innerText = "🔈"; }
         else { player.volume = 0.7; control.innerText = "🔊"; }
+        player.play(); // Asegura que empiece si estaba bloqueado
     }
 
     function playClickSfx() {
@@ -177,7 +192,11 @@
         if (SFX_CLICK_URL) { sfx.src = SFX_CLICK_URL; sfx.play(); }
     }
 
+    // ==========================================
+    // 4. CARGA DE DATOS Y GRILLA
+    // ==========================================
     function cargarDatos() {
+        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent("https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv&uid=" + Date.now());
         Papa.parse(PROXY_URL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
@@ -216,9 +235,12 @@
             </div>`;
     }
 
+    // ==========================================
+    // 5. LÓGICA LEYENDA (ESCALONADO)
+    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
-        jugadorActualEnModal = JSON.parse(JSON.stringify(j));
+        jugadorActualEnModal = JSON.parse(JSON.stringify(j)); // Copia limpia para no pisar el original
         esModoLeyenda = false;
         document.getElementById('modal').style.display = 'flex';
         renderizarModal(jugadorActualEnModal);
@@ -239,19 +261,30 @@
 
     function calcularObjetoLeyenda(base) {
         const statsKeys = ['ata','def','tec','vel','res','arq'];
-        const stats = statsKeys.map(key => ({key, val: base[key]})).sort((a,b)=>b.val-a.val);
+        const sortedStats = statsKeys.map(key => ({key, val: base[key]})).sort((a,b)=>b.val-a.val);
+        
         let nuevos = {}, suma = 0;
-        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_FACTOR);
-        stats.forEach((s, i) => {
-            let mult = MULTIPLICADORES_LEYENDA[i] || 1.05;
+        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF); 
+        
+        sortedStats.forEach((s, i) => {
+            let mult = MULT_LEYENDA[i] || 1.05;
             let v = s.val * (mult + plusEdad);
+            
+            // Refuerzos físicos típicos de juventud
             if(s.key === 'res') v *= 1.05;
             if(s.key === 'vel') v *= 1.025;
-            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 10);
+            
+            // Si es un stat que no domina (ej. arq bajo), poner un techo para coherencia
+            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 12);
+
             nuevos[s.key] = Math.min(98, Math.round(v));
             suma += nuevos[s.key];
         });
-        return { ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
+
+        return {
+            ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], 
+            ...nuevos, prom: Math.min(98, Math.round(suma/6))
+        };
     }
 
     function descargarCarta() {
@@ -262,19 +295,26 @@
         });
     }
 
+    // ==========================================
+    // 6. ARMADOR DE EQUIPOS
+    // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
+    
     function agregarInvitado() {
         const id = 9000 + invitados.length + 1;
         invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, res: 70, esInvitado: true});
         asignarJugadorAutomaticamente(id); renderizarListaSeleccion();
     }
+
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); }
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
         if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
     }
+
     function isPlayerSelected(id) { const nid = parseInt(id); return equipo1.includes(nid) || equipo2.includes(nid); }
+
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
@@ -293,31 +333,38 @@
         }).join('');
         cont.innerHTML = html; actualizarContadorEquipos();
     }
+
     function toggleSeleccion(id) {
         const nid = parseInt(id);
         if (isPlayerSelected(nid)) removerJugadorDeEquipos(nid);
         else if ((equipo1.length + equipo2.length) < 10) asignarJugadorAutomaticamente(nid);
         renderizarListaSeleccion();
     }
+
     function asignarJugadorAutomaticamente(id) {
         const nid = parseInt(id); if(isPlayerSelected(nid)) return;
         if (equipo1.length <= equipo2.length) equipo1.push(nid); else equipo2.push(nid);
         actualizarTablerosEquipos();
     }
+
     function removerJugadorDeEquipos(id) {
         const nid = parseInt(id); equipo1 = equipo1.filter(x => x !== nid); equipo2 = equipo2.filter(x => x !== nid);
         actualizarTablerosEquipos();
     }
+
     function actualizarContadorEquipos() {
         const total = equipo1.length + equipo2.length;
         document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
         const ok = total === 10;
-        document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
-        document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
+        const btn = document.getElementById('btn-generate');
+        btn.style.opacity = ok ? '1' : '0.5';
+        btn.style.pointerEvents = ok ? 'auto' : 'none';
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
+
     function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
     function actualizarTablerosEquipos() { renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); renderListaEquipo('list-team-2', equipo2, 'avg-team-2'); }
+    
     function renderListaEquipo(ulId, ids, avgId) {
         const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0;
         ids.map(getPlayerData).filter(x=>x).sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => {
@@ -328,8 +375,12 @@
         });
         document.getElementById(avgId).innerText = `Prom: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
     }
+
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
+    // ==========================================
+    // 7. ALGORITMO DE GENERACIÓN AUTOMÁTICA
+    // ==========================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
         const currentE1 = [...equipo1].sort().join(',');
@@ -339,12 +390,15 @@
         const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
         const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
         const hayDosGraneros = granerosIds.length === 2;
+        
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
         let mejorE1 = [], menorFealdad = 999999;
+
+        // 500 intentos para asegurar variedad y paridad
         for (let i = 0; i < 500; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
-            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 4 - 2); });
+            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
             let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
             tempResto.forEach(p => {
                 if ((s1 <= s2 && t1.length < 5) || t2.length >= 5) { t1.push(p); s1 += p.prom; }
@@ -360,7 +414,8 @@
             if (fealdad < menorFealdad) { menorFealdad = fealdad; mejorE1 = idsT1; }
         }
         if (mejorE1.length) { 
-            equipo1 = mejorE1; equipo2 = pool.map(p=>p.id).filter(id => !equipo1.includes(id));
+            equipo1 = mejorE1;
+            equipo2 = pool.map(p=>p.id).filter(id => !equipo1.includes(id));
             if (Math.random() > 0.5) { let t = equipo1; equipo1 = equipo2; equipo2 = t; }
         }
         actualizarTablerosEquipos();
