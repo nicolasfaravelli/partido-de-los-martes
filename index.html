@@ -148,10 +148,9 @@
 
     // ==========================================
     // 2. CONFIGURACIÓN MODO LEYENDA
-    // (Buscá 'LEYENDA' para editar multiplicadores)
     // ==========================================
-    const MULT_LEYENDA = [1.16, 1.13, 1.10, 1.08, 1.07, 1.06]; // Escalonado del mejor al peor stat
-    const PLUS_EDAD_COEF = 0.0035; // Cuanto más viejo es hoy, más sube
+    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; // Escalonado del mejor al peor stat
+    const PLUS_EDAD_COEF = 0.0025; // Cuanto más viejo es hoy, más sube
 
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
     const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
@@ -160,7 +159,7 @@
     // 3. ESTADO GLOBAL
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
-    let musicStage = 0; // 0: Bajo (0.1), 1: Alto (0.7)
+    let musicStage = 0.1; // 0: Bajo (0.1), 1: Alto (0.7)
 
     document.addEventListener("DOMContentLoaded", () => {
         // Carga de Textura y Título
@@ -433,3 +432,4 @@
 </script>
 </body>
 </html>
+
