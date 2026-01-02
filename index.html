@@ -20,6 +20,9 @@
             margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
         }
+        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; font-family: var(--fuente-texto); z-index: 5000; }
+
+        /* HEADER */
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
@@ -29,6 +32,8 @@
         }
         h1 { margin: 0; letter-spacing: 2px; font-size: 2.5rem; color: var(--color-acento); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.1s; }
+
+        /* CONTROLES */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
             background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
@@ -39,8 +44,9 @@
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        .btn-add-guest { background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; }
-        
+        .btn-add-guest { background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s; }
+
+        /* CARTAS */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -54,15 +60,16 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* BRILLOS RESTAURADOS */
+        /* BRILLOS */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
-        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.5s ease-out forwards; }
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
 
+        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
@@ -76,10 +83,10 @@
         .team-black { background: #111; color: #fff; border-color: #333; }
         .team-header { font-size: 1.8rem; text-align: center; border-bottom: 2px solid; font-weight: bold; }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
+        
         #loader { text-align: center; color: #666; margin-top: 50px; }
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
-        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; font-family: var(--fuente-texto); z-index: 5000; }
     </style>
 </head>
 <body>
@@ -97,10 +104,12 @@
     </div>
     <div id="loader">Cargando jugadores...</div>
     <div id="grid-container" class="grid"></div>
+
     <div id="modal" class="modal-overlay">
         <div id="modal-card-container"></div>
         <div class="btn-group" id="modal-buttons"></div>
     </div>
+
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
             <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2rem;">ARMADOR DE EQUIPOS</div>
@@ -134,13 +143,14 @@
             </div>
         </div>
     </div>
+
     <audio id="audio-player" loop></audio>
     <audio id="sfx-player"></audio>
     <div id="music-control" onclick="rotateMusic()">🔈</div>
 
 <script>
     // ==========================================
-    // 1. AJUSTES: LEYENDA Y AUDIO
+    // BLOQUE AJUSTES: LEYENDA Y AUDIO
     // ==========================================
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
     const PLUS_EDAD_COEF = 0.0015; 
@@ -155,13 +165,13 @@
     const SFX_CLICK_URL = ""; 
 
     // ==========================================
-    // 2. SISTEMA DE AUDIO
+    // BLOQUE AUDIO: SISTEMA DE SONIDO
     // ==========================================
     let musicStage = 0; 
     function handleFirstInteraction() {
         const p = document.getElementById('audio-player');
         if(!p.src) p.src = MUSICA_URL;
-        p.volume = 0.03;
+        p.volume = 0.05;
         p.play().catch(() => {});
         window.removeEventListener('click', handleFirstInteraction);
     }
@@ -169,7 +179,7 @@
         const p = document.getElementById('audio-player');
         const c = document.getElementById('music-control');
         musicStage = (musicStage + 1) % 2;
-        if (musicStage === 0) { p.volume = 0.03; c.innerText = "🔈"; }
+        if (musicStage === 0) { p.volume = 0.05; c.innerText = "🔈"; }
         else { p.volume = 0.6; c.innerText = "🔊"; }
         p.play();
     }
@@ -179,7 +189,7 @@
     }
 
     // ==========================================
-    // 3. CARGA DE DATOS
+    // BLOQUE CARGA: OBTENCIÓN DE DATOS
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
 
@@ -191,8 +201,9 @@
     });
 
     function cargarDatos() {
-        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        Papa.parse(CSV, {
+        const CSV_LINK = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CSV_LINK + "&uid=" + Date.now());
+        Papa.parse(PROXY_URL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
@@ -233,9 +244,6 @@
             </div>`;
     }
 
-    // ==========================================
-    // 4. LEYENDA Y MODAL
-    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -283,9 +291,6 @@
         });
     }
 
-    // ==========================================
-    // 5. ARMADOR
-    // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
@@ -294,10 +299,6 @@
         (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); renderizarListaSeleccion();
     }
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion(); }
-    function editarInvitado(id, campo, valor) {
-        const inv = invitados.find(i => i.id === parseInt(id));
-        if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
-    }
     function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
@@ -377,5 +378,3 @@
 </script>
 </body>
 </html>
-
-
