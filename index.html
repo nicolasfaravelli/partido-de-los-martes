@@ -73,7 +73,7 @@
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
         #loader { text-align: center; color: #666; margin-top: 50px; }
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
-        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; justify-content: flex-start; }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:50px; text-align:left; display: flex; align-items: center; }
     </style>
 </head>
 <body>
@@ -125,7 +125,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.5.0 (Parametrized Legend & Auto-Audio)</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.6.0 (Structural Fix & Audio Trigger)</span>
                 </div>
             </div>
         </div>
@@ -136,28 +136,27 @@
 
 <script>
     // ==========================================
-    // 1. AJUSTES MANUALES (EDITÁ ACÁ)
+    // BLOQUE 1: CONFIGURACIÓN GENERAL (IMAGENES / AUDIO)
     // ==========================================
-    
-    // LINKS DE ARCHIVOS
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
-    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
     const SFX_CLICK_URL = ""; 
 
-    // AJUSTES MODO LEYENDA
-    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; // Del mejor al peor stat
-    const BONUS_RESISTENCIA = 1.03; // 3% extra
-    const BONUS_VELOCIDAD = 1.015;  // 1.5% extra
-    const PLUS_EDAD_LEYENDA = 0.0025; // Plus por cada año arriba de 28
-    const TOPE_STAT_LEYENDA = 98; // Máximo posible en modo leyenda
+    // ==========================================
+    // BLOQUE 2: CONFIGURACIÓN LEYENDA (BUSCAR AQUÍ)
+    // ==========================================
+    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; // Escalonado
+    const PLUS_EDAD_COEF = 0.003; // Bonus por veteranía
+    const BONUS_FISICO_RES = 1.05; // Plus resistencia
+    const BONUS_FISICO_VEL = 1.03; // Plus velocidad
+    const TOPE_STAT_LEYENDA = 98;
 
     // ==========================================
-    // 2. ESTADO Y AUDIO
+    // BLOQUE 3: ESTADO Y AUDIO SYSTEM
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
-    let musicStage = 0; // 0: Bajo (0.1), 1: Alto (0.7)
+    let musicStage = 0; 
 
     document.addEventListener("DOMContentLoaded", () => {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
@@ -166,13 +165,15 @@
         const player = document.getElementById('audio-player');
         player.src = MUSICA_URL;
         player.volume = 0.1;
-
-        // Activador de audio por primer click (Requerido por Navegadores)
-        window.addEventListener('click', () => {
-            if (player.paused && musicStage < 2) {
-                player.play().catch(e => console.log("Audio block: ", e));
-            }
-        }, { once: true });
+        
+        // Disparador de audio al primer toque
+        const startAudio = () => {
+            if(player.paused) player.play().catch(() => {});
+            window.removeEventListener('mousedown', startAudio);
+            window.removeEventListener('touchstart', startAudio);
+        };
+        window.addEventListener('mousedown', startAudio);
+        window.addEventListener('touchstart', startAudio);
 
         cargarDatos();
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
@@ -185,7 +186,7 @@
         musicStage = (musicStage + 1) % 2;
         if (musicStage === 0) { player.volume = 0.1; control.innerText = "🔈"; }
         else { player.volume = 0.7; control.innerText = "🔊"; }
-        player.play();
+        if(player.paused) player.play();
     }
 
     function playClickSfx() {
@@ -194,23 +195,26 @@
     }
 
     // ==========================================
-    // 3. CARGA Y VISUALIZACIÓN
+    // BLOQUE 4: CARGA DE JUGADORES (STRUCTURAL FIX)
     // ==========================================
     function cargarDatos() {
-        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent("https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv&uid=" + Date.now());
-        Papa.parse(PROXY_URL, {
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv&uid=" + Date.now();
+        const PROXY_FINAL = "https://corsproxy.io/?" + encodeURIComponent(CSV_URL);
+        
+        Papa.parse(PROXY_FINAL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
                 const data = results.data; if(data.length > 0) data.shift();
                 datosOriginales = data.map((fila, index) => {
-                    if(!fila[0] || fila[0] === 'Jugador') return null;
+                    if(!fila[0] || fila[0].trim() === 'Jugador') return null;
                     return {
                         id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60,
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
                         vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
                         edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11],
-                        foto: fila[12], fotoLeyenda: fila[13], color: COLORES[fila[10]?.trim().toLowerCase() || 'oro'] || '#624f21'
+                        foto: fila[12], fotoLeyenda: fila[13], 
+                        color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21'
                     };
                 }).filter(i => i !== null);
                 aplicarFiltrosYOrden();
@@ -237,11 +241,11 @@
     }
 
     // ==========================================
-    // 4. LÓGICA LEYENDA (EDITABLE EN PUNTO 1)
+    // BLOQUE 5: LÓGICA LEYENDA (BUSCAR 'LEYENDA' PARA MULTIPLICADORES)
     // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
-        jugadorActualEnModal = JSON.parse(JSON.stringify(j)); 
+        jugadorActualEnModal = JSON.parse(JSON.stringify(j));
         esModoLeyenda = false;
         document.getElementById('modal').style.display = 'flex';
         renderizarModal(jugadorActualEnModal);
@@ -263,28 +267,20 @@
     function calcularObjetoLeyenda(base) {
         const statsKeys = ['ata','def','tec','vel','res','arq'];
         const sortedStats = statsKeys.map(key => ({key, val: base[key]})).sort((a,b)=>b.val-a.val);
-        
         let nuevos = {}, suma = 0;
-        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_LEYENDA); 
+        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF); 
         
         sortedStats.forEach((s, i) => {
             let mult = MULT_LEYENDA[i] || 1.05;
             let v = s.val * (mult + plusEdad);
-            
-            if(s.key === 'res') v *= BONUS_RESISTENCIA;
-            if(s.key === 'vel') v *= BONUS_VELOCIDAD;
-            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 12); 
-
+            if(s.key === 'res') v *= BONUS_FISICO_RES;
+            if(s.key === 'vel') v *= BONUS_FISICO_VEL;
+            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 10); 
             nuevos[s.key] = Math.min(TOPE_STAT_LEYENDA, Math.round(v));
             suma += nuevos[s.key];
         });
-
-        // Crear objeto nuevo para no ensuciar la base original
-        const leyenda = JSON.parse(JSON.stringify(base));
-        return {
-            ...leyenda, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], 
-            ...nuevos, prom: Math.min(TOPE_STAT_LEYENDA, Math.round(suma/6))
-        };
+        const LEY_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
+        return { ...base, foto: base.fotoLeyenda, fondo: LEY_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
     }
 
     function descargarCarta() {
@@ -296,25 +292,21 @@
     }
 
     // ==========================================
-    // 5. ARMADOR DE EQUIPOS
+    // BLOQUE 6: ARMADOR Y REPARTO (BUSCAR 'REPARTO' PARA LÓGICA)
     // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
-    
     function agregarInvitado() {
         const id = 9000 + invitados.length + 1;
         invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, res: 70, esInvitado: true});
         asignarJugadorAutomaticamente(id); renderizarListaSeleccion();
     }
-
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); }
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
         if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
     }
-
     function isPlayerSelected(id) { const nid = parseInt(id); return equipo1.includes(nid) || equipo2.includes(nid); }
-
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
@@ -333,38 +325,31 @@
         }).join('');
         cont.innerHTML = html; actualizarContadorEquipos();
     }
-
     function toggleSeleccion(id) {
         const nid = parseInt(id);
         if (isPlayerSelected(nid)) removerJugadorDeEquipos(nid);
         else if ((equipo1.length + equipo2.length) < 10) asignarJugadorAutomaticamente(nid);
         renderizarListaSeleccion();
     }
-
     function asignarJugadorAutomaticamente(id) {
         const nid = parseInt(id); if(isPlayerSelected(nid)) return;
         if (equipo1.length <= equipo2.length) equipo1.push(nid); else equipo2.push(nid);
         actualizarTablerosEquipos();
     }
-
     function removerJugadorDeEquipos(id) {
         const nid = parseInt(id); equipo1 = equipo1.filter(x => x !== nid); equipo2 = equipo2.filter(x => x !== nid);
         actualizarTablerosEquipos();
     }
-
     function actualizarContadorEquipos() {
         const total = equipo1.length + equipo2.length;
         document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
         const ok = total === 10;
-        const btn = document.getElementById('btn-generate');
-        btn.style.opacity = ok ? '1' : '0.5';
-        btn.style.pointerEvents = ok ? 'auto' : 'none';
+        document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
+        document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
-
     function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
     function actualizarTablerosEquipos() { renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); renderListaEquipo('list-team-2', equipo2, 'avg-team-2'); }
-    
     function renderListaEquipo(ulId, ids, avgId) {
         const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0;
         ids.map(getPlayerData).filter(x=>x).sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => {
@@ -375,11 +360,10 @@
         });
         document.getElementById(avgId).innerText = `Prom: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
     }
-
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
     // ==========================================
-    // 6. GENERADOR AUTOMÁTICO
+    // BLOQUE 7: ALGORITMO GENERADOR (REPARTO)
     // ==========================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
@@ -389,7 +373,6 @@
         const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
         const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
         const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
-        const hayDosGraneros = granerosIds.length === 2;
         
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
@@ -405,7 +388,7 @@
             });
             const idsT1 = t1.map(p => p.id);
             let fealdad = Math.abs(s1 - s2) * 10; 
-            if (hayDosGraneros && idsT1.includes(granerosIds[0]) !== idsT1.includes(granerosIds[1])) fealdad += 500;
+            if (granerosIds.length === 2 && idsT1.includes(granerosIds[0]) !== idsT1.includes(granerosIds[1])) fealdad += 500;
             if (cracksIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50; 
             if (resacaIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50;
             if ([0,3].includes(pulmonesIds.filter(id => idsT1.includes(id)).length)) fealdad += 60; 
