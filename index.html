@@ -38,14 +38,12 @@
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn-add-guest { 
             background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
             cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
         }
         .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -75,7 +73,7 @@
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-texto); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; background: rgba(255,255,255,0.05); }
         #loader { text-align: center; color: #666; margin-top: 50px; }
         body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
-        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:50px; text-align:left; display: flex; align-items: center; }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; justify-content: flex-start; }
     </style>
 </head>
 <body>
@@ -127,7 +125,7 @@
                 <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none;">COMPARTIR</button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
                     <button class="btn btn-ghost" onclick="cerrarArmador()">CERRAR</button>
-                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.4.0 (Organización & Fix Audio)</span>
+                    <span style="font-size: 0.6rem; color: #555; font-family: var(--fuente-texto);">Versión 2.5.0 (Parametrized Legend & Auto-Audio)</span>
                 </div>
             </div>
         </div>
@@ -138,39 +136,43 @@
 
 <script>
     // ==========================================
-    // 1. CONFIGURACIÓN Y AUDIO
+    // 1. AJUSTES MANUALES (EDITÁ ACÁ)
     // ==========================================
+    
+    // LINKS DE ARCHIVOS
     const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
     const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
     const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
     const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
-    const SFX_CLICK_URL = ""; // Link a tu sonido aquí
+    const SFX_CLICK_URL = ""; 
+
+    // AJUSTES MODO LEYENDA
+    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; // Del mejor al peor stat
+    const BONUS_RESISTENCIA = 1.03; // 3% extra
+    const BONUS_VELOCIDAD = 1.015;  // 1.5% extra
+    const PLUS_EDAD_LEYENDA = 0.0025; // Plus por cada año arriba de 28
+    const TOPE_STAT_LEYENDA = 98; // Máximo posible en modo leyenda
 
     // ==========================================
-    // 2. CONFIGURACIÓN MODO LEYENDA
-    // ==========================================
-    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; // Escalonado del mejor al peor stat
-    const PLUS_EDAD_COEF = 0.0025; // Cuanto más viejo es hoy, más sube
-
-    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
-    const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
-    
-    // ==========================================
-    // 3. ESTADO GLOBAL
+    // 2. ESTADO Y AUDIO
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
-    let musicStage = 0.1; // 0: Bajo (0.1), 1: Alto (0.7)
+    let musicStage = 0; // 0: Bajo (0.1), 1: Alto (0.7)
 
     document.addEventListener("DOMContentLoaded", () => {
-        // Carga de Textura y Título
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
         
-        // Inicialización de Música
         const player = document.getElementById('audio-player');
         player.src = MUSICA_URL;
         player.volume = 0.1;
-        player.play().catch(() => console.log("Interacción necesaria para play"));
+
+        // Activador de audio por primer click (Requerido por Navegadores)
+        window.addEventListener('click', () => {
+            if (player.paused && musicStage < 2) {
+                player.play().catch(e => console.log("Audio block: ", e));
+            }
+        }, { once: true });
 
         cargarDatos();
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
@@ -183,7 +185,7 @@
         musicStage = (musicStage + 1) % 2;
         if (musicStage === 0) { player.volume = 0.1; control.innerText = "🔈"; }
         else { player.volume = 0.7; control.innerText = "🔊"; }
-        player.play(); // Asegura que empiece si estaba bloqueado
+        player.play();
     }
 
     function playClickSfx() {
@@ -192,7 +194,7 @@
     }
 
     // ==========================================
-    // 4. CARGA DE DATOS Y GRILLA
+    // 3. CARGA Y VISUALIZACIÓN
     // ==========================================
     function cargarDatos() {
         const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent("https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv&uid=" + Date.now());
@@ -235,11 +237,11 @@
     }
 
     // ==========================================
-    // 5. LÓGICA LEYENDA (ESCALONADO)
+    // 4. LÓGICA LEYENDA (EDITABLE EN PUNTO 1)
     // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
-        jugadorActualEnModal = JSON.parse(JSON.stringify(j)); // Copia limpia para no pisar el original
+        jugadorActualEnModal = JSON.parse(JSON.stringify(j)); 
         esModoLeyenda = false;
         document.getElementById('modal').style.display = 'flex';
         renderizarModal(jugadorActualEnModal);
@@ -263,26 +265,25 @@
         const sortedStats = statsKeys.map(key => ({key, val: base[key]})).sort((a,b)=>b.val-a.val);
         
         let nuevos = {}, suma = 0;
-        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF); 
+        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_LEYENDA); 
         
         sortedStats.forEach((s, i) => {
             let mult = MULT_LEYENDA[i] || 1.05;
             let v = s.val * (mult + plusEdad);
             
-            // Refuerzos físicos típicos de juventud
-            if(s.key === 'res') v *= 1.05;
-            if(s.key === 'vel') v *= 1.025;
-            
-            // Si es un stat que no domina (ej. arq bajo), poner un techo para coherencia
-            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 12);
+            if(s.key === 'res') v *= BONUS_RESISTENCIA;
+            if(s.key === 'vel') v *= BONUS_VELOCIDAD;
+            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 12); 
 
-            nuevos[s.key] = Math.min(98, Math.round(v));
+            nuevos[s.key] = Math.min(TOPE_STAT_LEYENDA, Math.round(v));
             suma += nuevos[s.key];
         });
 
+        // Crear objeto nuevo para no ensuciar la base original
+        const leyenda = JSON.parse(JSON.stringify(base));
         return {
-            ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], 
-            ...nuevos, prom: Math.min(98, Math.round(suma/6))
+            ...leyenda, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], 
+            ...nuevos, prom: Math.min(TOPE_STAT_LEYENDA, Math.round(suma/6))
         };
     }
 
@@ -295,7 +296,7 @@
     }
 
     // ==========================================
-    // 6. ARMADOR DE EQUIPOS
+    // 5. ARMADOR DE EQUIPOS
     // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
@@ -378,7 +379,7 @@
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
     // ==========================================
-    // 7. ALGORITMO DE GENERACIÓN AUTOMÁTICA
+    // 6. GENERADOR AUTOMÁTICO
     // ==========================================
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
@@ -394,7 +395,6 @@
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
         let mejorE1 = [], menorFealdad = 999999;
 
-        // 500 intentos para asegurar variedad y paridad
         for (let i = 0; i < 500; i++) {
             let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
             tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
@@ -432,4 +432,3 @@
 </script>
 </body>
 </html>
-
