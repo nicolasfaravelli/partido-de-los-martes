@@ -165,7 +165,7 @@
         const player = document.getElementById('audio-player');
         if(player.src !== MUSICA_URL) {
             player.src = MUSICA_URL;
-            player.volume = 0.1;
+            player.volume = 0.05;
         }
         player.play().catch(() => {});
         window.removeEventListener('click', initAudio);
@@ -177,8 +177,8 @@
         const player = document.getElementById('audio-player');
         const control = document.getElementById('music-control');
         musicStage = (musicStage + 1) % 2;
-        if (musicStage === 0) { player.volume = 0.1; control.innerText = "🔈"; }
-        else { player.volume = 0.7; control.innerText = "🔊"; }
+        if (musicStage === 0) { player.volume = 0.05; control.innerText = "🔈"; }
+        else { player.volume = 0.75; control.innerText = "🔊"; }
         if(player.paused) player.play();
     }
 
@@ -417,3 +417,4 @@
 </script>
 </body>
 </html>
+
