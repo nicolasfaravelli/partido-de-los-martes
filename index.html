@@ -38,14 +38,9 @@
         .btn { border: 1px solid transparent; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; }
         .btn-gold { background: var(--color-acento); color: #000; font-weight: bold; }
         .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        
         .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        .btn-add-guest { 
-            background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; 
-            cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; transition: 0.2s;
-        }
-        .btn-add-guest:hover { color: var(--color-acento); border-color: var(--color-acento); }
-
+        .btn-add-guest { background: #222; border: 1px dashed #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-titulo); font-size: 1.1rem; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -59,9 +54,9 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* BRILLOS */
-        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
-        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
+        /* BRILLOS RESTAURADOS */
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.6s ease-in-out; }
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.7s ease-out forwards; }
@@ -95,8 +90,8 @@
         <select id="sort-select">
             <option value="nombre-asc">Nombre: A - Z</option>
             <option value="nombre-desc">Nombre: Z - A</option>
-            <option value="prom-desc">Valoración: mayor a menor</option>
-            <option value="prom-asc">Valoración: menor a mayor</option>
+            <option value="prom-desc">Valoración: Mayor a Menor</option>
+            <option value="prom-asc">Valoración: Menor a Mayor</option>
         </select>
         <button class="btn btn-gold" onclick="playClickSfx(); abrirArmador()">ARMAR EQUIPOS</button>
     </div>
@@ -145,7 +140,7 @@
 
 <script>
     // ==========================================
-    // BLOQUE AJUSTES: LEYENDA Y ASSETS
+    // 1. AJUSTES: LEYENDA Y AUDIO
     // ==========================================
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
     const PLUS_EDAD_COEF = 0.0028; 
@@ -160,54 +155,44 @@
     const SFX_CLICK_URL = ""; 
 
     // ==========================================
-    // BLOQUE AUDIO: SISTEMA DE SONIDO
+    // 2. SISTEMA DE AUDIO
     // ==========================================
     let musicStage = 0; 
-    function initAudioOnInteraction() {
-        const player = document.getElementById('audio-player');
-        if(player.src !== MUSICA_URL) player.src = MUSICA_URL;
-        player.volume = 0.05;
-        player.play().catch(() => {});
-        window.removeEventListener('click', initAudioOnInteraction);
-        window.removeEventListener('touchstart', initAudioOnInteraction);
+    function handleFirstInteraction() {
+        const p = document.getElementById('audio-player');
+        if(!p.src) p.src = MUSICA_URL;
+        p.volume = 0.05;
+        p.play().catch(() => {});
+        window.removeEventListener('click', handleFirstInteraction);
     }
-
     function rotateMusic() {
-        const player = document.getElementById('audio-player');
-        const control = document.getElementById('music-control');
+        const p = document.getElementById('audio-player');
+        const c = document.getElementById('music-control');
         musicStage = (musicStage + 1) % 2;
-        if (musicStage === 0) { player.volume = 0.05; control.innerText = "🔈"; }
-        else { player.volume = 0.75; control.innerText = "🔊"; }
-        player.play();
+        if (musicStage === 0) { p.volume = 0.05; c.innerText = "🔈"; }
+        else { p.volume = 0.75; c.innerText = "🔊"; }
+        p.play();
     }
-
     function playClickSfx() {
-        const sfx = document.getElementById('sfx-player');
-        if (SFX_CLICK_URL) { sfx.src = SFX_CLICK_URL; sfx.play(); }
+        const s = document.getElementById('sfx-player');
+        if (SFX_CLICK_URL) { s.src = SFX_CLICK_URL; s.play(); }
     }
 
     // ==========================================
-    // BLOQUE CARGA: OBTENCIÓN DE DATOS
+    // 3. CARGA DE DATOS
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", () => {
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
-        
-        window.addEventListener('click', initAudioOnInteraction);
-        window.addEventListener('touchstart', initAudioOnInteraction);
-
+        window.addEventListener('click', handleFirstInteraction);
         cargarDatos();
-        document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
-        document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
     });
 
     function cargarDatos() {
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        const PROXY = "https://corsproxy.io/?" + encodeURIComponent(CSV_URL + "&cache=" + Date.now());
-        
-        Papa.parse(PROXY, {
+        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
+        Papa.parse(CSV, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
@@ -227,17 +212,20 @@
         });
     }
 
+    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
+    const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
+
     function aplicarFiltrosYOrden() {
-        const texto = document.getElementById('search-input').value.toLowerCase();
-        const [criterio, orden] = document.getElementById('sort-select').value.split('-');
-        let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(texto));
-        lista.sort((a,b) => criterio === 'nombre' ? (orden === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (orden === 'asc' ? a.prom - b.prom : b.prom - a.prom));
+        const t = document.getElementById('search-input').value.toLowerCase();
+        const [c, o] = document.getElementById('sort-select').value.split('-');
+        let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(t));
+        lista.sort((a,b) => c === 'nombre' ? (o === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (o === 'asc' ? a.prom - b.prom : b.prom - a.prom));
         document.getElementById('grid-container').innerHTML = lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('');
     }
 
     function generarHTMLCarta(j, lazy) {
-        return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy ? 'loading="lazy"' : ''} crossorigin="anonymous"></div>
-            <div class="shine-layer" style="mask-image: url('${j.fondo}'); -webkit-mask-image: url('${j.fondo}');"></div>
+        return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div>
+            <div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>
             ${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}
             <div class="info-layer" style="color:${j.color}">
                 <div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div>
@@ -245,6 +233,9 @@
             </div>`;
     }
 
+    // ==========================================
+    // 4. LEYENDA Y MODAL
+    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -252,14 +243,11 @@
         document.getElementById('modal').style.display = 'flex';
         renderizarModal(jugadorActualEnModal);
     }
-
     function renderizarModal(j) {
         document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
-        document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda ? 'btn-ghost' : 'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda ? "ACTUAL" : "LEYENDA"}</button>` : ''}
-            <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
+        document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}
+            <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
     }
-
     function toggleLeyenda() {
         esModoLeyenda = !esModoLeyenda;
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
@@ -271,24 +259,22 @@
             card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
         }
     }
-
     function calcularObjetoLeyenda(base) {
-        const statsKeys = ['ata','def','tec','vel','res','arq'];
-        const sortedStats = statsKeys.map(key => ({key, val: base[key]})).sort((a,b)=>b.val-a.val);
+        const keys = ['ata','def','tec','vel','res','arq'];
+        const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v);
         let nuevos = {}, suma = 0;
-        const plusEdad = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF); 
-        sortedStats.forEach((s, i) => {
-            let mult = MULT_LEYENDA[i] || 1.05;
-            let v = s.val * (mult + plusEdad);
-            if(s.key === 'res') v *= BONUS_RESISTENCIA;
-            if(s.key === 'vel') v *= BONUS_VELOCIDAD;
-            if(s.key === 'arq' && i > 2) v = Math.min(v, s.val + 12);
-            nuevos[s.key] = Math.min(TOPE_STAT_LEYENDA, Math.round(v));
-            suma += nuevos[s.key];
+        const plus = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF);
+        sorted.forEach((s, i) => {
+            let m = MULT_LEYENDA[i] || 1.05;
+            let val = s.v * (m + plus);
+            if(s.k === 'res') val *= BONUS_RESISTENCIA;
+            if(s.k === 'vel') val *= BONUS_VELOCIDAD;
+            if(s.k === 'arq' && i > 2) val = Math.min(val, s.v + 12);
+            nuevos[s.k] = Math.min(TOPE_STAT_LEYENDA, Math.round(val));
+            suma += nuevos[s.k];
         });
         return { ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
     }
-
     function descargarCarta() {
         const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none';
         html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => {
@@ -297,55 +283,40 @@
         });
     }
 
-    function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; invitados = []; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
+    // ==========================================
+    // 5. ARMADOR
+    // ==========================================
+    function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
         const id = 9000 + invitados.length + 1;
         invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, edad: 25, arq: 50, res: 70, esInvitado: true});
-        asignarJugadorAutomaticamente(id); renderizarListaSeleccion();
+        (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); renderizarListaSeleccion();
     }
-    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); removerJugadorDeEquipos(id); renderizarListaSeleccion(); }
-    function isPlayerSelected(id) { const nid = parseInt(id); return equipo1.includes(nid) || equipo2.includes(nid); }
+    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion(); }
+    function editarInvitado(id, campo, valor) {
+        const inv = invitados.find(i => i.id === parseInt(id));
+        if(inv) { if(campo === 'nombre') inv.nombre = valor; else { inv.prom = parseInt(valor) || 60; inv.res = inv.prom; } actualizarTablerosEquipos(); }
+    }
+    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
-        let html = invitados.map(i => {
-            const sel = isPlayerSelected(i.id); const can = total < 10 || sel;
-            return `<div class="player-row guest-item ${sel?'selected':''} ${!can?'disabled':''}" onclick="${can?`toggleSeleccion(${i.id})`:''}">
-                <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
-                <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-texto);">
-                <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:40px;font-family:var(--fuente-texto);">
-                <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span></div>`;
-        }).join('');
-        html += [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => {
-            const sel = isPlayerSelected(j.id); const can = total < 10 || sel;
-            return `<div class="player-row ${sel?'selected':''} ${!can?'disabled':''}" onclick="${can?`toggleSeleccion(${j.id})`:''}">
-                <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;"><span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span></div>`;
-        }).join('');
-        cont.innerHTML = html; actualizarContadorEquipos();
+        let html = invitados.map(i => `<div class="player-row guest-item ${isPlayerSelected(i.id)?'selected':''} ${total>=10 && !isPlayerSelected(i.id)?'disabled':''}" onclick="toggleSeleccion(${i.id})"><input type="checkbox" ${isPlayerSelected(i.id)?'checked':''} style="pointer-events:none;"><input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-texto);"><input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:40px;font-family:var(--fuente-texto);"><span onclick="event.stopPropagation(); borrarInvitado(${i.id})" style="color:red;cursor:pointer;">✕</span></div>`).join('');
+        html += [...datosOriginales].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => `<div class="player-row ${isPlayerSelected(j.id)?'selected':''} ${total>=10 && !isPlayerSelected(j.id)?'disabled':''}" onclick="toggleSeleccion(${j.id})"><input type="checkbox" ${isPlayerSelected(j.id)?'checked':''} style="pointer-events:none;"><span>${j.nombre}</span><span style="margin-left:auto;opacity:0.5;">${j.prom}</span></div>`).join('');
+        cont.innerHTML = html;
+        actualizarContadorEquipos(); actualizarTablerosEquipos();
     }
     function toggleSeleccion(id) {
         const nid = parseInt(id);
-        if (isPlayerSelected(nid)) removerJugadorDeEquipos(nid);
-        else if ((equipo1.length + equipo2.length) < 10) asignarJugadorAutomaticamente(nid);
+        if (isPlayerSelected(nid)) { equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); }
+        else if ((equipo1.length + equipo2.length) < 10) (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(nid);
         renderizarListaSeleccion();
     }
-    function asignarJugadorAutomaticamente(id) {
-        const nid = parseInt(id); if(isPlayerSelected(nid)) return;
-        if (equipo1.length <= equipo2.length) equipo1.push(nid); else equipo2.push(nid);
-        actualizarTablerosEquipos();
-    }
-    function removerJugadorDeEquipos(id) {
-        const nid = parseInt(id); equipo1 = equipo1.filter(x => x !== nid); equipo2 = equipo2.filter(x => x !== nid);
-        actualizarTablerosEquipos();
-    }
     function actualizarContadorEquipos() {
-        const total = equipo1.length + equipo2.length;
-        document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total}/10`;
-        const ok = total === 10;
-        const btn = document.getElementById('btn-generate');
-        btn.style.opacity = ok ? '1' : '0.5';
-        btn.style.pointerEvents = ok ? 'auto' : 'none';
+        const t = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `SELECCIONADOS: ${t}/10`;
+        const ok = t === 10; document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
+        document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
     function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
@@ -366,31 +337,26 @@
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
         const currentE1 = [...equipo1].sort().join(',');
         const sortedProm = [...pool].sort((a,b) => b.prom - a.prom);
-        const cracksIds = sortedProm.slice(0, 2).map(p => p.id);
-        const resacaIds = sortedProm.slice(8, 10).map(p => p.id);
-        const pulmonesIds = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
-        const granerosIds = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
-        
+        const cracks = sortedProm.slice(0, 2).map(p => p.id);
+        const resaca = sortedProm.slice(8, 10).map(p => p.id);
+        const pulmones = [...pool].sort((a,b) => b.res - a.res).slice(0, 3).map(p => p.id);
+        const graneros = pool.filter(p => p.nombre.includes("Graneros")).map(p => p.id);
         pool.sort((a, b) => (b.arq || 50) - (a.arq || 50));
         const arqA = pool[0], arqB = pool[1], restoOriginal = pool.slice(2);
         let mejorE1 = [], menorFealdad = 999999;
-
         for (let i = 0; i < 500; i++) {
-            let tempResto = [...restoOriginal].sort(() => Math.random() - 0.5);
-            tempResto.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
-            let t1 = [arqA], t2 = [arqB], s1 = arqA.prom, s2 = arqB.prom;
-            tempResto.forEach(p => {
-                if ((s1 <= s2 && t1.length < 5) || t2.length >= 5) { t1.push(p); s1 += p.prom; }
-                else { t2.push(p); s2 += p.prom; }
-            });
+            let temp = [...restoOriginal].sort(() => Math.random() - 0.5);
+            temp.forEach(p => { p._pwr = p.prom + (Math.random() * 2 - 1); });
+            let t1 = [arqA], s1 = arqA.prom, s2 = arqB.prom;
+            temp.forEach(p => { if ((s1 <= s2 && t1.length < 5) || (5-t1.length) >= (temp.length - temp.indexOf(p))) { t1.push(p); s1 += p.prom; } else s2 += p.prom; });
             const idsT1 = t1.map(p => p.id);
-            let fealdad = Math.abs(s1 - s2) * 10; 
-            if (granerosIds.length === 2 && idsT1.includes(granerosIds[0]) !== idsT1.includes(granerosIds[1])) fealdad += 500;
-            if (cracksIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50; 
-            if (resacaIds.filter(id => idsT1.includes(id)).length !== 1) fealdad += 50;
-            if ([0,3].includes(pulmonesIds.filter(id => idsT1.includes(id)).length)) fealdad += 60; 
-            if (idsT1.sort().join(',') === currentE1) fealdad += 200; 
-            if (fealdad < menorFealdad) { menorFealdad = fealdad; mejorE1 = idsT1; }
+            let f = Math.abs(s1 - s2) * 10; 
+            if (graneros.length === 2 && idsT1.includes(graneros[0]) !== idsT1.includes(graneros[1])) f += 500;
+            if (cracks.filter(id => idsT1.includes(id)).length !== 1) f += 50; 
+            if (resaca.filter(id => idsT1.includes(id)).length !== 1) f += 50;
+            if ([0,3].includes(pulmones.filter(id => idsT1.includes(id)).length)) f += 60; 
+            if (idsT1.sort().join(',') === currentE1) f += 200; 
+            if (f < menorFealdad) { menorFealdad = f; mejorE1 = idsT1; }
         }
         if (mejorE1.length) { 
             equipo1 = mejorE1; equipo2 = pool.map(p=>p.id).filter(id => !equipo1.includes(id));
