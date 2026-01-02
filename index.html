@@ -159,9 +159,9 @@
     const SFX_CLICK_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3";
 
     const VOL_MUSICA_BAJO = 0.03;
-    const VOL_MUSICA_ALTO = 0.6;
-    const VOL_SFX_HOVER = 0.05;
-    const VOL_SFX_CLICK = 0.05;
+    const VOL_MUSICA_ALTO = 0.3;
+    const VOL_SFX_HOVER = 0.03;
+    const VOL_SFX_CLICK = 0.03;
 
     // ==========================================
     // 2. SISTEMA DE AUDIO
@@ -196,7 +196,6 @@
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
                 el.addEventListener('mouseenter', playHoverSfx);
-                // Si es un jugador en el armador, suena click 1 (suave) al mousedown
                 if(el.classList.contains('player-row')) {
                     el.addEventListener('mousedown', playHoverSfx);
                 } else {
@@ -412,3 +411,4 @@
 </script>
 </body>
 </html>
+
