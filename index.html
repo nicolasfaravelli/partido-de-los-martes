@@ -4,87 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Partido de los Martes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Bebas+Neue&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
-            --fondo-url: none; 
-            --color-fondo: #0a0a0b; 
-            --color-paneles: #161618;
-            --color-bordes: #2d2d30;
-            --color-texto: #f4f4f5; 
-            --color-acento: #75AADB; /* CELESTE SELECCIÓN */
-            --fuente-ui: 'Inter', sans-serif;
-            --fuente-cartas: 'Bebas Neue', sans-serif;
+            --fondo-url: none; --color-fondo: #0f0f0f; --color-paneles: #1a1a1a; --color-bordes: #333333;
+            --color-texto: #ffffff; --color-acento: #75AADB; 
+            --color-gris-claro: #ffffff; /* RESTAURADO A BLANCO */
+            --stat-legend: #a855f7; --stat-gold: #d4af37; --stat-silver: #7a7a7a; --stat-bronze: #5e3e21;
+            --fuente-impacto: 'Bebas Neue', sans-serif; --fuente-datos: 'Roboto', sans-serif;
             --fuente-stats: 'Roboto Mono', monospace;
         }
-
         body { 
-            background-color: var(--color-fondo); 
-            color: var(--color-texto); 
-            font-family: var(--fuente-ui);
-            margin: 0; padding: 0 20px 20px 20px; 
-            background-image: var(--fondo-url); 
-            background-position: center; 
-            background-repeat: no-repeat; 
-            background-size: cover; 
-            background-attachment: fixed; 
-            user-select: none;
+            background-color: var(--color-fondo); color: var(--color-texto); font-family: var(--fuente-datos); 
+            margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
+            background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
         }
+        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.65rem; color: #444; z-index: 5000; letter-spacing: 1px; font-weight: 700; }
-
-        /* CABECERA Y TEXTURA */
-        .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 15px -20px; padding: 25px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        /* CABECERA */
+        .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
             background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; 
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
         /* CONTROLES */
         .controls-area {
-            max-width: 1200px; margin: 0 auto 25px; display: flex; gap: 15px; flex-wrap: wrap;
-            background: var(--color-paneles); padding: 15px; border-radius: 10px; border: 1px solid var(--color-bordes); 
-            justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
+            background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
+            justify-content: space-between; align-items: center; position: relative; z-index: 50;
         }
-        #search-input, #sort-select { 
-            flex: 1; padding: 12px; font-family: var(--fuente-ui); font-size: 0.9rem; font-weight: 600;
-            background: #232326; border: 1px solid #3f3f46; color: white; border-radius: 6px; min-width: 150px; 
-        }
+        #search-input, #sort-select { flex: 1; padding: 10px 15px; font-family: var(--fuente-datos); font-size: 1rem; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; }
         
         /* BOTONES */
-        .btn { 
-            border: 1px solid transparent; padding: 12px 24px; border-radius: 6px; cursor: pointer; 
-            font-family: var(--fuente-ui); font-size: 0.9rem; font-weight: 700; 
-            display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s;
-        }
-        .btn-gold { background: var(--color-acento); color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn-gold:hover { background: #8bb7e2; box-shadow: 0 0 15px rgba(117, 170, 219, 0.4); }
-        .btn-gold:active { background: #9dc4e9; filter: brightness(1.1); }
+        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
+        .btn-gold { background: var(--color-acento); color: #fff; }
+        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
         
-        .btn-ghost { background: #27272a; color: #d4d4d8; border: 1px solid #3f3f46; }
-        .btn-ghost:hover { background: #333338; color: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.05); }
-        .btn-ghost:active { filter: brightness(1.2); }
+        .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
+        .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
+        
+        .btn-group { display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+        
+        /* BOTÓN INVITADO MEJORADO */
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
+        .btn-add-guest:hover { background: #333; color: #fff; border-color: var(--color-acento); }
 
-        /* GRILLA */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+        /* CARTAS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; }
-        .card:hover { transform: translateY(-5px); z-index: 10; }
-        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5)); }
+        .card:hover { transform: scale(1.05); z-index: 10; }
+        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); }
         .card-bg { width: 100%; height: 100%; object-fit: contain; }
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; }
-
-        /* STATS CARTA */
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
-        .rating { font-family: var(--fuente-cartas); position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
-        .position { font-family: var(--fuente-cartas); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
-        .name { font-family: var(--fuente-cartas); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
-        .stats-container { font-family: var(--fuente-cartas); display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
-        .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
+        
+        .rating { font-family: var(--fuente-impacto); position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
+        .position { font-family: var(--fuente-impacto); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
+        .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
+        .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
+        .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
         /* BRILLOS */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -96,37 +81,30 @@
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
 
         /* MODALES */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
-        #team-modal-content { background: var(--color-paneles); padding: 25px; border-radius: 12px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
+        #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
+        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
+        .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
         
-        /* LISTA JUGADORES ARMADOR */
-        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
-        .player-row { display: flex; align-items: center; gap: 10px; padding: 10px; background: #1f1f23; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; border: 1px solid transparent; transition: all 0.2s; box-sizing: border-box; }
-        .player-row.selected { border-color: var(--color-acento); background: rgba(117, 170, 219, 0.05); }
-        
-        /* FIX INVITADO X */
-        .guest-item { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
-        .guest-controls { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
-        .guest-controls input[type="text"] { flex: 1; min-width: 0; }
-        .delete-guest { color: #ef4444; font-weight: 900; cursor: pointer; padding: 0 2px; flex-shrink: 0; }
+        /* INVITADOS */
+        .guest-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px !important; }
+        .guest-controls { display: flex; align-items: center; gap: 5px; flex-grow: 1; min-width: 0; }
+        .delete-guest { color: #ef4444; font-weight: 900; cursor: pointer; font-size: 1.2rem; padding: 0 5px; flex-shrink: 0; }
 
-        /* TABLAS EQUIPOS */
-        .teams-container { display: flex; gap: 20px; margin-top: 10px; min-height: 250px; }
-        .team-box { flex: 1; border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; }
-        .team-white { background: var(--color-gris-claro); color: #111; border-color: #fff; }
+        /* EQUIPOS */
+        .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; width: 100%; }
+        .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
+        .team-white { background: #ffffff; color: #111; border-color: #ccc; }
         .team-black { background: #000; color: #fff; border-color: #333; }
-        .team-header { font-family: var(--fuente-cartas); font-size: 1.8rem; text-align: center; padding: 10px; background: rgba(255,255,255,0.05); letter-spacing: 2px; }
-        .team-player-li { padding: 10px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.95rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .team-player-li span:last-child { font-family: var(--fuente-stats); }
-        .team-avg { font-family: var(--fuente-stats); font-size: 0.75rem; text-align: center; padding: 5px; color: inherit; opacity: 0.7; border-bottom: 1px solid rgba(0,0,0,0.1); }
-
-        /* PIE DE MODAL */
-        .modal-footer { display: flex; justify-content: flex-end; gap: 15px; padding-top: 20px; border-top: 1px solid #2d2d30; margin-top: 10px; }
-
-        /* OTROS */
-        #loader { text-align: center; color: var(--color-acento); margin-top: 50px; font-weight: 800; letter-spacing: 2px; }
-        #music-control { position:fixed; bottom:20px; right:20px; font-size:1.8rem; cursor:pointer; z-index:4000; background: rgba(0,0,0,0.6); width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:50%; border: 1px solid #333; }
+        .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px; }
+        .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        
+        .modal-footer { display: flex; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
+        body.retro-mode { filter: sepia(0.4) contrast(1.2) brightness(0.9); }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
     </style>
 </head>
 <body>
@@ -154,28 +132,26 @@
 
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
-            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; margin-bottom:15px; font-family: var(--fuente-cartas);">ARMADOR DE EQUIPOS</div>
+            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; font-family:var(--fuente-impacto); letter-spacing:2px; margin-bottom:10px;">ARMADOR DE EQUIPOS</div>
             <div class="armador-layout" style="overflow-y:auto; flex:1;">
-                <div class="selection-area" style="background:rgba(255,255,255,0.02); padding:15px; border-radius:10px; margin-bottom:20px; border: 1px solid #222;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <span id="team-counter" style="font-weight:700; font-size:0.85rem; color:#a1a1aa; text-transform: uppercase;">Seleccionados: 0 / 10</span>
-                        <button class="btn-add-guest" onclick="agregarInvitado()">+ INVITADO</button>
+                <div class="selection-area" style="background:#111; padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid #222;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span id="team-counter" style="font-weight:bold; color:#888; font-size:0.9rem;">SELECCIONADOS: 0/10</span>
+                        <button class="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
-                <div style="text-align:center;">
-                    <button class="btn btn-gold" style="width:100%; max-width: 400px; margin: 0 auto 25px; font-size: 1.1rem;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
-                </div>
+                <button class="btn btn-gold" style="width:100%; margin-bottom: 15px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 <div id="team-capture-area">
                     <div class="teams-container">
                         <div class="team-box team-white" id="box-team-1">
                             <div class="team-header">CLARO</div>
-                            <div id="avg-team-1" class="team-avg">PROM: 0</div>
+                            <div id="avg-team-1" style="text-align:center; font-weight:900; font-size:0.8rem; border-bottom:1px solid #ccc;">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0; margin:0;"></ul>
                         </div>
                         <div class="team-box team-black" id="box-team-2">
                             <div class="team-header">OSCURO</div>
-                            <div id="avg-team-2" class="team-avg">PROM: 0</div>
+                            <div id="avg-team-2" style="text-align:center; font-weight:900; font-size:0.8rem; border-bottom:1px solid #333;">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0; margin:0;"></ul>
                         </div>
                     </div>
@@ -194,7 +170,6 @@
     <div id="music-control" onclick="rotateMusic()">🔉</div>
 
 <script>
-    // CONFIGURACIÓN LEYENDA Y AUDIO
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
     const PLUS_EDAD_COEF = 0.0028; 
     const BONUS_RESISTENCIA = 1.05;
@@ -209,33 +184,37 @@
     const SFX_CLICK_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3";
 
     let musicStage = 0; 
-    const VOL_SERIES = [0.03, 0.15, 0];
+    const VOL_SERIES = [0.05, 0.2, 0];
     const ICON_SERIES = ["🔉", "🔊", "🔈"];
-    const SFX_MAP = { 0: 0.0075, 0.03: 0.0375, 0.15: 0.15 };
+    const SFX_MAP = { 0: 0.0075, 0.05: 0.0375, 0.2: 0.15 };
+    let volIndex = 0;
 
-    // SISTEMA DE AUDIO
     function initAudio() {
         const p = document.getElementById('audio-player');
         if(!p.src) { p.src = MUSICA_URL; p.volume = VOL_SERIES[0]; }
         p.play().catch(() => {});
         window.removeEventListener('click', initAudio);
     }
+
     function rotateMusic() {
         const p = document.getElementById('audio-player');
         const c = document.getElementById('music-control');
-        musicStage = (musicStage + 1) % VOL_SERIES.length;
-        p.volume = VOL_SERIES[musicStage];
-        c.innerText = ICON_SERIES[musicStage];
+        volIndex = (volIndex + 1) % VOL_SERIES.length;
+        p.volume = VOL_SERIES[volIndex];
+        c.innerText = ICON_SERIES[volIndex];
         if (p.volume > 0) p.play(); else p.pause();
     }
+
     function playHoverSfx() {
         const s = document.getElementById('sfx-hover-player');
-        if(SFX_HOVER_URL) { s.src = SFX_HOVER_URL; s.volume = SFX_MAP[VOL_SERIES[musicStage]]; s.play().catch(()=>{}); }
+        if(SFX_HOVER_URL) { s.src = SFX_HOVER_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
     }
+
     function playClickSfx() {
         const s = document.getElementById('sfx-click-player');
-        if(SFX_CLICK_URL) { s.src = SFX_CLICK_URL; s.volume = SFX_MAP[VOL_SERIES[musicStage]]; s.play().catch(()=>{}); }
+        if(SFX_CLICK_URL) { s.src = SFX_CLICK_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
     }
+
     function attachSounds() {
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
@@ -246,7 +225,6 @@
         });
     }
 
-    // CARGA DE DATOS
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -302,7 +280,6 @@
             </div>`;
     }
 
-    // LEYENDA Y MODAL
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -312,8 +289,11 @@
     }
     function renderizarModal(j) {
         document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
-        document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}
-            <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>`;
+        document.getElementById('modal-buttons').innerHTML = `<div class="btn-group">
+            ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}
+            <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>
+        </div>`;
         attachSounds();
     }
     function toggleLeyenda() {
@@ -351,7 +331,6 @@
         });
     }
 
-    // ARMADOR
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
@@ -370,8 +349,8 @@
             return `<div class="player-row guest-item ${sel?'selected':''} ${total>=10 && !sel?'disabled':''}" onclick="toggleSeleccion(${i.id})">
                 <div class="guest-controls">
                     <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
-                    <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-ui);">
-                    <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:35px;background:transparent;border:1px solid #333;color:#75AADB;font-family:var(--fuente-stats);text-align:center;padding:2px;">
+                    <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-datos);">
+                    <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:35px;background:transparent;border:1px solid #333;color:${getColorProm(i.prom)};text-align:center;">
                 </div>
                 <span class="delete-guest" onclick="event.stopPropagation(); borrarInvitado(${i.id})">✕</span>
             </div>`;
@@ -382,7 +361,7 @@
             return `<div class="player-row ${sel?'selected':''} ${total>=10 && !sel?'disabled':''}" onclick="toggleSeleccion(${j.id})">
                 <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
                 <span>${j.nombre}</span>
-                <span style="margin-left:auto;opacity:0.5;font-family:var(--fuente-stats);">${j.prom}</span>
+                <span style="margin-left:auto;opacity:0.7;font-family:var(--fuente-datos);color:${getColorProm(j.prom)};">${j.prom}</span>
             </div>`;
         }).join('');
         cont.innerHTML = html;
@@ -396,7 +375,7 @@
         renderizarListaSeleccion();
     }
     function actualizarContadorEquipos() {
-        const t = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `Seleccionados: ${t} / 10`;
+        const t = equipo1.length + equipo2.length; document.getElementById('team-counter').innerText = `SELECCIONADOS: ${t} / 10`;
         const ok = t === 10; document.getElementById('btn-generate').style.opacity = ok ? '1' : '0.5';
         document.getElementById('btn-generate').style.pointerEvents = ok ? 'auto' : 'none';
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
@@ -415,7 +394,6 @@
     }
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
-    // GENERADOR AUTOMÁTICO
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
         const currentE1 = [...equipo1].sort().join(',');
