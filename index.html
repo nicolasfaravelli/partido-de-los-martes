@@ -11,7 +11,8 @@
     <style>
         :root {
             --fondo-url: none; --color-fondo: #0f0f0f; --color-paneles: #1a1a1a; --color-bordes: #333333;
-            --color-texto: #ffffff; --color-acento: #d4af37; --color-gris-claro: #f0f0f0;
+            --color-texto: #ffffff; --color-acento: #cfcfcf; /* CAMBIO A PLATEADO */
+            --color-gris-claro: #f0f0f0;
             --stat-legend: #a855f7; --stat-gold: #d4af37; --stat-silver: #7a7a7a; --stat-bronze: #5e3e21;
             --fuente-titulo: 'Bebas Neue', sans-serif; --fuente-texto: 'Roboto', system-ui, sans-serif;
         }
@@ -20,7 +21,7 @@
             margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
             background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
         }
-        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; font-family: var(--fuente-texto); z-index: 5000; }
+        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #666; font-family: var(--fuente-texto); z-index: 5000; }
 
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
@@ -57,7 +58,6 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* BRILLOS */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
@@ -66,7 +66,6 @@
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
 
-        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
@@ -88,7 +87,7 @@
     </style>
 </head>
 <body>
-    <div id="version-tag">Versión 5</div>
+    <div id="version-tag">Versión 7</div>
     <div class="header-container" id="header-area" ondblclick="document.body.classList.toggle('retro-mode')"></div>
     <div class="controls-area">
         <input type="text" id="search-input" placeholder="Buscar jugador...">
@@ -149,7 +148,7 @@
 
 <script>
     // ==========================================
-    // 1. AJUSTES: LEYENDA Y ASSETS
+    // AJUSTES
     // ==========================================
     const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
     const PLUS_EDAD_COEF = 0.0028; 
@@ -165,7 +164,7 @@
     const SFX_CLICK_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3";
 
     // ==========================================
-    // 2. AUDIO SYSTEM
+    // AUDIO
     // ==========================================
     const VOL_SERIES = [0.05, 0.2, 0];
     const ICON_SERIES = ["🔉", "🔊", "🔈"];
@@ -202,24 +201,16 @@
     function attachSounds() {
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
-                // Hover sound: Excluir nombres en armador
-                if(!el.classList.contains('player-row')) {
-                    el.addEventListener('mouseenter', playHoverSfx);
-                }
-                
-                // Click sound logic
-                if(el.classList.contains('player-row')) {
-                    el.addEventListener('mousedown', playHoverSfx); // Click suave
-                } else {
-                    el.addEventListener('mousedown', playClickSfx); // Click standard
-                }
+                if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
+                if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx);
+                else el.addEventListener('mousedown', playClickSfx);
                 el.dataset.soundAttached = "true";
             }
         });
     }
 
     // ==========================================
-    // 3. CARGA DE DATOS
+    // DATOS
     // ==========================================
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
 
@@ -229,13 +220,14 @@
         window.addEventListener('click', initAudio);
         window.addEventListener('touchstart', initAudio);
         cargarDatos();
-        new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
+        const observer = new MutationObserver(attachSounds);
+        observer.observe(document.body, { childList: true, subtree: true });
     });
 
     function cargarDatos() {
         const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CSV + "&uid=" + Date.now());
-        Papa.parse(PROXY_URL, {
+        const PROXY_FINAL = "https://corsproxy.io/?" + encodeURIComponent(CSV + "&cache=" + Date.now());
+        Papa.parse(PROXY_FINAL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
@@ -247,7 +239,7 @@
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
                         vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]),
                         edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11],
-                        foto: fila[12], fotoLeyenda: fila[13], color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21'
+                        foto: fila[12], fotoLeyenda: fila[13] ? fila[13].trim() : "", color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21'
                     };
                 }).filter(i => i !== null);
                 aplicarFiltrosYOrden();
@@ -277,6 +269,9 @@
             </div>`;
     }
 
+    // ==========================================
+    // LEYENDA
+    // ==========================================
     function abrirModal(id) {
         const j = datosOriginales.find(x => x.id === parseInt(id));
         jugadorActualEnModal = JSON.parse(JSON.stringify(j));
@@ -325,6 +320,9 @@
         });
     }
 
+    // ==========================================
+    // ARMADOR
+    // ==========================================
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
     function agregarInvitado() {
