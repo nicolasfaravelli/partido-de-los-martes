@@ -24,7 +24,6 @@
         }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-        /* CABECERA */
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
@@ -34,7 +33,6 @@
         }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        /* CONTROLES */
         .controls-area {
             max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
             background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
@@ -42,7 +40,6 @@
         }
         #search-input, #sort-select { flex: 1; padding: 10px 15px; font-family: var(--fuente-datos); font-size: 1rem; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; }
         
-        /* BOTONES */
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { background: var(--color-acento); color: #fff; }
         .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
@@ -51,12 +48,9 @@
         .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
         
         .btn-group { display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        
-        /* BOTÓN INVITADO MEJORADO */
         .btn-add-guest { background: #111; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
         .btn-add-guest:hover { background: #333; color: #fff; border-color: var(--color-acento); }
 
-        /* CARTAS */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -71,16 +65,14 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* BRILLOS */
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
-        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
         .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.5s ease-out forwards; }
         @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
         .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
 
-        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
         #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
@@ -88,12 +80,10 @@
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
         
-        /* INVITADOS */
         .guest-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px !important; }
         .guest-controls { display: flex; align-items: center; gap: 5px; flex-grow: 1; min-width: 0; }
         .delete-guest { color: #ef4444; font-weight: 900; cursor: pointer; font-size: 1.2rem; padding: 0 5px; flex-shrink: 0; }
 
-        /* EQUIPOS */
         .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; width: 100%; }
         .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
         .team-white { background: #ffffff; color: #111; border-color: #ccc; }
@@ -219,7 +209,8 @@
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
                 if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
-                el.addEventListener('mousedown', el.classList.contains('player-row') ? playHoverSfx : playClickSfx);
+                if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx);
+                else el.addEventListener('mousedown', playClickSfx);
                 el.dataset.soundAttached = "true";
             }
         });
@@ -231,6 +222,7 @@
         if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
         if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
         window.addEventListener('click', initAudio);
+        window.addEventListener('touchstart', initAudio);
         cargarDatos();
         new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
     });
@@ -242,9 +234,9 @@
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
                 document.getElementById('loader').style.display = 'none';
-                const data = results.data; data.shift();
+                const data = results.data; if(data.length > 0) data.shift();
                 datosOriginales = data.map((fila, index) => {
-                    if(!fila[0]) return null;
+                    if(!fila[0] || fila[0].trim() === 'Jugador') return null;
                     return {
                         id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60,
                         ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]),
@@ -341,6 +333,16 @@
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion(); }
     function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
     
+    // FUNCIÓN PARA ACTUALIZAR DATOS DE INVITADO
+    function editarInvitado(id, campo, valor) {
+        const inv = invitados.find(i => i.id === parseInt(id));
+        if (inv) {
+            if (campo === 'nombre') inv.nombre = valor;
+            else if (campo === 'prom') inv.prom = parseInt(valor) || 0;
+            actualizarTablerosEquipos(); // Refresca las tablas de abajo
+        }
+    }
+
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
@@ -349,8 +351,8 @@
             return `<div class="player-row guest-item ${sel?'selected':''} ${total>=10 && !sel?'disabled':''}" onclick="toggleSeleccion(${i.id})">
                 <div class="guest-controls">
                     <input type="checkbox" ${sel?'checked':''} style="pointer-events:none;">
-                    <input type="text" value="${i.nombre}" oninput="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-datos);">
-                    <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:35px;background:transparent;border:1px solid #333;color:${getColorProm(i.prom)};text-align:center;">
+                    <input type="text" value="${i.nombre}" onchange="editarInvitado(${i.id},'nombre',this.value)" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;font-family:var(--fuente-datos);">
+                    <input type="number" value="${i.prom}" onchange="editarInvitado(${i.id},'prom',this.value)" onclick="event.stopPropagation()" style="width:35px;background:transparent;border:1px solid #333;color:${getColorProm(i.prom)};font-family:var(--fuente-datos);text-align:center;padding:2px;">
                 </div>
                 <span class="delete-guest" onclick="event.stopPropagation(); borrarInvitado(${i.id})">✕</span>
             </div>`;
@@ -441,4 +443,3 @@
 </script>
 </body>
 </html>
-
