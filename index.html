@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Partido de los Martes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="version-tag">VERSIÓN 10</div>
+    <div class="header-container" id="header-area"></div>
+    
+    <div class="controls-area">
+        <input type="text" id="search-input" placeholder="BUSCAR JUGADOR...">
+        <select id="sort-select">
+            <option value="nombre-asc">Nombre: A - Z</option>
+            <option value="nombre-desc">Nombre: Z - A</option>
+            <option value="prom-desc">Valoración: mayor a menor</option>
+            <option value="prom-asc">Valoración: menor a mayor</option>
+        </select>
+        <button class="btn btn-gold" onclick="abrirArmador()">Armar Equipos</button>
+    </div>
+
+    <div id="loader">CARGANDO JUGADORES...</div>
+    <div id="grid-container" class="grid"></div>
+
+    <div id="modal" class="modal-overlay">
+        <div id="modal-card-container"></div>
+        <div class="btn-group" id="modal-buttons"></div>
+    </div>
+
+    <div id="team-modal" class="modal-overlay">
+        <div id="team-modal-content">
+            <div class="team-title">ARMADOR DE EQUIPOS</div>
+            <div class="armador-layout">
+                <div class="selection-area">
+                    <div class="selection-header">
+                        <span id="team-counter">SELECCIONADOS: 0 / 10</span>
+                        <button class="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
+                    </div>
+                    <div id="players-checklist" class="players-list-scroll"></div>
+                </div>
+                <button class="btn btn-gold w-100" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                <div id="team-capture-area">
+                    <div class="teams-container">
+                        <div class="team-box team-white" id="box-team-1">
+                            <div class="team-header">CLARO</div>
+                            <div id="avg-team-1" class="team-avg">PROM: 0</div>
+                            <ul class="team-list-ul" id="list-team-1"></ul>
+                        </div>
+                        <div class="team-box team-black" id="box-team-2">
+                            <div class="team-header">OSCURO</div>
+                            <div id="avg-team-2" class="team-avg">PROM: 0</div>
+                            <ul class="team-list-ul" id="list-team-2"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams">Compartir</button>
+                <button class="btn btn-ghost" onclick="cerrarArmador()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-player" loop></audio>
+    <audio id="sfx-hover-player"></audio>
+    <audio id="sfx-click-player"></audio>
+    <div id="music-control" onclick="rotateMusic()">🔉</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
