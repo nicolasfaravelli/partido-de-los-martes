@@ -6,9 +6,111 @@
     <title>Partido de los Martes</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        /* ==========================================
+           ZONA DE AJUSTES (Tocá acá sin miedo)
+           ========================================== */
+        :root {
+            --color-acento: #75AADB;       /* Celeste Selección */
+            --color-acento-hover: #A5D1F3; /* Celeste Brillo */
+            --color-fondo: #0f0f0f;
+            --color-paneles: #1a1a1a;
+            --color-bordes: #333333;
+            --fuente-impacto: 'Bebas Neue', sans-serif;
+            --fuente-datos: 'Roboto', sans-serif;
+        }
+
+        /* CONFIGURACIÓN DE STATS LEYENDA */
+        /* Multiplicadores: [Ataque, Defensa, Técnica, Velocidad, Resistencia, Portero] */
+        const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
+
+        /* ==========================================
+           DISEÑO GENERAL
+           ========================================== */
+        body { 
+            background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); 
+            margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; 
+            background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none;
+        }
+
+        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #555; z-index: 5000; font-weight: bold; }
+
+        .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
+        .header-container::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+            background-color: var(--color-fondo); opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+        /* CONTROLES */
+        .controls-area {
+            max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap;
+            background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); 
+            justify-content: space-between; align-items: center; position: relative; z-index: 50;
+        }
+        #search-input, #sort-select { flex: 1; padding: 10px 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; }
+
+        /* BOTONES */
+        .btn { 
+            border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; 
+            font-family: var(--fuente-datos); font-weight: 900; text-transform: uppercase; transition: all 0.2s; 
+        }
+        .btn-gold { background: var(--color-acento); color: #fff; }
+        .btn-gold:hover { background: var(--color-acento-hover); box-shadow: 0 0 15px var(--color-acento); }
+        
+        .btn-ghost { background: transparent; color: #888; border: 1px solid #444; }
+        .btn-ghost:hover { color: #fff; border-color: #666; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .btn-add-guest:hover { border-color: var(--color-acento); color: #fff; }
+
+        /* GRILLA Y CARTAS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; }
+        .card:hover { transform: scale(1.05); z-index: 10; }
+        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); }
+        .card-bg { width: 100%; height: 100%; object-fit: contain; }
+        .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; }
+
+        /* TEXTOS DE LA CARTA (BEBAS) */
+        .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; font-family: var(--fuente-impacto); }
+        .rating { position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
+        .position { position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
+        .name { position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
+        .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
+        .stat-val { font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
+
+        /* BRILLOS */
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; pointer-events: none; }
+        .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); }
+        .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
+        
+        @keyframes sweep { 0% { left: -100%; } 100% { left: 150%; } }
+        @keyframes sweep-rev { 0% { left: 150%; } 100% { left: -100%; } }
+        .trigger-shine .shine-layer::after { animation: sweep 0.5s ease-out forwards; }
+        .trigger-shine-reverse .shine-layer::after { animation: sweep-rev 0.5s ease-out forwards; }
+
+        /* MODALES */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; }
+        #team-modal-content { background: var(--color-paneles); padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; }
+        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; }
+        .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
+
+        /* ARMADOR */
+        .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; }
+        .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; }
+        .team-white { background: #fff; color: #111; border-color: #ccc; }
+        .team-black { background: #000; color: #fff; border-color: #333; }
+        .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; }
+        .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-weight: bold; display: flex; justify-content: space-between; cursor: pointer; }
+
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; }
+    </style>
 </head>
 <body>
     <div id="version-tag">VERSIÓN 10</div>
@@ -30,38 +132,38 @@
 
     <div id="modal" class="modal-overlay">
         <div id="modal-card-container"></div>
-        <div class="btn-group" id="modal-buttons"></div>
+        <div id="modal-buttons" class="btn-group" style="display:flex; gap:10px;"></div>
     </div>
 
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
-            <div class="team-title">ARMADOR DE EQUIPOS</div>
-            <div class="armador-layout">
-                <div class="selection-area">
-                    <div class="selection-header">
-                        <span id="team-counter">SELECCIONADOS: 0 / 10</span>
+            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; font-family:var(--fuente-impacto); margin-bottom:10px;">ARMADOR DE EQUIPOS</div>
+            <div class="armador-layout" style="overflow-y:auto; flex:1;">
+                <div class="selection-area" style="background:#111; padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid #222;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span id="team-counter" style="color:#888; font-weight:bold;">SELECCIONADOS: 0 / 10</span>
                         <button class="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
-                <button class="btn btn-gold w-100" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                <button class="btn btn-gold" style="width:100%; margin-bottom:15px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 <div id="team-capture-area">
                     <div class="teams-container">
-                        <div class="team-box team-white" id="box-team-1">
+                        <div class="team-box team-white">
                             <div class="team-header">CLARO</div>
-                            <div id="avg-team-1" class="team-avg">PROM: 0</div>
-                            <ul class="team-list-ul" id="list-team-1"></ul>
+                            <div id="avg-team-1" style="text-align:center; font-weight:900; font-size:0.8rem;">PROM: 0</div>
+                            <ul id="list-team-1" class="team-list-ul"></ul>
                         </div>
-                        <div class="team-box team-black" id="box-team-2">
+                        <div class="team-box team-black">
                             <div class="team-header">OSCURO</div>
-                            <div id="avg-team-2" class="team-avg">PROM: 0</div>
-                            <ul class="team-list-ul" id="list-team-2"></ul>
+                            <div id="avg-team-2" style="text-align:center; font-weight:900; font-size:0.8rem;">PROM: 0</div>
+                            <ul id="list-team-2" class="team-list-ul"></ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams">Compartir</button>
+            <div style="display:flex; justify-content:flex-end; gap:10px; padding-top:15px;">
+                <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none; margin-right:auto;">Compartir</button>
                 <button class="btn btn-ghost" onclick="cerrarArmador()">Cerrar</button>
             </div>
         </div>
@@ -72,6 +174,230 @@
     <audio id="sfx-click-player"></audio>
     <div id="music-control" onclick="rotateMusic()">🔉</div>
 
-    <script src="app.js"></script>
+    <script>
+        /* CONFIGURACIÓN JAVASCRIPT */
+        const PLUS_EDAD_COEF = 0.0028;
+        const BONUS_RESISTENCIA = 1.05;
+        const BONUS_VELOCIDAD = 1.03;
+        const TOPE_STAT_LEYENDA = 98;
+        const COLORES_BASE = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
+        const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
+        
+        const URLS = {
+            FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png",
+            TITULO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png",
+            MUSICA: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3",
+            LEYENDA: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png",
+            CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv"
+        };
+
+        let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
+        let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0;
+        const VOL_SERIES = [0.05, 0.2, 0];
+
+        /* INICIO */
+        document.addEventListener("DOMContentLoaded", () => {
+            if(URLS.FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${URLS.FONDO}')`);
+            if(URLS.TITULO) document.getElementById('header-area').innerHTML = `<img src="${URLS.TITULO}" class="title-img">`;
+            window.addEventListener('click', initAudio);
+            cargarDatos();
+            document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
+            document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
+        });
+
+        function initAudio() {
+            const p = document.getElementById('audio-player');
+            if(!p.src) { p.src = URLS.MUSICA; p.volume = VOL_SERIES[0]; }
+            p.play().catch(() => {});
+            window.removeEventListener('click', initAudio);
+        }
+
+        function rotateMusic() {
+            const p = document.getElementById('audio-player');
+            volIndex = (volIndex + 1) % VOL_SERIES.length;
+            p.volume = VOL_SERIES[volIndex];
+            document.getElementById('music-control').innerText = ["🔉", "🔊", "🔈"][volIndex];
+            if (p.volume > 0) p.play(); else p.pause();
+        }
+
+        /* DATOS */
+        function cargarDatos() {
+            const PROXY = "https://corsproxy.io/?" + encodeURIComponent(URLS.CSV + "&uid=" + Date.now());
+            Papa.parse(PROXY, {
+                download: true, header: false, skipEmptyLines: true,
+                complete: (res) => {
+                    document.getElementById('loader').style.display = 'none';
+                    const data = res.data; data.shift();
+                    datosOriginales = data.map((f, i) => {
+                        if(!f[0]) return null;
+                        return {
+                            id: i, nombre: f[0], prom: parseInt(f[8]) || 60,
+                            ata: parseInt(f[2]), def: parseInt(f[3]), tec: parseInt(f[4]),
+                            vel: parseInt(f[5]), res: parseInt(f[6]), arq: parseInt(f[7]),
+                            edad: parseInt(f[1]) || 25, pos: f[9], fondo: f[11],
+                            foto: f[12], fotoLeyenda: f[13]?.trim() || "", 
+                            color: COLORES_BASE[f[10]?.trim().toLowerCase()] || '#624f21'
+                        };
+                    }).filter(x => x);
+                    aplicarFiltrosYOrden();
+                }
+            });
+        }
+
+        function aplicarFiltrosYOrden() {
+            const t = document.getElementById('search-input').value.toLowerCase();
+            const [c, o] = document.getElementById('sort-select').value.split('-');
+            let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(t));
+            lista.sort((a,b) => c === 'nombre' ? (o === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (o === 'asc' ? a.prom - b.prom : b.prom - a.prom));
+            document.getElementById('grid-container').innerHTML = lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('');
+        }
+
+        function generarHTMLCarta(j, lazy) {
+            return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div>
+                    <div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>
+                    ${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}
+                    <div class="info-layer" style="color:${j.color}">
+                        <div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div>
+                        <div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div>
+                    </div>`;
+        }
+
+        /* MODAL */
+        function abrirModal(id) {
+            const j = datosOriginales.find(x => x.id === parseInt(id));
+            jugadorActualEnModal = JSON.parse(JSON.stringify(j));
+            esModoLeyenda = false;
+            document.getElementById('modal').style.display = 'flex';
+            renderizarModal(jugadorActualEnModal);
+        }
+
+        function renderizarModal(j) {
+            document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`;
+            document.getElementById('modal-buttons').innerHTML = `
+                ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?'ACTUAL':'LEYENDA'}</button>` : ''}
+                <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
+                <button class="btn btn-ghost" onclick="document.getElementById('modal').style.display='none'">CERRAR</button>
+            `;
+        }
+
+        function toggleLeyenda() {
+            esModoLeyenda = !esModoLeyenda;
+            const j = esModoLeyenda ? calcularLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
+            renderizarModal(j);
+            const card = document.getElementById('carta-descarga');
+            card.classList.remove('trigger-shine', 'trigger-shine-reverse');
+            void card.offsetWidth;
+            card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
+        }
+
+        function calcularLeyenda(b) {
+            const k = ['ata','def','tec','vel','res','arq'];
+            const s = k.map(x => ({x, v: b[x]})).sort((a,b)=>b.v-a.v);
+            let n = {}, sum = 0;
+            const p = Math.max(0, (b.edad - 28) * PLUS_EDAD_COEF);
+            s.forEach((stat, i) => {
+                let v = stat.v * ((MULT_LEYENDA[i] || 1.05) + p);
+                if(stat.x === 'res') v *= BONUS_RESISTENCIA;
+                if(stat.x === 'vel') v *= BONUS_VELOCIDAD;
+                n[stat.x] = Math.min(TOPE_STAT_LEYENDA, Math.round(v));
+                sum += n[stat.x];
+            });
+            return { ...b, foto: b.fotoLeyenda, fondo: URLS.LEYENDA, color: COLORES_BASE.leyenda, ...n, prom: Math.round(sum/6) };
+        }
+
+        function descargarCarta() {
+            const el = document.getElementById('carta-descarga');
+            el.querySelector('.shine-layer').style.display = 'none';
+            html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => {
+                const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click();
+                el.querySelector('.shine-layer').style.display = 'block';
+            });
+        }
+
+        /* ARMADOR */
+        function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
+        function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; }
+        
+        function agregarInvitado() {
+            const id = 9000 + invitados.length + 1;
+            invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, res: 70, arq: 50});
+            (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id);
+            renderizarListaSeleccion();
+        }
+
+        function toggleSeleccion(id) {
+            const n = parseInt(id);
+            if (equipo1.includes(n) || equipo2.includes(n)) {
+                equipo1 = equipo1.filter(x => x !== n); equipo2 = equipo2.filter(x => x !== n);
+            } else if (equipo1.length + equipo2.length < 10) {
+                (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(n);
+            }
+            renderizarListaSeleccion();
+        }
+
+        function renderizarListaSeleccion() {
+            const cont = document.getElementById('players-checklist');
+            const total = equipo1.length + equipo2.length;
+            let h = invitados.map(i => {
+                const s = equipo1.includes(i.id) || equipo2.includes(i.id);
+                return `<div class="player-row ${s?'selected':''} ${total>=10 && !s?'disabled':''}" onclick="toggleSeleccion(${i.id})">
+                    <input type="checkbox" ${s?'checked':''} style="pointer-events:none;">
+                    <input type="text" value="${i.nombre}" onchange="invitados.find(x=>x.id==${i.id}).nombre=this.value; actualizarTablerosEquipos()" onclick="event.stopPropagation()" style="background:transparent;border:none;color:white;width:80px;">
+                    <input type="number" value="${i.prom}" onchange="invitados.find(x=>x.id==${i.id}).prom=parseInt(this.value); actualizarTablerosEquipos()" onclick="event.stopPropagation()" style="width:35px; background:#222; border:none; color:white; text-align:center;">
+                </div>`;
+            }).join('');
+            h += datosOriginales.sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(j => {
+                const s = equipo1.includes(j.id) || equipo2.includes(j.id);
+                return `<div class="player-row ${s?'selected':''} ${total>=10 && !s?'disabled':''}" onclick="toggleSeleccion(${j.id})">
+                    <input type="checkbox" ${s?'checked':''} style="pointer-events:none;">
+                    <span>${j.nombre}</span><span style="margin-left:auto; opacity:0.5;">${j.prom}</span>
+                </div>`;
+            }).join('');
+            cont.innerHTML = h;
+            document.getElementById('team-counter').innerText = `SELECCIONADOS: ${total} / 10`;
+            document.getElementById('btn-generate').style.opacity = total === 10 ? '1' : '0.5';
+            document.getElementById('btn-share-teams').style.display = total === 10 ? 'block' : 'none';
+            actualizarTablerosEquipos();
+        }
+
+        function actualizarTablerosEquipos() {
+            const r = (id) => id >= 9000 ? invitados.find(x=>x.id===id) : datosOriginales.find(x=>x.id===id);
+            const draw = (ulId, ids, avgId) => {
+                const ul = document.getElementById(ulId); ul.innerHTML = ''; let s = 0;
+                ids.map(r).filter(x=>x).forEach(p => {
+                    s += p.prom; const li = document.createElement('li'); li.className = 'team-player-li';
+                    li.innerHTML = `<span>${p.nombre}</span><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`;
+                    li.onclick = () => { if(equipo1.includes(p.id)){equipo1=equipo1.filter(x=>x!==p.id);equipo2.push(p.id)}else{equipo2=equipo2.filter(x=>x!==p.id);equipo1.push(p.id)} actualizarTablerosEquipos(); };
+                    ul.appendChild(li);
+                });
+                document.getElementById(avgId).innerText = `PROM: ${ids.length ? (s/ids.length).toFixed(1) : 0}`;
+            };
+            draw('list-team-1', equipo1, 'avg-team-1');
+            draw('list-team-2', equipo2, 'avg-team-2');
+        }
+
+        function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
+
+        function generarAutomatico() {
+            const p = [...equipo1, ...equipo2].map(id => id >= 9000 ? invitados.find(x=>x.id===id) : datosOriginales.find(x=>x.id===id));
+            p.sort((a,b) => (b.arq||50) - (a.arq||50));
+            let t1 = [p[0].id], t2 = [p[1].id], s1 = p[0].prom, s2 = p[1].prom;
+            p.slice(2).sort((a,b) => b.prom - a.prom).forEach(j => {
+                if(s1 <= s2 && t1.length < 5) { t1.push(j.id); s1 += j.prom; } else { t2.push(j.id); s2 += j.prom; }
+            });
+            equipo1 = t1; equipo2 = t2; actualizarTablerosEquipos();
+        }
+
+        function compartirEquipos() {
+            html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#111', scale: 2 }).then(cvs => {
+                cvs.toBlob(b => {
+                    const f = new File([b], "equipos.png", {type:"image/png"});
+                    if(navigator.share) navigator.share({files:[f]}); else {
+                        const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = cvs.toDataURL(); a.click();
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
