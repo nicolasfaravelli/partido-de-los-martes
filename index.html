@@ -98,7 +98,7 @@
     </style>
 </head>
 <body>
-    <div id="version-tag">VERSIÓN 9</div>
+    <div id="version-tag">VERSIÓN 9.1</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -131,7 +131,11 @@
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
-                <button class="btn btn-gold" style="width:100%; margin-bottom: 15px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <button class="btn btn-gold" style="margin-bottom: 15px; padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                </div>
+
                 <div id="team-capture-area">
                     <div class="teams-container">
                         <div class="team-box team-white" id="box-team-1">
@@ -160,28 +164,43 @@
     <div id="music-control" onclick="rotateMusic()">🔉</div>
 
 <script>
-    const MULT_LEYENDA = [1.13, 1.11, 1.09, 1.07, 1.05, 1.03]; 
-    const PLUS_EDAD_COEF = 0.0028; 
-    const BONUS_RESISTENCIA = 1.05;
-    const BONUS_VELOCIDAD = 1.03;
-    const TOPE_STAT_LEYENDA = 98;
+    /* ==========================================
+       BLOQUE DE AJUSTES MANUALES
+       ========================================== */
+    const CONFIG = {
+        MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
+        PLUS_EDAD_COEF: 0.0028,
+        BONUS_RESISTENCIA: 1.05,
+        BONUS_VELOCIDAD: 1.03,
+        TOPE_STAT_LEYENDA: 98,
+        
+        // URLs de recursos
+        URL_FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png",
+        URL_TITULO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png",
+        URL_MUSICA: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3",
+        URL_LEYENDA_FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png",
+        URL_SFX_HOVER: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 1.mp3",
+        URL_SFX_CLICK: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3",
+        URL_CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv",
+        
+        // Ajustes de audio
+        VOL_SERIES: [0.05, 0.2, 0],
+        SFX_MAP: { 0: 0.0075, 0.05: 0.0375, 0.2: 0.15 }
+    };
 
-    const FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png"; 
-    const TITULO_IMG_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png";
-    const MUSICA_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3";
-    const LEYENDA_FONDO_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png";
-    const SFX_HOVER_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 1.mp3";
-    const SFX_CLICK_URL = "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3";
-
-    let musicStage = 0; 
-    const VOL_SERIES = [0.05, 0.2, 0];
+    /* ==========================================
+       LÓGICA DEL SISTEMA (No tocar si no es necesario)
+       ========================================== */
+    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
+    const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
     const ICON_SERIES = ["🔉", "🔊", "🔈"];
-    const SFX_MAP = { 0: 0.0075, 0.05: 0.0375, 0.2: 0.15 };
-    let volIndex = 0;
+
+    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
+    let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0;
 
     function initAudio() {
         const p = document.getElementById('audio-player');
-        if(!p.src) { p.src = MUSICA_URL; p.volume = VOL_SERIES[0]; }
+        if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; }
         p.play().catch(() => {});
         window.removeEventListener('click', initAudio);
     }
@@ -189,20 +208,20 @@
     function rotateMusic() {
         const p = document.getElementById('audio-player');
         const c = document.getElementById('music-control');
-        volIndex = (volIndex + 1) % VOL_SERIES.length;
-        p.volume = VOL_SERIES[volIndex];
+        volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length;
+        p.volume = CONFIG.VOL_SERIES[volIndex];
         c.innerText = ICON_SERIES[volIndex];
         if (p.volume > 0) p.play(); else p.pause();
     }
 
     function playHoverSfx() {
         const s = document.getElementById('sfx-hover-player');
-        if(SFX_HOVER_URL) { s.src = SFX_HOVER_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
+        if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
     }
 
     function playClickSfx() {
         const s = document.getElementById('sfx-click-player');
-        if(SFX_CLICK_URL) { s.src = SFX_CLICK_URL; s.volume = SFX_MAP[VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
+        if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); }
     }
 
     function attachSounds() {
@@ -216,11 +235,9 @@
         });
     }
 
-    let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [], jugadorActualEnModal = null, esModoLeyenda = false;
-
     document.addEventListener("DOMContentLoaded", () => {
-        if(FONDO_URL) document.documentElement.style.setProperty('--fondo-url', `url('${FONDO_URL}')`);
-        if(TITULO_IMG_URL) document.getElementById('header-area').innerHTML = `<img src="${TITULO_IMG_URL}" class="title-img">`;
+        if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
+        if(CONFIG.URL_TITULO) document.getElementById('header-area').innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
         window.addEventListener('click', initAudio);
         window.addEventListener('touchstart', initAudio);
         cargarDatos();
@@ -228,8 +245,7 @@
     });
 
     function cargarDatos() {
-        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv";
-        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CSV + "&uid=" + Date.now());
+        const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CONFIG.URL_CSV + "&uid=" + Date.now());
         Papa.parse(PROXY_URL, {
             download: true, header: false, skipEmptyLines: true,
             complete: (results) => {
@@ -249,9 +265,6 @@
             }
         });
     }
-
-    const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
-    const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
 
     function aplicarFiltrosYOrden() {
         const t = document.getElementById('search-input').value.toLowerCase();
@@ -303,17 +316,17 @@
         const keys = ['ata','def','tec','vel','res','arq'];
         const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v);
         let nuevos = {}, suma = 0;
-        const plus = Math.max(0, (base.edad - 28) * PLUS_EDAD_COEF);
+        const plus = Math.max(0, (base.edad - 28) * CONFIG.PLUS_EDAD_COEF);
         sorted.forEach((s, i) => {
-            let m = MULT_LEYENDA[i] || 1.05;
+            let m = CONFIG.MULT_LEYENDA[i] || 1.05;
             let val = s.v * (m + plus);
-            if(s.k === 'res') val *= BONUS_RESISTENCIA;
-            if(s.k === 'vel') val *= BONUS_VELOCIDAD;
+            if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA;
+            if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD;
             if(s.k === 'arq' && i > 2) val = Math.min(val, s.v + 12);
-            nuevos[s.k] = Math.min(TOPE_STAT_LEYENDA, Math.round(val));
+            nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val));
             suma += nuevos[s.k];
         });
-        return { ...base, foto: base.fotoLeyenda, fondo: LEYENDA_FONDO_URL, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
+        return { ...base, foto: base.fotoLeyenda, fondo: CONFIG.URL_LEYENDA_FONDO, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
     }
     function descargarCarta() {
         const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none';
@@ -333,13 +346,12 @@
     function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion(); }
     function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
     
-    // FUNCIÓN PARA ACTUALIZAR DATOS DE INVITADO
     function editarInvitado(id, campo, valor) {
         const inv = invitados.find(i => i.id === parseInt(id));
         if (inv) {
             if (campo === 'nombre') inv.nombre = valor;
             else if (campo === 'prom') inv.prom = parseInt(valor) || 0;
-            actualizarTablerosEquipos(); // Refresca las tablas de abajo
+            actualizarTablerosEquipos();
         }
     }
 
@@ -443,4 +455,3 @@
 </script>
 </body>
 </html>
-
