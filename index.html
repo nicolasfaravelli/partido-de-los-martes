@@ -15,6 +15,7 @@
             ========================================== */
         :root {
             --color-acento: #75AADB; 
+            --color-acento-off: #3d4e5f;         /* Celeste apagado/desaturado */
             --color-fondo: #0f0f0f; 
             --color-paneles: #1a1a1a; 
             --color-bordes: #333333;
@@ -23,12 +24,12 @@
 
             /* Parámetros de Interfaz */
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-            --blur-fondo-modal: blur(12px);        
-            --opacidad-boton-bloqueado: 0.5;      
+            --blur-fondo-modal: blur(10px);        
+            --opacidad-boton-bloqueado: 0.8;      /* Menos transparente, más sólido */
             --escala-hover-equipo: 1.025;         
-            --brillo-celeste-cuadro: 0 0 100px rgba(117, 170, 219, 0.25); 
-            --gloss-claro: inset 0 0 100px rgba(0,0,0,0.24);
-            --gloss-oscuro: inset 0 0 100px rgba(255,255,255,0.12);
+            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4); 
+            --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
+            --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
         }
 
         /* --- ESTILOS GENERALES --- */
@@ -42,7 +43,7 @@
         .header-container::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        .controls-area { max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; position: relative; z-index: 50; }
+        .controls-area { max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 10px; flex-wrap: wrap; background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; position: relative; z-index: 50; }
         #search-input, #sort-select { flex: 1; padding: 12px 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
 
@@ -92,7 +93,15 @@
             ========================================== */
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { background: var(--color-acento); color: #fff; }
-        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
+        .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
+
+        /* Estilo para botón GENERAR APAGADO */
+        #btn-generate:disabled {
+            background-color: var(--color-acento-off) !important;
+            color: #8899aa !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
 
         /* Botón Cerrar (Ghost) - Arreglado: Gris Opacidad 0.9 */
         .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
@@ -124,7 +133,7 @@
 </head>
 
 <body>
-    <div id="version-tag">V. 11.0</div>
+    <div id="version-tag">VERSIÓN 10.5</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -158,8 +167,8 @@
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
                 
-                <div style="display: flex; justify-content: center; width: 100%;">
-                    <button class="btn btn-gold" style="margin-bottom: 15px; padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                <div style="display: flex; justify-content: center; width: 100%; margin: 10px 0;">
+                    <button class="btn btn-gold" style="padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 </div>
 
                 <div id="team-capture-area">
@@ -192,10 +201,10 @@
 <script>
     /* --- CONFIGURACIÓN LÓGICA (Prime a los 33) --- */
     const CONFIG = {
-        MULT_LEYENDA: [1.12, 1.10, 1.08, 1.06, 1.04, 1.02],
-        PLUS_EDAD_COEF: 0.0025,
-        BONUS_RESISTENCIA: 1.04,
-        BONUS_VELOCIDAD: 1.02,
+        MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
+        PLUS_EDAD_COEF: 0.0028,
+        BONUS_RESISTENCIA: 1.05,
+        BONUS_VELOCIDAD: 1.03,
         TOPE_STAT_LEYENDA: 98,
         URL_FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png",
         URL_TITULO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png",
@@ -205,7 +214,7 @@
         URL_SFX_CLICK: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3",
         URL_CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv",
         VOL_SERIES: [0.05, 0.2, 0],
-        SFX_MAP: { 0: 0.005, 0.05: 0.04, 0.2: 0.16 }
+        SFX_MAP: { 0: 0.0075, 0.05: 0.0375, 0.2: 0.15 }
     };
 
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
@@ -219,10 +228,8 @@
     document.addEventListener("DOMContentLoaded", () => {
         if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
         if(CONFIG.URL_TITULO) document.getElementById('header-area').innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
-        
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
         document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
-        
         window.addEventListener('click', initAudio);
         window.addEventListener('touchstart', initAudio);
         cargarDatos();
@@ -310,6 +317,8 @@
 
         btnGen.style.opacity = ok ? '1' : 'var(--opacidad-boton-bloqueado)';
         btnGen.style.pointerEvents = ok ? 'auto' : 'none';
+        btnGen.disabled = !ok; // Activa el estilo CSS para el estado apagado
+        
         btnInv.disabled = ok;
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
@@ -349,4 +358,3 @@
 </script>
 </body>
 </html>
-
