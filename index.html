@@ -10,9 +10,9 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
-        /* ==========================================================================
-           1. VARIABLES Y PARÁMETROS GLOBALES
-           ========================================================================== */
+        /* ==========================================
+           1. AJUSTES ESTÉTICOS (Variables)
+           ========================================== */
         :root {
             --color-acento: #75AADB; 
             --color-fondo: #0f0f0f; 
@@ -21,41 +21,34 @@
             --fuente-impacto: 'Bebas Neue', sans-serif;
             --fuente-datos: 'Roboto', sans-serif;
 
-            /* Ajustes Visuales */
+            /* Parámetros de Interfaz */
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-            --blur-fondo-atras: blur(10px);
-            --opacidad-boton-bloqueado: 0.5;
-            --escala-hover-equipo: 1.025;
-            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4);
+            --blur-fondo-modal: blur(10px);        
+            --opacidad-boton-bloqueado: 0.5;      
+            --escala-hover-equipo: 1.025;         
+            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4); 
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
         }
 
-        /* ==========================================================================
-           2. ESTILOS DE COMPONENTES
-           ========================================================================== */
-        
-        /* --- ESTRUCTURA BASE Y HEADER --- */
+        /* --- ESTILOS GENERALES --- */
         body { background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none; }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
+
+        /* ==========================================
+           2. HEADER Y CONTROLES PRINCIPALES
+           ========================================== */
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        /* --- BUSCADOR Y FILTROS --- */
         .controls-area { max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; position: relative; z-index: 50; }
         #search-input, #sort-select { flex: 1; padding: 12px 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
 
-        /* --- BOTONES GENERALES --- */
-        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
-        .btn-gold { background: var(--color-acento); color: #fff; }
-        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
-        .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
-        .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
-        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-
-        /* --- GRILLA Y CARTAS --- */
+        /* ==========================================
+           3. CARTAS DE JUGADORES
+           ========================================== */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -69,23 +62,23 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* --- MODAL ARMADOR (ESTRUCTURA) --- */
+        /* ==========================================
+           4. MODALES (GENERAL Y ARMADOR)
+           ========================================== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
-        #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: var(--brillo-celeste-cuadro); }
-        .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 15px; }
+        
+        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
 
-        /* --- SELECCIÓN DE JUGADORES E INVITADOS --- */
-        .selection-area { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-        .btn-add-guest:hover:not(:disabled) { border-color: var(--color-acento); color: #fff; }
-        .btn-add-guest:disabled { background: #0a0a0a; color: #333; border-color: #222; cursor: not-allowed; }
+        #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: var(--brillo-celeste-cuadro); }
+        .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
+
+        /* Grilla del armador (Checklist) */
+        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.4s ease; }
-        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 10px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
-
-        /* --- CAJAS DE EQUIPO (CLARO / OSCURO) --- */
-        .teams-container { display: flex; gap: 20px; margin-top: 5px; min-height: 250px; width: 100%; padding: 10px 0; }
+        
+        /* Equipos Claro/Oscuro */
+        .teams-container { display: flex; gap: 20px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; }
         .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; }
         .team-box:hover { transform: scale(var(--escala-hover-equipo)); z-index: 5; }
         .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: var(--gloss-claro); }
@@ -94,7 +87,24 @@
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* --- OTROS --- */
+        /* ==========================================
+           5. BOTONES Y ACCIONES
+           ========================================== */
+        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
+        .btn-gold { background: var(--color-acento); color: #fff; }
+        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
+        .btn-ghost { background: transparent; color: #aaa; border: 1px solid #444; }
+        .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
+        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+        
+        /* Botón Agregar Invitado */
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .btn-add-guest:hover:not(:disabled) { border-color: var(--color-acento); color: #fff; }
+        .btn-add-guest:disabled { background: #0a0a0a; color: #444; border-color: #222; cursor: not-allowed; }
+
+        .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+
+        /* --- EXTRAS --- */
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -104,7 +114,7 @@
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 9.9</div>
+    <div id="version-tag">VERSIÓN 10.0</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -130,7 +140,7 @@
         <div id="team-modal-content">
             <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; font-family:var(--fuente-impacto); letter-spacing:2px; margin-bottom:10px;">ARMADOR DE EQUIPOS</div>
             <div class="armador-layout">
-                <div class="selection-area">
+                <div class="selection-area" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span id="team-counter" style="font-weight:bold; color:#ccc; font-size:0.9rem;">SELECCIONADOS: 0 / 10</span>
                         <button class="btn-add-guest" id="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
@@ -170,9 +180,7 @@
     <div id="music-control" onclick="rotateMusic()">🔉</div>
 
 <script>
-    /* ==========================================================================
-       3. LÓGICA GENERAL Y CONFIGURACIÓN
-       ========================================================================== */
+    /* --- CONFIGURACIÓN LÓGICA (Prime a los 33) --- */
     const CONFIG = {
         MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
         PLUS_EDAD_COEF: 0.0028,
@@ -202,7 +210,6 @@
         if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
         if(CONFIG.URL_TITULO) document.getElementById('header-area').innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
         
-        // Re-vinculo Buscador y Filtro (Crucial para que funcionen)
         document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
         document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
         
@@ -214,7 +221,7 @@
 
     /* --- AUDIO Y CARGA --- */
     function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
-    function rotateMusic() { const p = document.getElementById('audio-player'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; document.getElementById('music-control').innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
+    function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
     function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); } }
     function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); } }
     function attachSounds() { document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => { if(!el.dataset.soundAttached) { if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx); if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx); else el.addEventListener('mousedown', playClickSfx); el.dataset.soundAttached = "true"; } }); }
