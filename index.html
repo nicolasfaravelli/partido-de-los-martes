@@ -15,9 +15,9 @@
                ========================================== */
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
             --blur-fondo-atras: blur(10px);        /* Desenfoque de las cartas al abrir el cuadro */
-            --opacidad-boton-bloqueado: 0.35;      /* Transparencia del botón Generar (antes de los 10) */
-            --escala-hover-equipo: 1.02;           /* Qué tanto se agrandan los equipos al pasar el mouse */
-            --brillo-celeste-cuadro: 0 0 60px rgba(117, 170, 219, 0.4); /* El aura celeste alrededor del armador */
+            --opacidad-boton-bloqueado: 0.5;      /* Transparencia del botón Generar (antes de los 10) */
+            --escala-hover-equipo: 1.025;           /* Qué tanto se agrandan los equipos al pasar el mouse */
+            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4); /* El aura celeste alrededor del armador */
             
             /* Colores de Equipos */
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
@@ -81,8 +81,8 @@
         .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 5px; }
 
         /* Contador 10/10 */
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.3s ease; }
-        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 25px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
+        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.4s ease; }
+        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 10px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
 
         /* Cajas de Equipo */
         .teams-container { display: flex; gap: 15px; margin-top: 5px; min-height: 250px; width: 100%; padding: 10px 0; }
@@ -349,3 +349,4 @@
 </script>
 </body>
 </html>
+
