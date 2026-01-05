@@ -23,12 +23,12 @@
 
             /* Parámetros de Interfaz */
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-            --blur-fondo-modal: blur(10px);        
+            --blur-fondo-modal: blur(12px);        
             --opacidad-boton-bloqueado: 0.5;      
             --escala-hover-equipo: 1.025;         
-            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4); 
-            --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
-            --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
+            --brillo-celeste-cuadro: 0 0 100px rgba(117, 170, 219, 0.25); 
+            --gloss-claro: inset 0 0 100px rgba(0,0,0,0.24);
+            --gloss-oscuro: inset 0 0 100px rgba(255,255,255,0.12);
         }
 
         /* --- ESTILOS GENERALES --- */
@@ -124,7 +124,7 @@
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 10.5</div>
+    <div id="version-tag">V. 11.0</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -192,10 +192,10 @@
 <script>
     /* --- CONFIGURACIÓN LÓGICA (Prime a los 33) --- */
     const CONFIG = {
-        MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
-        PLUS_EDAD_COEF: 0.0028,
-        BONUS_RESISTENCIA: 1.05,
-        BONUS_VELOCIDAD: 1.03,
+        MULT_LEYENDA: [1.12, 1.10, 1.08, 1.06, 1.04, 1.02],
+        PLUS_EDAD_COEF: 0.0025,
+        BONUS_RESISTENCIA: 1.04,
+        BONUS_VELOCIDAD: 1.02,
         TOPE_STAT_LEYENDA: 98,
         URL_FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png",
         URL_TITULO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Titulo.png",
@@ -205,7 +205,7 @@
         URL_SFX_CLICK: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3",
         URL_CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv",
         VOL_SERIES: [0.05, 0.2, 0],
-        SFX_MAP: { 0: 0.0075, 0.05: 0.0375, 0.2: 0.15 }
+        SFX_MAP: { 0: 0.005, 0.05: 0.04, 0.2: 0.16 }
     };
 
     const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
@@ -349,3 +349,4 @@
 </script>
 </body>
 </html>
+
