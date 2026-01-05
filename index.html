@@ -11,7 +11,7 @@
 
     <style>
         /* ==========================================
-           1. AJUSTES ESTÉTICOS (Variables)
+           1. VARIABLES GLOBALES (Ajustes Rápidos)
            ========================================== */
         :root {
             --color-acento: #75AADB; 
@@ -31,7 +31,6 @@
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
         }
 
-        /* --- ESTILOS GENERALES --- */
         body { background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none; }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
@@ -47,7 +46,7 @@
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
 
         /* ==========================================
-           3. CARTAS DE JUGADORES
+           3. GRILLA Y CARTAS
            ========================================== */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; }
@@ -63,21 +62,45 @@
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
         /* ==========================================
-           4. MODALES (GENERAL Y ARMADOR)
+           4. MODALES (GENERAL)
            ========================================== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
-        
-        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
+        #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
 
+        /* ==========================================
+           5. BOTONES Y ACCIONES
+           ========================================== */
+        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
+        .btn-gold { background: var(--color-acento); color: #fff; }
+        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
+        
+        /* Botón Cerrar (Ghost) - Arreglado 0.9 Opacidad */
+        .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
+        .btn-ghost:hover { background: rgba(60, 60, 60, 0.9); color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
+
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .btn-add-guest:hover:not(:disabled) { border-color: var(--color-acento); color: #fff; }
+        .btn-add-guest:disabled { background: #0a0a0a; color: #444; border-color: #222; cursor: not-allowed; }
+
+        .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+
+        /* ==========================================
+           6. ARMADOR DE EQUIPOS (LAYOUT)
+           ========================================== */
         #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: var(--brillo-celeste-cuadro); }
         .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
 
-        /* Grilla del armador (Checklist) */
+        /* Checklist de selección */
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
-        
-        /* Equipos Claro/Oscuro */
+
+        /* Contador con Destello 0.25s */
+        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.25s ease; }
+        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 15px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
+
+        /* Cajas de Equipo Claro/Oscuro */
         .teams-container { display: flex; gap: 20px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; }
         .team-box { flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; }
         .team-box:hover { transform: scale(var(--escala-hover-equipo)); z-index: 5; }
@@ -87,44 +110,17 @@
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* ==========================================
-           5. BOTONES Y ACCIONES
-           ========================================== */
-        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
-        .btn-gold { background: var(--color-acento); color: #fff; }
-        .btn-gold:hover { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
-
-        /* Botón Cerrar (Ghost) con relleno gris y opacidad 0.9 */
-        .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-        .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); background: rgba(60, 60, 60, 0.9); }
-
-        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        
-        /* Botón Agregar Invitado */
-        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-        .btn-add-guest:hover:not(:disabled) { border-color: var(--color-acento); color: #fff; }
-        .btn-add-guest:disabled { background: #0a0a0a; color: #444; border-color: #222; cursor: not-allowed; }
-
-        .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
-
-        /* --- EXTRAS Y ANIMACIONES --- */
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.25s ease; }
-        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 15px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
-
+        /* --- EXTRAS --- */
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
-        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
-        .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.5s ease-out forwards; }
-        @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
-        .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
     </style>
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 10.3</div>
+    <div id="version-tag">VERSIÓN 10.4</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -190,7 +186,7 @@
     <div id="music-control" onclick="rotateMusic()">🔉</div>
 
 <script>
-    /* --- CONFIGURACIÓN LÓGICA --- */
+    /* --- CONFIGURACIÓN LÓGICA (Prime a los 33) --- */
     const CONFIG = {
         MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
         PLUS_EDAD_COEF: 0.0028,
@@ -215,7 +211,7 @@
     let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
     let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0;
 
-    /* --- INICIO DEL SISTEMA --- */
+    /* --- INICIO Y CARGA --- */
     document.addEventListener("DOMContentLoaded", () => {
         if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
         if(CONFIG.URL_TITULO) document.getElementById('header-area').innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
@@ -226,12 +222,6 @@
         cargarDatos();
         new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
     });
-
-    function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
-    function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
-    function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); } }
-    function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); } }
-    function attachSounds() { document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => { if(!el.dataset.soundAttached) { if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx); if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx); else el.addEventListener('mousedown', playClickSfx); el.dataset.soundAttached = "true"; } }); }
 
     function cargarDatos() {
         const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CONFIG.URL_CSV + "&uid=" + Date.now());
@@ -246,6 +236,7 @@
         });
     }
 
+    /* --- UI COMPONENTES --- */
     function aplicarFiltrosYOrden() {
         const t = document.getElementById('search-input').value.toLowerCase();
         const [c, o] = document.getElementById('sort-select').value.split('-');
@@ -256,7 +247,7 @@
     }
     function generarHTMLCarta(j, lazy) { return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`; }
 
-    /* --- LÓGICA MODAL CARTAS --- */
+    /* --- MODALES --- */
     function abrirModal(id) { const j = datosOriginales.find(x => x.id === parseInt(id)); jugadorActualEnModal = JSON.parse(JSON.stringify(j)); esModoLeyenda = false; document.getElementById('modal').style.display = 'flex'; renderizarModal(jugadorActualEnModal); }
     function renderizarModal(j) { 
         document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; 
@@ -293,15 +284,13 @@
     function actualizarContadorEquipos() {
         const t = equipo1.length + equipo2.length; 
         const cnt = document.getElementById('team-counter');
-        const ok = t === 10;
-        cnt.innerText = `SELECCIONADOS: ${t} / 10`;
-
-        // CLASE PARA COLOR Y DESTELLO
-        if(ok) cnt.classList.add('completado'); 
-        else cnt.classList.remove('completado');
-
         const btnGen = document.getElementById('btn-generate');
         const btnInv = document.getElementById('btn-add-guest');
+        const ok = t === 10;
+        
+        cnt.innerText = `SELECCIONADOS: ${t} / 10`;
+        if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado');
+
         btnGen.style.opacity = ok ? '1' : 'var(--opacidad-boton-bloqueado)';
         btnGen.style.pointerEvents = ok ? 'auto' : 'none';
         btnInv.disabled = ok;
@@ -340,6 +329,10 @@
         actualizarTablerosEquipos();
     }
     function compartirEquipos() { html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => { canvas.toBlob(blob => { const file = new File([blob], "equipos.png", { type: "image/png" }); if(navigator.share) navigator.share({ files: [file], title: 'Equipos' }); else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); } }); }); }
+
+    /* --- AUDIO Y EXTRAS --- */
+    function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
+    function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
 </script>
 </body>
 </html>
