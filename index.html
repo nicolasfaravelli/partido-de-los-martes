@@ -13,12 +13,12 @@
             /* --- AJUSTES VISUALES --- */
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
             --blur-fondo-modal: blur(10px);     /* Qué tanto se desenfocan las cartas de fondo */
-            --opacidad-boton-off: 0.3;          /* Transparencia del botón antes de juntar 10 */
+            --opacidad-boton-off: 0.75;          /* Transparencia del botón antes de juntar 10 */
             --escala-hover-equipo: 1.02;        /* Qué tanto crecen los equipos al pasar el mouse */
             
             /* --- COLORES Y BRILLOS --- */
             --color-acento: #75AADB;            /* Celeste principal */
-            --brillo-armador: 0 0 50px rgba(117, 170, 219, 0.4); /* Resplandor celeste del cuadro */
+            --brillo-armador: 0 0 100px rgba(117, 170, 219, 0.25); /* Resplandor celeste del cuadro */
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
             
@@ -72,7 +72,7 @@
         }
 
         /* CONTADOR ANIMADO */
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.6s ease; }
+        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.25s ease; }
         @keyframes glow-flash { 0% { text-shadow: 0 0 0px #fff; } 50% { text-shadow: 0 0 20px #fff; color: #fff !important; } 100% { text-shadow: 0 0 0px #fff; } }
 
         /* CAJAS EQUIPO */
@@ -174,7 +174,7 @@
        ========================================== */
     const CONFIG = {
         MULT_LEYENDA: [1.13, 1.11, 1.09, 1.07, 1.05, 1.03],
-        PLUS_EDAD_COEF: 0.0028,
+        PLUS_EDAD_COEF: 0.0025,
         BONUS_RESISTENCIA: 1.05,
         BONUS_VELOCIDAD: 1.03,
         TOPE_STAT_LEYENDA: 98,
@@ -476,3 +476,4 @@
 </script>
 </body>
 </html>
+
