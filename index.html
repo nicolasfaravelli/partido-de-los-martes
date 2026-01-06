@@ -27,7 +27,7 @@
             --blur-fondo-modal: blur(10px);        
             --opacidad-boton-bloqueado: 0.8;      
             --escala-hover-equipo: 1.025;         
-            --brillo-celeste-cuadro: 0 0 75px rgba(117, 170, 219, 0.4); 
+            --brillo-celeste-cuadro: 0 0 100px rgba(24, 60, 93, 0.4); 
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
         }
@@ -94,11 +94,9 @@
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
         
-        .btn-gold { background: var(--color-acento); color: #fff; transition: background-color 0.15s ease, box-shadow 0.15s ease; }
+        .btn-gold { background: var(--color-acento); color: #fff; transition: background-color 0.075s ease, box-shadow 0.075s ease; }
         .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
-
-        /* Arreglo Flash sutil para el botón generar */
-        .btn-flash-activar { animation: flash-boton 0.4s ease; }
+        .btn-flash-activar { animation: flash-boton 0.2s ease; }
         @keyframes flash-boton {
             0% { box-shadow: none; background-color: var(--color-acento); }
             50% { box-shadow: 0 0 20px var(--color-acento); background-color: #8bb7e2; }
@@ -407,3 +405,4 @@
 </script>
 </body>
 </html>
+
