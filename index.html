@@ -102,8 +102,8 @@
         .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
         /* --- ANIMACIONES --- */
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.25s ease; }
-        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #C6DCF0; } 50% { text-shadow: 0 0 20px #C6DCF0; color: #C6DCF0 !important; } 100% { text-shadow: 0 0 0px #C6DCF0; } }
+        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.3s ease; }
+        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #C6DCF0; } 50% { text-shadow: 0 0 10px #C6DCF0; color: #C6DCF0 !important; } 100% { text-shadow: 0 0 0px #C6DCF0; } }
 
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
@@ -149,7 +149,7 @@
             <div class="armador-layout">
                 <div class="selection-area" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span id="team-counter" style="font-weight:bold; color:#ccc; font-size:0.9rem;">SELECCIONADOS: 0 / 10</span>
+                        <span id="team-counter" style="font-weight:bold; color:#ccc; font-size:0.9rem;">SELECCIONADOS: 0/10</span>
                         <button class="btn-add-guest" id="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
@@ -317,7 +317,7 @@
         const btnInv = document.getElementById('btn-add-guest');
         const ok = t === 10;
         
-        cnt.innerText = `SELECCIONADOS: ${t} / 10`;
+        cnt.innerText = `SELECCIONADOS: ${t}/10`;
         if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado');
 
         btnGen.style.opacity = ok ? '1' : 'var(--opacidad-boton-bloqueado)';
@@ -378,5 +378,6 @@
 </script>
 </body>
 </html>
+
 
 
