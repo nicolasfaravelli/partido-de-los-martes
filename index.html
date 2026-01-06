@@ -15,7 +15,7 @@
             ========================================== */
         :root {
             --color-acento: #75AADB; 
-            --color-acento-off: #3d4e5f;         
+            --color-acento-off: #3d4e5f;         /* Celeste apagado/desaturado */
             --color-fondo: #0f0f0f; 
             --color-paneles: #1a1a1a; 
             --color-bordes: #333333;
@@ -37,9 +37,7 @@
         body.modal-open { overflow: hidden; }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-        /* ==========================================
-            2. HEADER Y CONTROLES PRINCIPALES
-            ========================================== */
+        /* --- HEADER Y CONTROLES --- */
         .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
         .header-container::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
@@ -48,9 +46,7 @@
         #search-input, #sort-select { flex: 1; padding: 12px 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
 
-        /* ==========================================
-            3. CARTAS DE JUGADORES
-            ========================================== */
+        /* --- CARTAS --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
@@ -64,9 +60,7 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* ==========================================
-            4. MODALES (GENERAL Y ARMADOR)
-            ========================================== */
+        /* --- MODALES Y ARMADOR --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
         #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 900px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: var(--brillo-celeste-cuadro); }
@@ -85,19 +79,16 @@
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* ==========================================
-            5. BOTONES Y ACCIONES
-            ========================================== */
+        /* --- BOTONES --- */
+        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { background: var(--color-acento); color: #fff; }
         .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
-
+        
         #btn-generate:disabled { background-color: var(--color-acento-off) !important; color: #8899aa !important; box-shadow: none !important; cursor: not-allowed; }
 
         .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
         .btn-ghost:hover { color: #fff; border-color: #777; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); background: rgba(60, 60, 60, 0.9); }
-
-        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         
         .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .btn-add-guest:hover:not(:disabled) { border-color: var(--color-acento); color: #fff; }
@@ -105,24 +96,27 @@
 
         .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
-        /* --- EXTRAS Y ANIMACIONES --- */
+        /* --- ANIMACIONES --- */
         #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.4s ease; }
-        @keyframes glow-flash { 
-            0% { text-shadow: 0 0 0px #C6DCF0; } 
-            50% { text-shadow: 0 0 20px #C6DCF0; color: #C6DCF0 !important; } 
-            100% { text-shadow: 0 0 0px #C6DCF0; }
-        }
+        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #C6DCF0; } 50% { text-shadow: 0 0 20px #C6DCF0; color: #C6DCF0 !important; } 100% { text-shadow: 0 0 0px #C6DCF0; } }
 
-        #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
-        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         .shine-layer::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); transition: none; }
         .card:hover .shine-layer::after { left: 150%; transition: left 0.5s ease-in-out; }
+        
+        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 150%; } }
+        .card.trigger-shine .shine-layer::after { animation: shine-sweep 0.5s ease-out forwards; }
+        
+        @keyframes shine-sweep-reverse { 0% { left: 150%; } 100% { left: -100%; } }
+        .card.trigger-shine-reverse .shine-layer::after { animation: shine-sweep-reverse 0.5s ease-out forwards; }
+
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; text-align:left; display: flex; align-items: center; }
     </style>
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 10.7</div>
+    <div id="version-tag">VERSIÓN 10.8</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -156,7 +150,7 @@
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
                 
-                <div style="display: flex; justify-content: center; width: 100%; margin: 10px 0;">
+                <div style="display: flex; justify-content: center; width: 100%; margin: 15px 0;">
                     <button class="btn btn-gold" style="padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 </div>
 
@@ -222,28 +216,9 @@
         window.addEventListener('click', initAudio);
         window.addEventListener('touchstart', initAudio);
         cargarDatos();
-        
-        // RECUPERO EL OBSERVADOR DE SONIDOS
         new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
         attachSounds(); 
     });
-
-    /* --- AUDIO --- */
-    function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
-    function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
-    function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.03; s.play().catch(()=>{}); } }
-    function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.15; s.play().catch(()=>{}); } }
-
-    function attachSounds() {
-        document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
-            if(!el.dataset.soundAttached) {
-                if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
-                if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx); 
-                else el.addEventListener('mousedown', playClickSfx);
-                el.dataset.soundAttached = "true";
-            }
-        });
-    }
 
     function cargarDatos() {
         const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CONFIG.URL_CSV + "&uid=" + Date.now());
@@ -264,8 +239,8 @@
         let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(t));
         lista.sort((a,b) => c === 'nombre' ? (o === 'asc' ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre)) : (o === 'asc' ? a.prom - b.prom : b.prom - a.prom));
         document.getElementById('grid-container').innerHTML = lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('');
+        attachSounds();
     }
-
     function generarHTMLCarta(j, lazy) { return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`; }
 
     /* --- LÓGICA MODAL CARTAS --- */
@@ -284,12 +259,23 @@
             <button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button>
             <button class="btn btn-ghost" onclick="cerrarModalCarta()">CERRAR</button>
         `; 
+        attachSounds(); 
     }
     function cerrarModalCarta() {
         document.getElementById('modal').style.display='none';
         document.body.classList.remove('modal-open'); 
     }
-    function toggleLeyenda() { esModoLeyenda = !esModoLeyenda; const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; renderizarModal(j); const card = document.getElementById('carta-descarga'); if(card) { card.classList.remove('trigger-shine', 'trigger-shine-reverse'); void card.offsetWidth; card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse'); } }
+    function toggleLeyenda() {
+        esModoLeyenda = !esModoLeyenda;
+        const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal;
+        renderizarModal(j);
+        const card = document.getElementById('carta-descarga');
+        if(card) {
+            card.classList.remove('trigger-shine', 'trigger-shine-reverse');
+            void card.offsetWidth; // Reflow
+            card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse');
+        }
+    }
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: CONFIG.URL_LEYENDA_FONDO, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
     function descargarCarta() { const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none'; html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => { const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); el.querySelector('.shine-layer').style.display = 'block'; }); }
 
@@ -332,7 +318,6 @@
         btnGen.style.opacity = ok ? '1' : 'var(--opacidad-boton-bloqueado)';
         btnGen.style.pointerEvents = ok ? 'auto' : 'none';
         btnGen.disabled = !ok; 
-        
         btnInv.disabled = ok;
         document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
     }
@@ -342,7 +327,6 @@
     function renderListaEquipo(ulId, ids, avgId) { const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0; ids.map(getPlayerData).filter(x=>x).sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(p => { suma += p.prom; const li = document.createElement('li'); li.className = 'team-player-li'; li.innerHTML = `<span>${p.nombre}</span><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; li.onclick = () => { if(equipo1.includes(p.id)){equipo1=equipo1.filter(x=>x!==p.id);equipo2.push(p.id);}else{equipo2=equipo2.filter(x=>x!==p.id);equipo1.push(p.id);} actualizarTablerosEquipos(); }; ul.appendChild(li); }); document.getElementById(avgId).innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`; }
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
-    /* --- ALGORITMO BALANCEO --- */
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
         const currentE1 = [...equipo1].sort().join(',');
@@ -369,6 +353,23 @@
         actualizarTablerosEquipos();
     }
     function compartirEquipos() { html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => { canvas.toBlob(blob => { const file = new File([blob], "equipos.png", { type: "image/png" }); if(navigator.share) navigator.share({ files: [file], title: 'Equipos' }); else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); } }); }); }
+
+    /* --- AUDIO Y OBSERVADOR --- */
+    function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
+    function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
+    function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.03; s.play().catch(()=>{}); } }
+    function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.15; s.play().catch(()=>{}); } }
+
+    function attachSounds() {
+        document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
+            if(!el.dataset.soundAttached) {
+                if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
+                if(el.classList.contains('player-row')) el.addEventListener('mousedown', playHoverSfx); 
+                else el.addEventListener('mousedown', playClickSfx);
+                el.dataset.soundAttached = "true";
+            }
+        });
+    }
 </script>
 </body>
 </html>
