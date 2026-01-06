@@ -29,8 +29,7 @@
             --escala-hover-equipo: 1.025;         
             --brillo-celeste-cuadro: 0 0 75px rgba(24, 60, 93, 0.4); 
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
-            --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
-        }
+            --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);}
 
         /* --- ESTILOS GENERALES --- */
         body { background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none; }
@@ -83,12 +82,15 @@
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { 
-        background: var(--color-acento); 
-        color: #fff; 
-        transition: all 0.25s ease;}
-        .btn-gold:hover:not(:disabled) { 
-        box-shadow: 0 0 15px var(--color-acento); 
-        background: #8bb7e2;}
+        background: var(--color-acento);color: #fff; 
+        transition: background-color 0.1s ease, transform 0.1s ease;}
+        .btn-flash-activar { 
+        animation: flash-boton 0.3s ease;}
+
+    @keyframes flash-boton {
+    0% { filter: brightness(1); transform: scale(1); }
+    50% { filter: brightness(1.8); transform: scale(1.05); box-shadow: 0 0 20px var(--color-acento); }
+    100% { filter: brightness(1); transform: scale(1); }}
         
         #btn-generate:disabled { background-color: var(--color-acento-off) !important; color: #8899aa !important; box-shadow: none !important; cursor: not-allowed; }
 
@@ -378,6 +380,7 @@
 </script>
 </body>
 </html>
+
 
 
 
