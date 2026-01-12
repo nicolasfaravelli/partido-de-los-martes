@@ -114,7 +114,7 @@
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 13.1
+    <div id="version-tag">VERSIÓN 13.0 - REACCIÓN RÁPIDA</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -305,8 +305,8 @@
                 const isSelected = i === idx;
                 ds.borderWidth = isSelected ? 4 : 2;
                 ds.backgroundColor = isSelected 
-                    ? (i === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)')
-                    : 'rgba(120, 120, 120, 0.25)';
+                    ? (i === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.7)')
+                    : 'rgba(120, 120, 120, 0.1)';
             }
         });
         teamRadarChart.update('none'); // Update sin animar de nuevo
@@ -338,7 +338,7 @@
                     ]
                 },
                 options: {
-                    animation: { duration: 500 },
+                    animation: { duration: 500 }, // MÁS RÁPIDO
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -431,4 +431,3 @@
 </script>
 </body>
 </html>
-
