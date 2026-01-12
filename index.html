@@ -93,9 +93,13 @@
         #radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         canvas#radarChart { width: 100% !important; height: 100% !important; }
 
+        /* MEDIA QUERY: AJUSTE PARA MÓVILES */
         @media (max-width: 900px) {
-            .teams-container { grid-template-columns: 1fr; }
-            #radar-container { order: 3; height: 250px; margin-top: 10px; }
+            .teams-container { grid-template-columns: 1fr 1fr; gap: 10px; }
+            #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
+            .team-header { font-size: 1.4rem; }
+            .team-avg-label { font-size: 0.9rem; }
+            .team-player-li { font-size: 0.9rem; padding: 6px 8px; }
         }
 
         /* ==========================================
@@ -148,7 +152,7 @@
 </head>
 
 <body>
-    <div id="version-tag">VERSIÓN 12.0 - RADAR</div>
+    <div id="version-tag">VERSIÓN 12.1 - RADAR OPTIMIZADO</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -187,7 +191,7 @@
                 </div>
 
                 <div id="team-capture-area">
-                    <div class="teams-container">
+                    <div class="teams-container" id="main-teams-layout">
                         <div class="team-box team-white" id="box-team-1">
                             <div class="team-header">CLARO</div>
                             <div id="avg-team-1" class="team-avg-label">PROM: 0</div>
@@ -453,7 +457,29 @@
         actualizarTablerosEquipos();
     }
     
-    function compartirEquipos() { html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => { canvas.toBlob(blob => { const file = new File([blob], "equipos.png", { type: "image/png" }); if(navigator.share) navigator.share({ files: [file], title: 'Equipos' }); else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); } }); }); }
+    function compartirEquipos() { 
+        const radar = document.getElementById('radar-container');
+        const container = document.getElementById('main-teams-layout');
+        
+        // Guardar estado original
+        const originalGrid = container.style.gridTemplateColumns;
+        radar.style.display = 'none'; // Ocultar radar para la foto
+        container.style.gridTemplateColumns = "1fr 1fr"; // Forzar enfrentamiento cara a cara
+        
+        html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
+            // Restaurar visualización en la web
+            radar.style.display = 'flex';
+            container.style.gridTemplateColumns = originalGrid;
+
+            canvas.toBlob(blob => { 
+                const file = new File([blob], "equipos.png", { type: "image/png" }); 
+                if(navigator.share) navigator.share({ files: [file], title: 'Equipos' }); 
+                else { 
+                    const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); 
+                } 
+            }); 
+        }); 
+    }
 
     /* --- AUDIO Y OBSERVADOR --- */
     function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
