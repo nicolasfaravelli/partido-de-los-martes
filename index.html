@@ -124,7 +124,7 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 14.4</div>
+    <div id="version-tag">v. 14.5</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -382,6 +382,9 @@
             temp.forEach(p => { if ((s1 <= s2 && t1.length < 5) || t2.length >= 5) { t1.push(p); s1 += p.prom; } else { t2.push(p); s2 += p.prom; } });
             const idsT1 = t1.map(p => p.id);
             let f = Math.abs(s1 - s2) * 10; 
+            const granerosEnT1 = t1.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).length;
+            const totalGraneros = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).length;
+            if (granerosEnT1 > 0 && granerosEnT1 < totalGraneros) f += 10000;
             if (idsT1.sort().join(',') === currentE1) f += 200; 
             if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = idsT1; }
         }
@@ -426,8 +429,8 @@
     /* AUDIO */
     function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {}); window.removeEventListener('click', initAudio); }
     function rotateMusic() { const p = document.getElementById('audio-player'); const c = document.getElementById('music-control'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; c.innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause(); }
-    function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.03; s.play().catch(()=>{}); } }
-    function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] || 0.15; s.play().catch(()=>{}); } }
+    function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(CONFIG.URL_SFX_HOVER) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] ?? 0.03; s.play().catch(()=>{}); } }
+    function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(CONFIG.URL_SFX_CLICK) { s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] ?? 0.15; s.play().catch(()=>{}); } }
 
     function attachSounds() {
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
@@ -442,3 +445,4 @@
 </script>
 </body>
 </html>
+
