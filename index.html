@@ -32,7 +32,7 @@
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
 
             /* VELOCIDADES EDITABLES */
-            --velocidad-brillo: 0.5s; 
+            --velocidad-brillo: 0.7s; 
             --velocidad-botones: 0.1s;
         }
 
@@ -65,27 +65,25 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* EFECTO DE BRILLO DIAGONAL CORREGIDO */
+        /* EFECTO DE BRILLO DIAGONAL */
         .shine-layer::after {
             content: "";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300%; 
-            height: 1000%; 
+            top: -150%;
+            left: -150%;
+            width: 400%;
+            height: 400%;
             background: linear-gradient(
-                to right, 
-                rgba(255,255,255,0) 0%, 
+                135deg, 
+                rgba(255,255,255,0) 45%, 
                 rgba(255,255,255,0.8) 50%, 
-                rgba(255,255,255,0) 100%
+                rgba(255,255,255,0) 55%
             );
-            transform: translate(-50%, -50%) rotate(45deg); 
             pointer-events: none;
             opacity: 0;
             z-index: 6;
         }
 
-        /* Disparadores de Animación */
         .card:hover .shine-layer::after, .ani-brillo-ida::after {
             animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards;
         }
@@ -94,13 +92,13 @@
         }
 
         @keyframes brillo-diagonal-ida {
-            0% { transform: translate(-150%, -150%) rotate(45deg); opacity: 1; }
-            100% { transform: translate(50%, 50%) rotate(45deg); opacity: 1; }
+            0% { top: -150%; left: -150%; opacity: 1; }
+            100% { top: 150%; left: 150%; opacity: 1; }
         }
 
         @keyframes brillo-diagonal-vuelta {
-            0% { transform: translate(50%, 50%) rotate(45deg); opacity: 1; }
-            100% { transform: translate(-150%, -150%) rotate(45deg); opacity: 1; }
+            0% { top: 150%; left: 150%; opacity: 1; }
+            100% { top: -150%; left: -150%; opacity: 1; }
         }
 
         /* ARMADOR */
@@ -120,12 +118,31 @@
         .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: var(--gloss-claro); }
         .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: var(--gloss-oscuro); }
         .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px; }
+        .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
+        /* RADAR */
+        #radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        canvas#radarChart { width: 100% !important; height: 100% !important; }
+
+        @media (max-width: 900px) {
+            .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
+            #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
+            .team-header { font-size: 1.2rem; }
+            .team-avg-label { font-size: 0.85rem; }
+            .team-player-li { font-size: 0.95rem; padding: 5px 6px; }
+        }
+
+        /* BOTONES */
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
         .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all var(--velocidad-botones) ease; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { background: var(--color-acento); color: #fff; }
         .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
+        #btn-generate:disabled { background-color: var(--color-acento-off) !important; color: #8899aa !important; cursor: not-allowed; }
         .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+
+        .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
@@ -134,7 +151,7 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 15.5</div>
+    <div id="version-tag">v. 15.3 (Color & Shine Fix)</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -163,24 +180,28 @@
                 <div class="selection-area" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span id="team-counter" style="font-weight:bold; color:#ccc; font-size:0.9rem;">SELECCIONADOS: 0 / 10</span>
-                        <button class="btn" style="padding:5px 12px; font-size:0.8rem; background:#111; color:#eee;" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
+                        <button class="btn-add-guest" id="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
+                
                 <div style="display: flex; justify-content: center; width: 100%; margin: 15px 0;">
                     <button class="btn btn-gold" style="padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 </div>
+
                 <div id="team-capture-area">
                     <div class="teams-container" id="main-teams-layout">
                         <div class="team-box team-white" id="box-team-1" onmouseenter="highlightTeam(0)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(0)">
                             <div class="team-header">CLARO</div>
-                            <div id="avg-team-1" style="text-align:center; font-family:var(--fuente-impacto);">PROM: 0</div>
+                            <div id="avg-team-1" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0; margin:0;"></ul>
                         </div>
-                        <div id="radar-container"><canvas id="radarChart"></canvas></div>
+                        <div id="radar-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
                         <div class="team-box team-black" id="box-team-2" onmouseenter="highlightTeam(1)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(1)">
                             <div class="team-header">OSCURO</div>
-                            <div id="avg-team-2" style="text-align:center; font-family:var(--fuente-impacto);">PROM: 0</div>
+                            <div id="avg-team-2" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0; margin:0;"></ul>
                         </div>
                     </div>
@@ -267,7 +288,7 @@
         const j = datosOriginales.find(x => x.id === parseInt(id)); 
         jugadorActualEnModal = JSON.parse(JSON.stringify(j)); 
         esModoLeyenda = false; 
-        document.getElementById('modal-card-container').innerHTML = '';
+        document.getElementById('modal-card-container').innerHTML = ''; // Limpieza previa
         if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; pre.decode().then(() => renderizarModal(jugadorActualEnModal)).catch(() => renderizarModal(jugadorActualEnModal)); } 
         else { renderizarModal(jugadorActualEnModal); }
         document.getElementById('modal').style.display = 'flex'; 
@@ -281,13 +302,15 @@
         esModoLeyenda = !esModoLeyenda; 
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
-        const card = document.getElementById('carta-descarga');
-        const shine = card.querySelector('.shine-layer');
-        if(shine) {
-            shine.classList.remove('ani-brillo-ida', 'ani-brillo-vuelta');
-            void shine.offsetWidth; 
-            shine.classList.add(esModoLeyenda ? 'ani-brillo-ida' : 'ani-brillo-vuelta');
-        }
+        requestAnimationFrame(() => {
+            const card = document.getElementById('carta-descarga');
+            const shine = card.querySelector('.shine-layer');
+            if(shine) {
+                shine.classList.remove('ani-brillo-ida', 'ani-brillo-vuelta');
+                void shine.offsetWidth; 
+                shine.classList.add(esModoLeyenda ? 'ani-brillo-ida' : 'ani-brillo-vuelta');
+            }
+        });
     }
 
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
@@ -302,6 +325,7 @@
 
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
+        const total = equipo1.length + equipo2.length;
         let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
         html += datosOriginales.map(j => {
             const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
