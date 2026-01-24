@@ -21,7 +21,7 @@
             --color-paneles: #1a1a1a; 
             --color-bordes: #333333;
             --fuente-impacto: 'Bebas Neue', sans-serif;
-            --fuente-datos: 'Montserrat', sans-serif; /* Montserrat aplicada */
+            --fuente-datos: 'Montserrat', sans-serif;
 
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
             --blur-fondo-modal: blur(10px);        
@@ -30,6 +30,10 @@
             --brillo-celeste-cuadro: 0 0 100px rgba(24, 60, 93, 0.4); 
             --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
+
+            /* VELOCIDADES EDITABLES */
+            --velocidad-brillo: 0.45s; 
+            --velocidad-botones: 0.1s;
         }
 
         body { background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none; }
@@ -43,15 +47,7 @@
 
         .controls-area { max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; position: relative; z-index: 50; }
         
-        /* HOMOGENEIZACIÓN DE TAMAÑOS EN CONTROLES */
-        #search-input, #sort-select, .controls-area .btn { 
-            height: 45px; 
-            box-sizing: border-box; 
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-
+        #search-input, #sort-select, .controls-area .btn { height: 45px; box-sizing: border-box; margin: 0; display: flex; align-items: center; }
         #search-input, #sort-select { flex: 1; padding: 0 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
 
@@ -68,6 +64,49 @@
         .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
+
+        /* EFECTO DE BRILLO DIAGONAL */
+        .shine-layer::after {
+            content: "";
+            position: absolute;
+            top: -110%;
+            left: -110%;
+            width: 250%;
+            height: 250%;
+            background: linear-gradient(
+                135deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0) 45%, 
+                rgba(255,255,255,0.6) 50%, 
+                rgba(255,255,255,0) 55%, 
+                rgba(255,255,255,0) 100%
+            );
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* Hover: Ida (Superior Izquierda a Inferior Derecha) */
+        .card:hover .shine-layer::after {
+            animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards;
+        }
+
+        /* Clases para disparar por JS */
+        .ani-brillo-ida::after { animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards; }
+        .ani-brillo-vuelta::after { animation: brillo-diagonal-vuelta var(--velocidad-brillo) ease-in-out forwards; }
+
+        @keyframes brillo-diagonal-ida {
+            0% { top: -110%; left: -110%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; left: 110%; opacity: 0; }
+        }
+
+        @keyframes brillo-diagonal-vuelta {
+            0% { top: 110%; left: 110%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: -110%; left: -110%; opacity: 0; }
+        }
 
         /* ARMADOR */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
@@ -105,7 +144,7 @@
 
         /* BOTONES */
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all 0.2s; letter-spacing: 0.8px; text-transform: uppercase; }
+        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all var(--velocidad-botones) ease; letter-spacing: 0.8px; text-transform: uppercase; }
         .btn-gold { background: var(--color-acento); color: #fff; }
         .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
         #btn-generate:disabled { background-color: var(--color-acento-off) !important; color: #8899aa !important; cursor: not-allowed; }
@@ -114,9 +153,6 @@
 
         .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
-        #team-counter.completado { color: var(--color-acento) !important; animation: glow-flash 0.4s ease; }
-        @keyframes glow-flash { 0% { text-shadow: 0 0 0px #C6DCF0; } 50% { text-shadow: 0 0 20px #C6DCF0; } 100% { text-shadow: 0 0 0px #C6DCF0; } }
-
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
@@ -124,7 +160,7 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 14.5</div>
+    <div id="version-tag">v. 14.6</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -261,7 +297,24 @@
     function abrirModal(id) { const j = datosOriginales.find(x => x.id === parseInt(id)); jugadorActualEnModal = JSON.parse(JSON.stringify(j)); esModoLeyenda = false; document.getElementById('modal').style.display = 'flex'; document.body.classList.add('modal-open'); renderizarModal(jugadorActualEnModal); }
     function renderizarModal(j) { document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" onclick="cerrarModalCarta()">CERRAR</button>`; attachSounds(); }
     function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
-    function toggleLeyenda() { esModoLeyenda = !esModoLeyenda; const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; renderizarModal(j); const card = document.getElementById('carta-descarga'); if(card) { card.classList.remove('trigger-shine', 'trigger-shine-reverse'); void card.offsetWidth; card.classList.add(esModoLeyenda ? 'trigger-shine' : 'trigger-shine-reverse'); } }
+    
+    function toggleLeyenda() { 
+        esModoLeyenda = !esModoLeyenda; 
+        const card = document.getElementById('carta-descarga');
+        const shine = card.querySelector('.shine-layer');
+
+        if(shine) {
+            // Limpiamos clases
+            shine.classList.remove('ani-brillo-ida', 'ani-brillo-vuelta');
+            void shine.offsetWidth; // Reflow para reiniciar animación
+            // Disparamos según el sentido
+            shine.classList.add(esModoLeyenda ? 'ani-brillo-ida' : 'ani-brillo-vuelta');
+        }
+
+        const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
+        renderizarModal(j); 
+    }
+
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: CONFIG.URL_LEYENDA_FONDO, color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
     function descargarCarta() { const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none'; html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => { const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); el.querySelector('.shine-layer').style.display = 'block'; }); }
 
@@ -320,7 +373,7 @@
                 ds.order = isSelected ? 0 : 1; 
             }
         });
-        teamRadarChart.update('none'); // Update sin animar de nuevo
+        teamRadarChart.update('none');
     }
 
     function actualizarRadar() {
@@ -349,7 +402,7 @@
                     ]
                 },
                 options: {
-                    animation: { duration: 250 }, // MÁS RÁPIDO
+                    animation: { duration: 250 },
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -398,11 +451,9 @@
         const t1 = document.getElementById('box-team-1');
         const t2 = document.getElementById('box-team-2');
         
-        // GUARDAR ESTADOS PARA RESTAURAR
         const originalGrid = container.style.gridTemplateColumns;
         const s1 = t1.style.boxShadow; const s2 = t2.style.boxShadow;
 
-        // LIMPIEZA PARA LA FOTO (Evita errores de color/render)
         radar.style.display = 'none'; 
         container.style.gridTemplateColumns = "1fr 1fr"; 
         t1.style.boxShadow = "none"; t2.style.boxShadow = "none";
@@ -413,7 +464,6 @@
             logging: false,
             useCORS: true
         }).then(canvas => {
-            // RESTAURAR TODO
             radar.style.display = 'flex';
             container.style.gridTemplateColumns = originalGrid;
             t1.style.boxShadow = s1; t2.style.boxShadow = s2;
@@ -445,4 +495,3 @@
 </script>
 </body>
 </html>
-
