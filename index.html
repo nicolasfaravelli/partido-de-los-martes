@@ -32,7 +32,7 @@
             --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
 
             /* VELOCIDADES EDITABLES */
-            --velocidad-brillo: 0.5s; 
+            --velocidad-brillo: 0.7s; 
             --velocidad-botones: 0.1s;
         }
 
@@ -73,7 +73,12 @@
             left: -150%;
             width: 400%;
             height: 400%;
-            background: linear-gradient(135deg, rgba(255,255,255,0) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 55%);
+            background: linear-gradient(
+                135deg, 
+                rgba(255,255,255,0) 45%, 
+                rgba(255,255,255,0.8) 50%, 
+                rgba(255,255,255,0) 55%
+            );
             pointer-events: none;
             opacity: 0;
             z-index: 6;
@@ -87,13 +92,13 @@
         }
 
         @keyframes brillo-diagonal-ida {
-            0% { top: -250%; left: -250%; opacity: 1; }
-            100% { top: 250%; left: 250%; opacity: 1; }
+            0% { top: -150%; left: -150%; opacity: 1; }
+            100% { top: 150%; left: 150%; opacity: 1; }
         }
 
         @keyframes brillo-diagonal-vuelta {
-            0% { top: 250%; left: 250%; opacity: 1; }
-            100% { top: -250%; left: -250%; opacity: 1; }
+            0% { top: 150%; left: 150%; opacity: 1; }
+            100% { top: -150%; left: -150%; opacity: 1; }
         }
 
         /* ARMADOR */
@@ -146,7 +151,7 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 15.4</div>
+    <div id="version-tag">v. 15.5</div>
     <div class="header-container" id="header-area"></div>
     
     <div class="controls-area">
@@ -186,19 +191,15 @@
 
                 <div id="team-capture-area">
                     <div class="teams-container" id="main-teams-layout">
-                        <div class="team-box team-white" id="box-team-1" 
-                             onmouseenter="highlightTeam(0)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(0)">
+                        <div class="team-box team-white" id="box-team-1" onmouseenter="highlightTeam(0)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(0)">
                             <div class="team-header">CLARO</div>
                             <div id="avg-team-1" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0; margin:0;"></ul>
                         </div>
-                        
                         <div id="radar-container">
                             <canvas id="radarChart"></canvas>
                         </div>
-
-                        <div class="team-box team-black" id="box-team-2" 
-                             onmouseenter="highlightTeam(1)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(1)">
+                        <div class="team-box team-black" id="box-team-2" onmouseenter="highlightTeam(1)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(1)">
                             <div class="team-header">OSCURO</div>
                             <div id="avg-team-2" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0; margin:0;"></ul>
@@ -258,15 +259,16 @@
     function cargarDatos() {
         const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CONFIG.URL_CSV + "&uid=" + Date.now());
         Papa.parse(PROXY_URL, { download: true, header: false, skipEmptyLines: true, complete: (results) => {
-            document.getElementById('loader').style.display = 'none';
-            const data = results.data; if(data.length > 0) data.shift();
-            datosOriginales = data.map((fila, index) => { if(!fila[0] || fila[0].trim() === 'Jugador') return null;
-                const j = { id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60, ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]), vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]), edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13] ? fila[13].trim() : "", color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21' };
-                if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; }
-                return j;
-            }).filter(i => i !== null);
-            aplicarFiltrosYOrden();
-        }});
+                document.getElementById('loader').style.display = 'none';
+                const data = results.data; if(data.length > 0) data.shift();
+                datosOriginales = data.map((fila, index) => { if(!fila[0] || fila[0].trim() === 'Jugador') return null;
+                    const j = { id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60, ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]), vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]), edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13] ? fila[13].trim() : "", color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21' };
+                    if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; }
+                    return j;
+                }).filter(i => i !== null);
+                aplicarFiltrosYOrden();
+            }
+        });
     }
 
     function aplicarFiltrosYOrden() {
@@ -286,6 +288,7 @@
         const j = datosOriginales.find(x => x.id === parseInt(id)); 
         jugadorActualEnModal = JSON.parse(JSON.stringify(j)); 
         esModoLeyenda = false; 
+        document.getElementById('modal-card-container').innerHTML = ''; // Limpieza previa
         if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; pre.decode().then(() => renderizarModal(jugadorActualEnModal)).catch(() => renderizarModal(jugadorActualEnModal)); } 
         else { renderizarModal(jugadorActualEnModal); }
         document.getElementById('modal').style.display = 'flex'; 
@@ -310,59 +313,34 @@
         });
     }
 
-    function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: CONFIG.URL_LEYENDA_FONDO || "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
+    function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
     function descargarCarta() { const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none'; html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => { const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); el.querySelector('.shine-layer').style.display = 'block'; }); }
 
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; document.body.classList.add('modal-open'); equipo1 = []; equipo2 = []; renderizarListaSeleccion(); }
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; document.body.classList.remove('modal-open'); }
-    
-    function agregarInvitado() { 
-        if((equipo1.length + equipo2.length) >= 10) return; 
-        const id = 9000 + invitados.length + 1; 
-        invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25, esInvitado: true}); 
-        (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); 
-        renderizarListaSeleccion(); 
-    }
+    function agregarInvitado() { if((equipo1.length + equipo2.length) >= 10) return; const id = 9000 + invitados.length + 1; invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25, esInvitado: true}); (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); renderizarListaSeleccion(); }
+    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion(); }
+    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id)); }
+    function editarInvitado(id, campo, valor) { const inv = invitados.find(i => i.id === parseInt(id)); if (inv) { if (campo === 'nombre') inv.nombre = valor; else if (campo === 'prom') { inv.prom = inv.ata = inv.def = inv.tec = inv.vel = inv.res = parseInt(valor) || 0; } actualizarTablerosEquipos(); } }
 
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
         const total = equipo1.length + equipo2.length;
-        let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})">${i.nombre} (${i.prom})</div>`).join('');
+        let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
         html += datosOriginales.map(j => {
             const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
-            return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${j.nombre} (${j.prom})</div>`;
+            return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})"><span>${j.nombre}</span> <span style="margin-left:auto;color:${getColorProm(j.prom)}">${j.prom}</span></div>`;
         }).join('');
         cont.innerHTML = html;
         actualizarContadorEquipos(); actualizarTablerosEquipos();
     }
     
-    function toggleSeleccion(id) { 
-        const nid = parseInt(id); 
-        if (equipo1.includes(nid) || equipo2.includes(nid)) { equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); } 
-        else if ((equipo1.length + equipo2.length) < 10) (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(nid); 
-        renderizarListaSeleccion(); 
-    }
-
-    function actualizarContadorEquipos() {
-        const t = equipo1.length + equipo2.length; 
-        const cnt = document.getElementById('team-counter');
-        const ok = t === 10;
-        cnt.innerText = `SELECCIONADOS: ${t} / 10`;
-        if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado');
-        document.getElementById('btn-generate').disabled = !ok;
-        document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';
-    }
-
+    function toggleSeleccion(id) { const nid = parseInt(id); if (isPlayerSelected(nid)) { equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); } else if ((equipo1.length + equipo2.length) < 10) (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(nid); renderizarListaSeleccion(); }
+    function actualizarContadorEquipos() { const t = equipo1.length + equipo2.length; const cnt = document.getElementById('team-counter'); const ok = t === 10; cnt.innerText = `SELECCIONADOS: ${t} / 10`; if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); document.getElementById('btn-generate').disabled = !ok; document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none'; }
     function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
     function actualizarTablerosEquipos() { renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); renderListaEquipo('list-team-2', equipo2, 'avg-team-2'); actualizarRadar(); }
-
-    function renderListaEquipo(ulId, ids, avgId) { 
-        const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0; 
-        ids.map(getPlayerData).forEach(p => { 
-            suma += p.prom; const li = document.createElement('li'); li.className = 'team-player-li'; li.style.display="flex"; li.style.justifyContent="space-between"; li.style.padding="8px"; li.style.borderBottom="1px solid #333"; li.innerHTML = `<span>${p.nombre}</span><span>${p.prom}</span>`; ul.appendChild(li); 
-        }); 
-        document.getElementById(avgId).innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`; 
-    }
+    function renderListaEquipo(ulId, ids, avgId) { const ul = document.getElementById(ulId); ul.innerHTML = ''; let suma = 0; ids.map(getPlayerData).forEach(p => { suma += p.prom; const li = document.createElement('li'); li.className = 'team-player-li'; li.style.display="flex"; li.style.justifyContent="space-between"; li.style.padding="8px"; li.style.borderBottom="1px solid #333"; li.innerHTML = `<span>${p.nombre}</span><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; ul.appendChild(li); }); document.getElementById(avgId).innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`; }
+    function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
 
     function highlightTeam(idx) {
         if(!teamRadarChart) return;
@@ -373,8 +351,8 @@
     function actualizarRadar() {
         const getAvgStats = (ids) => {
             if (!ids.length) return [0,0,0,0,0,0];
-            const players = ids.map(getPlayerData).filter(x=>x);
-            const sum = players.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
+            const ps = ids.map(getPlayerData);
+            const sum = ps.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
             return [sum.ata/ids.length, sum.def/ids.length, sum.tec/ids.length, sum.vel/ids.length, sum.res/ids.length, sum.arq/ids.length];
         };
         const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
@@ -404,7 +382,7 @@
         const radar = document.getElementById('radar-container');
         const container = document.getElementById('main-teams-layout');
         radar.style.display = 'none'; container.style.gridTemplateColumns = "1fr 1fr"; 
-        html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2, logging: false, useCORS: true }).then(canvas => {
+        html2canvas(document.getElementById('team-capture-area'), { backgroundColor: '#1a1a1a', scale: 2, useCORS: true }).then(canvas => {
             radar.style.display = 'flex'; container.style.gridTemplateColumns = "1fr 300px 1fr";
             canvas.toBlob(blob => { 
                 const file = new File([blob], "equipos.png", { type: "image/png" }); 
