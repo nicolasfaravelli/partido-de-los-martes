@@ -25,7 +25,13 @@
             --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
             --velocidad-botones: 0.1s;
-            --resplandor-duracion: 0.4s;}
+            --resplandor-duracion: 0.4s;
+            /* VARIABLES DE CONTROL */
+            --resplandor-tamaño: 50px;
+            --resplandor-opacidad: 0.5;
+            --jugador-brillo: 4;
+            --jugador-contraste: 0;
+            --jugador-saturacion: 0;}
         body { 
             background-color: var(--color-fondo); 
             color: #fff; 
@@ -40,9 +46,6 @@
             user-select: none;}
         body.modal-open { overflow: hidden;}
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold;}
-        /* ==========================================
-            2. ENCABEZADO TRASLÚCIDO (STUCK)
-            ========================================== */
         .main-sticky-header {
             position: sticky;
             top: 0;
@@ -56,7 +59,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);}
         .header-container { text-align: center; padding: 15px 0 10px 0;}
         .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));}
-        /* CONTROLES HOMOGÉNEOS */
         .controls-area { 
             max-width: 1100px; 
             margin: 0 auto; 
@@ -96,28 +98,19 @@
             display: flex;
             justify-content: center;
             align-items: center;}
-        /* 1. Brillo para TODOS los botones al pasar el mouse */
         .btn:hover { 
             background: #8bb7e2 !important; 
             box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; 
-            transform: translateY(-1px);
-        }
-        /* 2. Botón GENERAR AUTOMÁTICO gris cuando está apagado */
+            transform: translateY(-1px);}
         .btn:disabled {
             background-color: #444 !important;
             color: #888 !important;
             cursor: not-allowed;
             box-shadow: none !important;
-            opacity: 0.6;
-        }
-        /* 3. Resplandor celeste cuando llegás a 10/10 */
+            opacity: 0.6;}
         .completado { 
             color: var(--color-acento) !important; 
-            text-shadow: 0 0 15px var(--color-acento); 
-        }
-        /* ==========================================
-            3. GRID Y CARTAS
-            ========================================== */
+            text-shadow: 0 0 15px var(--color-acento);}
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -140,7 +133,6 @@
         .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase;}
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%;}
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%;}
-        /* SHINE EFFECT (SOLO HOVER) */
         .shine-layer::after {
             content: "";
             position: absolute;
@@ -152,31 +144,24 @@
         @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; }}
         @keyframes flash-blanco {
             0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }
-            50% { filter: brightness(2) contrast(0.5) saturate(0.5) drop-shadow(0 0 50px rgba(255,255,255,0.3)); }
+            50% { filter: brightness(2) contrast(0.5) saturate(0.5) drop-shadow(0 0 var(--resplandor-tamaño) rgba(255,255,255,var(--resplandor-opacidad))); }
             100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }}
         @keyframes flash-jugador {
             0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }
-            50% { filter: brightness(4) contrast(0) saturate(0) drop-shadow(0 0 50px rgba(255,255,255,0.3)); }
+            50% { filter: brightness(var(--jugador-brillo)) contrast(var(--jugador-contraste)) saturate(var(--jugador-saturacion)) drop-shadow(0 0 var(--resplandor-tamaño) rgba(255,255,255,var(--resplandor-opacidad))); }
             100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }}
-
         .flash-evolucion { animation: flash-blanco var(--resplandor-duracion) ease-out; }
         .flash-foto { animation: flash-jugador var(--resplandor-duracion) ease-out; }
-        /* ==========================================
-            4. MODALES Y OTROS
-            ========================================== */
         .modal-overlay { 
             display: none; 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.875); /* OSCURIDAD */
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.875); 
             z-index: 3000; 
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            backdrop-filter: blur(12.5px); /* DESENFOQUE */
+            backdrop-filter: blur(12.5px); 
             -webkit-backdrop-filter: blur(12.5px);}
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center;}
         #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4);}
@@ -211,7 +196,7 @@
     </style>
 </head>
 <body>
-    <div id="version-tag">v. 12</div>
+    <div id="version-tag">v. 15</div>
     <header class="main-sticky-header">
         <div class="header-container" id="header-area"></div>
         <div class="controls-area">
@@ -418,16 +403,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
