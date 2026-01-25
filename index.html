@@ -170,9 +170,9 @@
 
         /* NUEVO EFECTO FLASH TIPO EVOLUCIÓN */
         @keyframes flash-blanco {
-            0% { filter: brightness(1) contrast(1); }
-            50% { filter: brightness(5) contrast(0.25); }
-            100% { filter: brightness(1) contrast(1); }
+            0% { filter: brightness(1) contrast(1) saturate(1); }
+            50% { filter: brightness(5) contrast(0.25) saturate(0.25); }
+            100% { filter: brightness(1) contrast(1) saturate (1); }
         }
         .flash-evolucion {
             animation: flash-blanco 0.5s ease-out;
@@ -481,4 +481,5 @@
 </script>
 </body>
 </html>
+
 
