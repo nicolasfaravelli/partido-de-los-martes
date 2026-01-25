@@ -96,10 +96,25 @@
             display: flex;
             justify-content: center;
             align-items: center;}
-        .controls-area .btn:hover { 
-            background: #8bb7e2; 
-            box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); 
-            transform: translateY(-1px);}
+        /* 1. Brillo para TODOS los botones al pasar el mouse */
+        .btn:hover { 
+            background: #8bb7e2 !important; 
+            box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; 
+            transform: translateY(-1px);
+        }
+        /* 2. Botón GENERAR AUTOMÁTICO gris cuando está apagado */
+        .btn:disabled {
+            background-color: #444 !important;
+            color: #888 !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+            opacity: 0.6;
+        }
+        /* 3. Resplandor celeste cuando llegás a 10/10 */
+        .completado { 
+            color: var(--color-acento) !important; 
+            text-shadow: 0 0 15px var(--color-acento); 
+        }
         /* ==========================================
             3. GRID Y CARTAS
             ========================================== */
@@ -228,7 +243,7 @@
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
                 <div style="display: flex; justify-content: center; width: 100%; margin: 15px 0;">
-                    <button class="btn" style="background:var(--color-acento); color:#fff; height:45px; font-weight:900; padding: 0 30px; border-radius:6px; cursor:pointer;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                    <button class="btn" style="background:var(--color-acento); color:#fff; height:45px; font-weight:900; padding: 0 30px; border-radius:6px; cursor:pointer;" onclick="generarAutomatico()" id="btn-generate">GENERAR AUTOMÁTICO</button>
                 </div>
                 <div id="team-capture-area">
                     <div class="teams-container" id="main-teams-layout">
@@ -403,6 +418,7 @@
 </script>
 </body>
 </html>
+
 
 
 
