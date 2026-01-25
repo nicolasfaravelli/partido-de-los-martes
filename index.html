@@ -16,17 +16,16 @@
             ========================================== */
         :root {
             --color-acento: #75AADB; 
-            --color-acento-glow: rgba(117, 170, 219, 0.6);
-            --color-acento-off: #1a242f;          
-            --color-fondo: #050505; /* Fondo más profundo */
-            --color-paneles: #0a0a0a; 
-            --color-bordes: rgba(255, 255, 255, 0.1);
+            --color-acento-off: #3d4e5f;          
+            --color-fondo: #0f0f0f; 
+            --color-paneles: #1a1a1a; 
+            --color-bordes: #333333;
             --fuente-impacto: 'Bebas Neue', sans-serif;
             --fuente-datos: 'Montserrat', sans-serif;
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-            --blur-header: blur(20px);
+            --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
-            --velocidad-botones: 0.2s;
+            --velocidad-botones: 0.1s;
         }
 
         body { 
@@ -43,141 +42,104 @@
             user-select: none; 
         }
 
-        /* Overlay para oscurecer el fondo y darle profundidad */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
         body.modal-open { overflow: hidden; }
-        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #333; z-index: 5000; font-weight: bold; }
+        #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
         /* ==========================================
-            2. HEADER PREMIUM (Glassmorphism + Light Edge)
+            2. ENCABEZADO TRASLÚCIDO (STUCK)
             ========================================== */
         .main-sticky-header {
             position: sticky;
             top: 0;
             z-index: 2000;
-            margin: 0 -20px 40px -20px;
-            padding: 0 20px 25px 20px;
-            background: rgba(10, 10, 10, 0.75);
+            margin: 0 -20px 30px -20px;
+            padding: 0 20px 20px 20px;
+            background: rgba(15, 15, 15, 0.85);
             backdrop-filter: var(--blur-header);
             -webkit-backdrop-filter: var(--blur-header);
-            /* El "canto" de luz superior */
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
             border-bottom: 2px solid var(--color-acento);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .header-container { text-align: center; padding: 20px 0 15px 0; }
-        .title-img { max-width: 75%; height: auto; max-height: 90px; filter: drop-shadow(0 0 10px rgba(117, 170, 219, 0.3)); }
+        .header-container { text-align: center; padding: 15px 0 10px 0; }
+        .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        /* CONTROLES ESTILO "NEÓN URBANO" */
+        /* CONTROLES HOMOGÉNEOS */
         .controls-area { 
-            max-width: 1000px; 
+            max-width: 1100px; 
             margin: 0 auto; 
             display: flex; 
-            gap: 15px; 
+            gap: 12px; 
             flex-wrap: wrap; 
             justify-content: center; 
             align-items: center; 
         }
 
-        /* Buscador y Filtro: Efecto Cristal Hundido */
-        #search-input, #sort-select { 
-            height: 52px; 
+        #search-input, #sort-select, .controls-area .btn { 
+            height: 50px; 
             box-sizing: border-box; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             font-family: var(--fuente-datos); 
-            font-weight: 600; 
+            font-weight: 700; 
             font-size: 0.85rem; 
             text-transform: uppercase; 
-            letter-spacing: 1px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #fff;
-            padding: 0 20px;
-            outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+            border: 1px solid var(--color-bordes);
+            transition: all 0.2s ease;
+        }
+
+        #search-input, #sort-select { 
+            flex: 1; 
+            padding: 0 15px; 
+            background: rgba(42, 42, 42, 0.9); 
+            color: white; 
+            min-width: 180px; 
+            outline: none; 
         }
 
         #search-input:focus, #sort-select:focus { 
             border-color: var(--color-acento); 
-            background: rgba(20, 20, 20, 0.8);
-            box-shadow: 0 0 15px var(--color-acento-glow);
+            background: #333; 
         }
 
-        /* EL BOTÓN RETROILUMINADO */
         .controls-area .btn {
-            height: 52px;
-            padding: 0 35px;
-            border-radius: 8px;
-            font-family: var(--fuente-datos);
-            font-weight: 900;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            border: 1px solid var(--color-acento);
-            /* Degradado sutil para dar volumen central */
-            background: radial-gradient(circle at center, #8bb7e2 0%, var(--color-acento) 100%);
+            padding: 0 30px;
+            background: var(--color-acento);
             color: #fff;
+            cursor: pointer;
+            border: none;
+            min-width: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            overflow: hidden;
-            transition: all var(--velocidad-botones) ease;
-            /* Resplandor inicial */
-            box-shadow: 0 0 10px var(--color-acento-glow), inset 0 0 10px rgba(255,255,255,0.2);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .controls-area .btn:hover { 
-            transform: translateY(-2px);
-            /* El neón se intensifica */
-            box-shadow: 0 0 25px var(--color-acento), inset 0 0 15px rgba(255,255,255,0.4);
-            filter: brightness(1.1);
+            background: #8bb7e2; 
+            box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); 
+            transform: translateY(-1px);
         }
 
-        .controls-area .btn:active { transform: translateY(1px); }
-
         /* ==========================================
-            3. GRID Y CARTAS (Con Glow en Hover)
+            3. GRID Y CARTAS
             ========================================== */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
-            gap: 30px; 
+            gap: 25px; 
             max-width: 1200px; 
             margin: 0 auto; 
-            padding-bottom: 60px; 
+            padding-bottom: 50px; 
         }
 
-        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
-        
-        /* El resplandor que decías para las cartas */
-        .card:hover { 
-            transform: scale(1.08); 
-            z-index: 10; 
-        }
-
-        .card:hover .card-bg-wrapper {
-            filter: drop-shadow(0 0 20px var(--color-acento-glow));
-        }
+        .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
+        .card:hover { transform: scale(1.05); z-index: 10; }
         
         .card-bg-wrapper { 
             position: absolute; 
             top: 0; left: 0; width: 100%; height: 100%; 
             overflow: hidden; 
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); 
-            transition: filter 0.3s ease;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); 
         }
         
         .card-bg { width: 100%; height: 100%; object-fit: contain; }
@@ -191,7 +153,7 @@
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* EFECTO BRILLO (MANTENIDO) */
+        /* SHINE EFFECT (SOLO HOVER) */
         .shine-layer::after {
             content: "";
             position: absolute;
@@ -200,56 +162,67 @@
             pointer-events: none; opacity: 0; z-index: 6; transform: translate(-100%, -100%);
         }
 
-        .card:hover .shine-layer::after, .ani-brillo-ida::after { animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards; }
-        .ani-brillo-vuelta::after { animation: brillo-diagonal-vuelta var(--velocidad-brillo) ease-in-out forwards; }
+        .card:hover .shine-layer::after { 
+            animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards; 
+        }
 
         @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
-        @keyframes brillo-diagonal-vuelta { 0% { transform: translate(100%, 100%); opacity: 1; } 100% { transform: translate(-100%, -100%); opacity: 1; } }
+
+        /* NUEVO EFECTO FLASH TIPO EVOLUCIÓN */
+        @keyframes flash-blanco {
+            0% { filter: brightness(1) contrast(1); }
+            40% { filter: brightness(4) contrast(0.5); }
+            100% { filter: brightness(1) contrast(1); }
+        }
+        .flash-evolucion {
+            animation: flash-blanco 0.6s ease-out;
+        }
 
         /* ==========================================
-            4. MODALES (GLASSMORHPISM REFORZADO)
+            4. MODALES Y OTROS
             ========================================== */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
-        #team-modal-content { 
-            background: var(--color-paneles); 
-            background-image: var(--url-pizarra); 
-            background-size: cover; 
-            background-position: center; 
-            padding: 25px; 
-            border-radius: 12px; 
-            border: 1px solid var(--color-acento); 
-            width: 95%; max-width: 950px; max-height: 90vh; 
-            display: flex; flex-direction: column; 
-            box-shadow: 0 0 80px rgba(0,0,0,0.8), 0 0 30px var(--color-acento-glow); 
-        }
+        #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); }
         .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
 
-        /* Selección de Jugadores */
-        .player-row { display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 6px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 4px; transition: all 0.2s; }
-        .player-row:hover { background: rgba(255,255,255,0.08); }
-        .player-row.selected { border-color: var(--color-acento); background: rgba(117, 170, 219, 0.1); color: var(--color-acento); }
+        .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
+        .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
+        .player-row input[type="checkbox"] { accent-color: var(--color-acento); }
 
-        /* Equipos */
-        .team-box { padding: 15px; border-radius: 8px; border: 2px solid #222; transition: all 0.3s ease; }
-        .team-white { background: #fff; color: #111; box-shadow: inset 0 0 50px rgba(0,0,0,0.15); }
-        .team-black { background: #000; color: #fff; border-color: #333; box-shadow: inset 0 0 50px rgba(255,255,255,0.05); }
-        .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; margin-bottom: 10px; letter-spacing: 2px; }
+        .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
+        .team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; height: 100%; box-sizing: border-box; }
+        .team-box.highlight { transform: scale(var(--escala-hover-equipo)); z-index: 5; border-color: var(--color-acento); }
+        .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 80px rgba(0,0,0,0.2); }
+        .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 80px rgba(255,255,255,0.1); }
+        .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px; }
+        .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        #radar-container { background: rgba(117, 170, 219, 0.15); border-radius: 12px; padding: 15px; border: 1px solid var(--color-acento-glow); }
+        #radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        canvas#radarChart { width: 100% !important; height: 100% !important; }
 
-        /* Botones de Modales */
-        .btn-ghost { background: transparent; color: #888; border: 1px solid #333; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
-        .btn-ghost:hover { color: #fff; border-color: #666; background: rgba(255,255,255,0.05); }
+        @media (max-width: 900px) {
+            .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
+            #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
+            .team-header { font-size: 1.2rem; }
+            .team-avg-label { font-size: 0.85rem; }
+            .team-player-li { font-size: 0.95rem; padding: 5px 6px; }
+        }
 
-        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
-        #loader { text-align: center; color: var(--color-acento); margin-top: 100px; font-family: var(--fuente-impacto); letter-spacing: 5px; font-size: 2rem; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+        .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
+        .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+        .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
+        #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
+        #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
     </style>
 </head>
 
 <body>
-    <div id="version-tag">v. 11</div>
+    <div id="version-tag">v. 12</div>
     
     <header class="main-sticky-header">
         <div class="header-container" id="header-area"></div>
@@ -265,7 +238,7 @@
         </div>
     </header>
 
-    <div id="loader">CARGANDO...</div>
+    <div id="loader">CARGANDO JUGADORES...</div>
     <div id="grid-container" class="grid"></div>
 
     <div id="modal" class="modal-overlay">
@@ -275,18 +248,18 @@
 
     <div id="team-modal" class="modal-overlay">
         <div id="team-modal-content">
-            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; font-family:var(--fuente-impacto); letter-spacing:2px; margin-bottom:15px; text-shadow: 0 0 15px var(--color-acento-glow);">ARMADOR DE EQUIPOS</div>
+            <div class="team-title" style="text-align:center; color:var(--color-acento); font-size:2.2rem; font-family:var(--fuente-impacto); letter-spacing:2px; margin-bottom:10px;">ARMADOR DE EQUIPOS</div>
             <div class="armador-layout">
-                <div class="selection-area" style="background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <span id="team-counter" style="font-weight:900; color:#fff; font-size:1rem; letter-spacing:1px;">SELECCIONADOS: 0 / 10</span>
-                        <button class="btn-add-guest" style="background:var(--color-acento); border:none; color:#fff; padding: 6px 15px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
+                <div class="selection-area" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span id="team-counter" style="font-weight:bold; color:#ccc; font-size:0.9rem;">SELECCIONADOS: 0 / 10</span>
+                        <button class="btn-add-guest" id="btn-add-guest" onclick="agregarInvitado()">+ AGREGAR INVITADO</button>
                     </div>
                     <div id="players-checklist" class="players-list-scroll"></div>
                 </div>
                 
-                <div style="display: flex; justify-content: center; width: 100%; margin: 20px 0;">
-                    <button class="btn" style="height:48px; min-width:280px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                <div style="display: flex; justify-content: center; width: 100%; margin: 15px 0;">
+                    <button class="btn" style="background:var(--color-acento); color:#fff; height:45px; font-weight:900; padding: 0 30px; border-radius:6px; cursor:pointer;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 </div>
 
                 <div id="team-capture-area">
@@ -310,8 +283,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn" style="height:40px; min-width:150px; font-size:0.75rem; display:none; margin-right:auto;" onclick="compartirEquipos()" id="btn-share-teams">Compartir</button>
-                <button class="btn-ghost" style="height:40px; padding: 0 25px; border-radius:6px;" onclick="cerrarArmador()">Cerrar</button>
+                <button class="btn" style="background:var(--color-acento); color:#fff; height:40px; font-weight:900; padding: 0 20px; border-radius:4px; cursor:pointer; display:none; margin-right:auto;" onclick="compartirEquipos()" id="btn-share-teams">Compartir</button>
+                <button class="btn btn-ghost" style="height:40px; padding: 0 20px;" onclick="cerrarArmador()">Cerrar</button>
             </div>
         </div>
     </div>
@@ -397,22 +370,20 @@
         document.body.classList.add('modal-open'); 
     }
 
-    function renderizarModal(j) { document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" style="height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn" style="height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="descargarCarta()">DESCARGAR</button><button class="btn-ghost" style="height:45px; padding: 0 20px; border-radius:6px;" onclick="cerrarModalCarta()">CERRAR</button>`; attachSounds(); }
+    function renderizarModal(j) { document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" style="height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn" style="background:var(--color-acento); color:#fff; height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" style="height:45px; padding: 0 20px; border-radius:6px;" onclick="cerrarModalCarta()">CERRAR</button>`; attachSounds(); }
     function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
     
     function toggleLeyenda() { 
         esModoLeyenda = !esModoLeyenda; 
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
-        setTimeout(() => {
-            const card = document.getElementById('carta-descarga');
-            const shine = card.querySelector('.shine-layer');
-            if(shine) {
-                shine.classList.remove('ani-brillo-ida', 'ani-brillo-vuelta');
-                void shine.offsetWidth;
-                shine.classList.add(esModoLeyenda ? 'ani-brillo-ida' : 'ani-brillo-vuelta');
-            }
-        }, 50);
+        
+        /* Efecto Flash tipo Pokémon */
+        const card = document.getElementById('carta-descarga');
+        if(card) {
+            card.classList.add('flash-evolucion');
+            setTimeout(() => card.classList.remove('flash-evolucion'), 600);
+        }
     }
 
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) }; }
