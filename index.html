@@ -12,7 +12,7 @@
 
     <style>
         /* ==========================================
-            1. AJUSTES ESTÉTICOS (Variables)
+            1. VARIABLES Y CONFIGURACIÓN BASE
             ========================================== */
         :root {
             --color-acento: #75AADB; 
@@ -23,110 +23,159 @@
             --fuente-impacto: 'Bebas Neue', sans-serif;
             --fuente-datos: 'Montserrat', sans-serif;
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-            --blur-fondo-modal: blur(10px);        
-            --opacidad-boton-bloqueado: 0.8;      
-            --escala-hover-equipo: 1.025;         
-            --brillo-celeste-cuadro: 0 0 100px rgba(24, 60, 93, 0.4); 
-            --gloss-claro: inset 0 0 80px rgba(0,0,0,0.2);
-            --gloss-oscuro: inset 0 0 80px rgba(255,255,255,0.1);
-
-            /* VELOCIDADES EDITABLES */
+            --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
             --velocidad-botones: 0.1s;
         }
 
-        body { background-color: var(--color-fondo); color: #fff; font-family: var(--fuente-datos); margin: 0; padding: 0 20px 20px 20px; background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; user-select: none; }
+        body { 
+            background-color: var(--color-fondo); 
+            color: #fff; 
+            font-family: var(--fuente-datos); 
+            margin: 0; 
+            padding: 0 20px 20px 20px; 
+            background-image: var(--fondo-url); 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-size: cover; 
+            background-attachment: fixed; 
+            user-select: none; 
+        }
+
         body.modal-open { overflow: hidden; }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-        /* HEADER FIJO (NUEVO CONTENEDOR) */
+        /* ==========================================
+            2. ENCABEZADO TRASLÚCIDO (STUCK)
+            ========================================== */
         .main-sticky-header {
             position: sticky;
             top: 0;
             z-index: 2000;
-            margin: 0 -20px 20px -20px;
-            padding: 0 20px 15px 20px;
-            background-color: var(--color-fondo);
-            background-image: var(--fondo-url);
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin: 0 -20px 30px -20px;
+            padding: 0 20px 20px 20px;
+            /* Efecto cristal para que se vea la textura de fondo pasar por detrás */
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: var(--blur-header);
+            -webkit-backdrop-filter: var(--blur-header);
+            border-bottom: 2px solid var(--color-acento);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .main-sticky-header::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 15, 15, 0.9);
-            z-index: -1;
+        .header-container { text-align: center; padding: 15px 0 10px 0; }
+        .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+        /* CONTROLES HOMOGÉNEOS */
+        .controls-area { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            display: flex; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            align-items: center; 
         }
 
-        .header-container { text-align: center; padding: 20px 0 10px 0; }
-        .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+        /* Buscador, Filtro y Botón: misma altura, fuente y grosor */
+        #search-input, #sort-select, .controls-area .btn { 
+            height: 50px; 
+            box-sizing: border-box; 
+            border-radius: 6px; 
+            font-family: var(--fuente-datos); 
+            font-weight: 700; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            border: 1px solid var(--color-bordes);
+            transition: all 0.2s ease;
+        }
 
-        .controls-area { max-width: 1200px; margin: 0 auto; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(30, 30, 30, 0.6); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; }
-        #search-input, #sort-select, .controls-area .btn { height: 45px; box-sizing: border-box; margin: 0; display: flex; align-items: center; }
-        #search-input, #sort-select { flex: 1; padding: 0 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
-        #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
+        #search-input, #sort-select { 
+            flex: 1; 
+            padding: 0 15px; 
+            background: rgba(42, 42, 42, 0.9); 
+            color: white; 
+            min-width: 180px; 
+            outline: none; 
+        }
 
-        /* GRID CARTAS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+        #search-input:focus, #sort-select:focus { 
+            border-color: var(--color-acento); 
+            background: #333; 
+        }
+
+        .controls-area .btn {
+            padding: 0 30px;
+            background: var(--color-acento);
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            min-width: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .controls-area .btn:hover { 
+            background: #8bb7e2; 
+            box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); 
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================
+            3. GRID Y CARTAS
+            ========================================== */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
+            gap: 25px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding-bottom: 50px; 
+        }
+
         .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
         .card:hover { transform: scale(1.05); z-index: 10; }
-        .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 5px 6px rgba(0,0,0,0.6)); }
+        
+        .card-bg-wrapper { 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            overflow: hidden; 
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); 
+        }
+        
         .card-bg { width: 100%; height: 100%; object-fit: contain; }
         .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; }
         .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+        
         .rating { font-family: var(--fuente-impacto); position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
         .position { font-family: var(--fuente-impacto); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
         .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
+        
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-        /* EFECTO DE BRILLO DIAGONAL DEFINITIVO */
+        /* SHINE EFFECT */
         .shine-layer::after {
             content: "";
             position: absolute;
-            top: 0; left: 0;
-            width: 300%; 
-            height: 300%; 
-            background: linear-gradient(
-                135deg, 
-                rgba(255,255,255,0) 45%, 
-                rgba(255,255,255,0.8) 50%, 
-                rgba(255,255,255,0) 55%
-            );
-            pointer-events: none;
-            opacity: 0;
-            z-index: 6;
-            transform: translate(-100%, -100%);
+            top: 0; left: 0; width: 300%; height: 300%; 
+            background: linear-gradient(135deg, rgba(255,255,255,0) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 55%);
+            pointer-events: none; opacity: 0; z-index: 6; transform: translate(-100%, -100%);
         }
 
-        /* Disparadores de Animación */
-        .card:hover .shine-layer::after, .ani-brillo-ida::after {
-            animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards;
-        }
-        .ani-brillo-vuelta::after {
-            animation: brillo-diagonal-vuelta var(--velocidad-brillo) ease-in-out forwards;
-        }
+        .card:hover .shine-layer::after, .ani-brillo-ida::after { animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards; }
+        .ani-brillo-vuelta::after { animation: brillo-diagonal-vuelta var(--velocidad-brillo) ease-in-out forwards; }
 
-        @keyframes brillo-diagonal-ida {
-            0% { transform: translate(-100%, -100%); opacity: 1; }
-            100% { transform: translate(100%, 100%); opacity: 1; }
-        }
+        @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
+        @keyframes brillo-diagonal-vuelta { 0% { transform: translate(100%, 100%); opacity: 1; } 100% { transform: translate(-100%, -100%); opacity: 1; } }
 
-        @keyframes brillo-diagonal-vuelta {
-            0% { transform: translate(100%, 100%); opacity: 1; }
-            100% { transform: translate(-100%, -100%); opacity: 1; }
-        }
-
-        /* ARMADOR */
+        /* ==========================================
+            4. MODALES Y OTROS
+            ========================================== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: var(--blur-fondo-modal); }
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
-        #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: var(--brillo-celeste-cuadro); }
+        #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); }
         .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
 
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
@@ -137,13 +186,12 @@
         .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
         .team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; height: 100%; box-sizing: border-box; }
         .team-box.highlight { transform: scale(var(--escala-hover-equipo)); z-index: 5; border-color: var(--color-acento); }
-        .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: var(--gloss-claro); }
-        .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: var(--gloss-oscuro); }
+        .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 80px rgba(0,0,0,0.2); }
+        .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 80px rgba(255,255,255,0.1); }
         .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px; }
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* RADAR */
         #radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         canvas#radarChart { width: 100% !important; height: 100% !important; }
 
@@ -155,17 +203,10 @@
             .team-player-li { font-size: 0.95rem; padding: 5px 6px; }
         }
 
-        /* BOTONES */
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-        .btn { border: 1px solid transparent; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all var(--velocidad-botones) ease; letter-spacing: 0.8px; text-transform: uppercase; }
-        .btn-gold { background: var(--color-acento); color: #fff; }
-        .btn-gold:hover:not(:disabled) { box-shadow: 0 0 15px var(--color-acento); background: #8bb7e2; }
-        #btn-generate:disabled { background-color: var(--color-acento-off) !important; color: #8899aa !important; cursor: not-allowed; }
         .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
         .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-
         .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
-
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px; }
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
@@ -173,7 +214,7 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 9</div>
+    <div id="version-tag">v. 10</div>
     
     <header class="main-sticky-header">
         <div class="header-container" id="header-area"></div>
@@ -185,7 +226,7 @@
                 <option value="prom-desc">Valoración: mayor a menor</option>
                 <option value="prom-asc">Valoración: menor a mayor</option>
             </select>
-            <button class="btn btn-gold" onclick="abrirArmador()">Armar Equipos</button>
+            <button class="btn" onclick="abrirArmador()">Armar Equipos</button>
         </div>
     </header>
 
@@ -210,7 +251,7 @@
                 </div>
                 
                 <div style="display: flex; justify-content: center; width: 100%; margin: 15px 0;">
-                    <button class="btn btn-gold" style="padding: 10px 30px;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
+                    <button class="btn" style="background:var(--color-acento); color:#fff; height:45px; font-weight:900; padding: 0 30px; border-radius:6px; cursor:pointer;" onclick="generarAutomatico()" id="btn-generate">Generar automático</button>
                 </div>
 
                 <div id="team-capture-area">
@@ -234,8 +275,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-gold" onclick="compartirEquipos()" id="btn-share-teams" style="display:none; margin-right:auto;">Compartir</button>
-                <button class="btn btn-ghost" onclick="cerrarArmador()">Cerrar</button>
+                <button class="btn" style="background:var(--color-acento); color:#fff; height:40px; font-weight:900; padding: 0 20px; border-radius:4px; cursor:pointer; display:none; margin-right:auto;" onclick="compartirEquipos()" id="btn-share-teams">Compartir</button>
+                <button class="btn btn-ghost" style="height:40px; padding: 0 20px;" onclick="cerrarArmador()">Cerrar</button>
             </div>
         </div>
     </div>
@@ -321,15 +362,13 @@
         document.body.classList.add('modal-open'); 
     }
 
-    function renderizarModal(j) { document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn btn-gold" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" onclick="cerrarModalCarta()">CERRAR</button>`; attachSounds(); }
+    function renderizarModal(j) { document.getElementById('modal-card-container').innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; document.getElementById('modal-buttons').innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" style="height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn" style="background:var(--color-acento); color:#fff; height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" style="height:45px; padding:0 20px;" onclick="cerrarModalCarta()">CERRAR</button>`; attachSounds(); }
     function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
     
     function toggleLeyenda() { 
         esModoLeyenda = !esModoLeyenda; 
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
-        
-        // Disparo de brillo forzando un repaint para asegurar inicio TL a BR
         setTimeout(() => {
             const card = document.getElementById('carta-descarga');
             const shine = card.querySelector('.shine-layer');
@@ -353,11 +392,10 @@
 
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
-        const total = equipo1.length + equipo2.length;
         let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
         html += datosOriginales.map(j => {
             const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
-            return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})"><span>${j.nombre}</span> <span style="margin-left:auto;color:${getColorProm(j.prom)}">${j.prom}</span></div>`;
+            return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})"><span>${j.nombre}</span> <span style="left:auto; margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;
         }).join('');
         cont.innerHTML = html;
         actualizarContadorEquipos(); actualizarTablerosEquipos();
@@ -437,4 +475,3 @@
 </script>
 </body>
 </html>
-
