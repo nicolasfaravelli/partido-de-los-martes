@@ -25,8 +25,6 @@
             --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
             --velocidad-botones: 0.1s;
-            --resplandor-tamaño: 25px;
-            --resplandor-opacidad: 0.25;
             --resplandor-duracion: 0.4s;}
         body { 
             background-color: var(--color-fondo); 
@@ -139,10 +137,15 @@
         @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; }}
         @keyframes flash-blanco {
             0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }
-            50% { filter: brightness(2.5) contrast(0.25) saturate(0.5) drop-shadow(0 0 var(--resplandor-tamaño) rgba(255,255,255,var(--resplandor-opacidad))); }
+            50% { filter: brightness(2.5) contrast(0.25) saturate(0.5) drop-shadow(0 0 25 rgba(255,255,255,0.25)); }
             100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }}
-        .flash-evolucion {
-            animation: flash-blanco var(--resplandor-duracion) ease-out;}
+        @keyframes flash-jugador {
+            0% { filter: brightness(1) contrast(1) saturate(1); }
+            50% { filter: brightness(5) contrast(0) saturate(0); }
+            100% { filter: brightness(1) contrast(1) saturate(1); }}
+
+        .flash-evolucion { animation: flash-blanco var(--resplandor-duracion) ease-out; }
+        .flash-foto { animation: flash-jugador var(--resplandor-duracion) ease-out; }
         /* ==========================================
             4. MODALES Y OTROS
             ========================================== */
@@ -397,6 +400,7 @@
 </script>
 </body>
 </html>
+
 
 
 
