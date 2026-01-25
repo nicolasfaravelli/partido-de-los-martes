@@ -39,12 +39,35 @@
         body.modal-open { overflow: hidden; }
         #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-        /* HEADER */
-        .header-container { text-align: center; position: sticky; top: 0; z-index: 100; margin: 0 -20px 10px -20px; padding: 20px 0; }
-        .header-container::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: var(--color-fondo); background-image: var(--fondo-url); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; opacity: 0.95; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* HEADER FIJO (NUEVO CONTENEDOR) */
+        .main-sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            margin: 0 -20px 20px -20px;
+            padding: 0 20px 15px 20px;
+            background-color: var(--color-fondo);
+            background-image: var(--fondo-url);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .main-sticky-header::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 15, 0.9);
+            z-index: -1;
+        }
+
+        .header-container { text-align: center; padding: 20px 0 10px 0; }
         .title-img { max-width: 85%; height: auto; max-height: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        .controls-area { max-width: 1200px; margin: 0 auto 20px; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(20, 20, 20, 0.95); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; position: relative; z-index: 50; }
+        .controls-area { max-width: 1200px; margin: 0 auto; display: flex; gap: 15px; flex-wrap: wrap; background: rgba(30, 30, 30, 0.6); padding: 15px; border-radius: 8px; border: 1px solid var(--color-bordes); justify-content: space-between; align-items: center; }
         #search-input, #sort-select, .controls-area .btn { height: 45px; box-sizing: border-box; margin: 0; display: flex; align-items: center; }
         #search-input, #sort-select { flex: 1; padding: 0 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px; min-width: 150px; outline: none; font-family: var(--fuente-datos); }
         #search-input:focus, #sort-select:focus { border-color: var(--color-acento); }
@@ -150,19 +173,21 @@
 </head>
 
 <body>
-    <div id="version-tag">v. 7</div>
-    <div class="header-container" id="header-area"></div>
+    <div id="version-tag">v. 9</div>
     
-    <div class="controls-area">
-        <input type="text" id="search-input" placeholder="BUSCAR JUGADOR...">
-        <select id="sort-select">
-            <option value="nombre-asc">Nombre: A - Z</option>
-            <option value="nombre-desc">Nombre: Z - A</option>
-            <option value="prom-desc">Valoración: mayor a menor</option>
-            <option value="prom-asc">Valoración: menor a mayor</option>
-        </select>
-        <button class="btn btn-gold" onclick="abrirArmador()">Armar Equipos</button>
-    </div>
+    <header class="main-sticky-header">
+        <div class="header-container" id="header-area"></div>
+        <div class="controls-area">
+            <input type="text" id="search-input" placeholder="BUSCAR JUGADOR...">
+            <select id="sort-select">
+                <option value="nombre-asc">Nombre: A - Z</option>
+                <option value="nombre-desc">Nombre: Z - A</option>
+                <option value="prom-desc">Valoración: mayor a menor</option>
+                <option value="prom-asc">Valoración: menor a mayor</option>
+            </select>
+            <button class="btn btn-gold" onclick="abrirArmador()">Armar Equipos</button>
+        </div>
+    </header>
 
     <div id="loader">CARGANDO JUGADORES...</div>
     <div id="grid-container" class="grid"></div>
