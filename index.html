@@ -324,9 +324,12 @@
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
         const card = document.getElementById('carta-descarga');
-        if(card) {
-            card.classList.add('flash-evolucion');
-            setTimeout(() => card.classList.remove('flash-evolucion'), 600);}}
+        const foto = card.querySelector('.card-face'); 
+        if(card) {card.classList.add('flash-evolucion');
+        if(foto) foto.classList.add('flash-foto'); 
+        setTimeout(() => {
+        card.classList.remove('flash-evolucion');
+        if(foto) foto.classList.remove('flash-foto');}, 600);}}
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };}
     function descargarCarta() { const el = document.getElementById('carta-descarga'); el.querySelector('.shine-layer').style.display = 'none'; html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => { const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); el.querySelector('.shine-layer').style.display = 'block'; });}
     function abrirArmador() { document.getElementById('team-modal').style.display = 'flex'; document.body.classList.add('modal-open'); equipo1 = []; equipo2 = []; renderizarListaSeleccion();}
@@ -400,6 +403,7 @@
 </script>
 </body>
 </html>
+
 
 
 
