@@ -24,7 +24,10 @@
             --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
             --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
-            --velocidad-botones: 0.1s;}
+            --velocidad-botones: 0.1s;
+            --resplandor-tamaño: 60px;
+            --resplandor-opacidad: 0.8;
+            --resplandor-duracion: 0.4s;}
         body { 
             background-color: var(--color-fondo); 
             color: #fff; 
@@ -135,11 +138,11 @@
             animation: brillo-diagonal-ida var(--velocidad-brillo) ease-in-out forwards;}
         @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; }}
         @keyframes flash-blanco {
-            0% { filter: brightness(1) contrast(1) saturate(1); }
-            50% { filter: brightness(2.5) contrast(0.25) saturate(0.5); }
-            100% { filter: brightness(1) contrast(1) saturate (1); }}
+            0% { filter: brightness(1) contrast(1) saturate(1); box-shadow: 0 0 0 rgba(255,255,255,0); }
+            50% { filter: brightness(2.5) contrast(0.25) saturate(0.5); box-shadow: 0 0 var(--resplandor-tamaño) rgba(255,255,255,var(--resplandor-opacidad)); }
+            100% { filter: brightness(1) contrast(1) saturate(1); box-shadow: 0 0 0 rgba(255,255,255,0); }}
         .flash-evolucion {
-            animation: flash-blanco 0.4s ease-out;}
+            animation: flash-blanco var(--resplandor-duracion) ease-out;}
         /* ==========================================
             4. MODALES Y OTROS
             ========================================== */
@@ -394,3 +397,4 @@
 </script>
 </body>
 </html>
+
