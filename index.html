@@ -390,37 +390,34 @@
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-        // 1. Guardamos el estado actual para obligar a que el bicho tire algo distinto
-        const actualIDs = [...equipo1].sort((a, b) => a - b).join(',');
+        // 1. Guardamos AMBOS equipos actuales para evitar el "cambio de camiseta"
+        const actualE1 = [...equipo1].sort((a, b) => a - b).join(',');
+        const actualE2 = [...equipo2].sort((a, b) => a - b).join(',');
         // 2. Identificamos perfiles para el balanceo
         const sortedArq = [...pool].sort((a, b) => b.arq - a.arq);
-        const topArq = [sortedArq[0].id, sortedArq[1].id]; // Los 2 mejores arqueros
+        const topArq = [sortedArq[0].id, sortedArq[1].id];
         const sortedRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res));
-        const topRunners = [sortedRunners[0].id, sortedRunners[1].id]; // Los 2 que más corren
-        const botRunners = [sortedRunners[8].id, sortedRunners[9].id]; // Los 2 que menos corren
+        const topRunners = [sortedRunners[0].id, sortedRunners[1].id];
+        const botRunners = [sortedRunners[8].id, sortedRunners[9].id];
         const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
         let mejorE1 = [], mejorFealdad = Infinity;
-        // 3. Tiramos 2000 simulaciones
+        // 3. 2000 simulaciones para encontrar la mejor alternativa
         for (let i = 0; i < 2000; i++) {
             let t = [...pool].sort(() => Math.random() - 0.5);
             let t1 = t.slice(0, 5), t2 = t.slice(5);
             let ids1 = t1.map(p => p.id);
             let ids1String = [...ids1].sort((a, b) => a - b).join(',');
-
             let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
-            
-            // Penalización base: diferencia de nivel general
-            let f = Math.abs(s1 - s2) * 100;
-
-            // REGLA: Graneros SIEMPRE juntos (Estricto)
+                        let f = Math.abs(s1 - s2) * 100;
+            // REGLA: Graneros SIEMPRE juntos
             if (granerosPool.length === 2) {
                 const g1EnT1 = ids1.includes(granerosPool[0]);
                 const g2EnT1 = ids1.includes(granerosPool[1]);
                 if (g1EnT1 !== g2EnT1) f += 1000000; 
             }
-            // REGLA: Obligar a que sea distinto al actual
-            if (ids1String === actualIDs) f += 2000000;
-            // REGLA: Repartir mejores arqueros (No estricto, pero pesa)
+            // REGLA: OBLIGAR a que sea un partido distinto (Ni igual, ni invertido)
+            if (ids1String === actualE1 || ids1String === actualE2) f += 5000000;
+            // REGLA: Repartir mejores arqueros
             const arqEnT1 = ids1.filter(id => topArq.includes(id)).length;
             if (arqEnT1 !== 1) f += 15000;
             // REGLA: Repartir los que más corren
@@ -429,7 +426,6 @@
             // REGLA: Repartir los que menos corren
             const slowEnT1 = ids1.filter(id => botRunners.includes(id)).length;
             if (slowEnT1 !== 1) f += 8000;
-
             if (f < mejorFealdad) {
                 mejorFealdad = f;
                 mejorE1 = ids1;
@@ -477,4 +473,5 @@
 </script>
 </body>
 </html>
+
 
