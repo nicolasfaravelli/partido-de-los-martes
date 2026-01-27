@@ -125,7 +125,7 @@
         .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase;}
         .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%;}
         .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%;}
-        /* SHINE EFFECT (SOLO HOVER) */
+        /* SHINE EFFECT */
         .shine-layer::after {
             content: "";
             position: absolute;
@@ -147,9 +147,8 @@
         .flash-foto { animation: flash-jugador var(--resplandor-duracion) ease-out; }
 
         /* ==========================================
-            4. MODALES Y OTROS
+            4. MODALES Y ARMADOR
             ========================================== */
-
         .modal-overlay { 
             display: none; 
             position: fixed; 
@@ -157,72 +156,45 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(0,0,0,0.875); /* OSCURIDAD */
+            background: rgba(0,0,0,0.875); 
             z-index: 3000; 
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            backdrop-filter: blur(12.5px); /* DESENFOQUE */
+            backdrop-filter: blur(12.5px); 
             -webkit-backdrop-filter: blur(12.5px);}
         #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center;}
-
         #team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4);}
-
         .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px;}
-
         .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto;}
-
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box;}
-
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento);}
-
-        .player-row input[type="checkbox"] { accent-color: var(--color-acento);}
-
         .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start;}
-
-        .team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; height: 100%; box-sizing: border-box;}
-
-        .team-box.highlight { transform: scale(var(--escala-hover-equipo)); z-index: 5; border-color: var(--color-acento);}
-
+        .team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; height: 100%; box-sizing: border-box; cursor: default;}
         .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 80px rgba(0,0,0,0.2);}
-
         .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 80px rgba(255,255,255,0.1);}
-
         .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px;}
-
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1);}
-
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}
-
         #radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3);}
-
         canvas#radarChart { width: 100% !important; height: 100% !important;}
-
         @media (max-width: 900px) {
             .teams-container { grid-template-columns: 1fr 1fr; gap: 8px;}
             #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px;}
             .team-header { font-size: 1.2rem;}
             .team-avg-label { font-size: 0.85rem;}
             .team-player-li { font-size: 0.95rem; padding: 5px 6px;}}
-
         .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px;}
-
         .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444;}
-
         .btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;}
-
         .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%;}
-
         .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none;}
-
         #loader { text-align: center; color: #666; margin-top: 50px; font-family: var(--fuente-impacto); letter-spacing: 2px;}
-
         #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center;}
-
     </style>
 </head>
 <body>
-    <div id="version-tag">v. 12.1</div>
+    <div id="version-tag">v. 13 - Logic Revived</div>
     <header class="main-sticky-header">
         <div class="header-container" id="header-area"></div>
         <div class="controls-area">
@@ -261,7 +233,7 @@
                 </div>
                 <div id="team-capture-area">
                     <div class="teams-container" id="main-teams-layout">
-                        <div class="team-box team-white" id="box-team-1" onmouseenter="highlightTeam(0)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(0)">
+                        <div class="team-box team-white" id="box-team-1">
                             <div class="team-header">CLARO</div>
                             <div id="avg-team-1" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0; margin:0;"></ul>
@@ -269,7 +241,7 @@
                         <div id="radar-container">
                             <canvas id="radarChart"></canvas>
                         </div>
-                        <div class="team-box team-black" id="box-team-2" onmouseenter="highlightTeam(1)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(1)">
+                        <div class="team-box team-black" id="box-team-2">
                             <div class="team-header">OSCURO</div>
                             <div id="avg-team-2" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0; margin:0;"></ul>
@@ -319,8 +291,7 @@
         window.addEventListener('click', initAudio, {once:true});
         window.addEventListener('touchstart', initAudio, {once:true});
         cargarDatos();
-        new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
-        const img = new Image(); img.src = CONFIG.URL_LEYENDA_FONDO;});
+        new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });});
 
     function cargarDatos() {
         const PROXY_URL = "https://corsproxy.io/?" + encodeURIComponent(CONFIG.URL_CSV + "&uid=" + Date.now());
@@ -329,7 +300,6 @@
                 const data = results.data; if(data.length > 0) data.shift();
                 datosOriginales = data.map((fila, index) => { if(!fila[0] || fila[0].trim() === 'Jugador') return null;
                     const j = { id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60, ata: parseInt(fila[2]), def: parseInt(fila[3]), tec: parseInt(fila[4]), vel: parseInt(fila[5]), res: parseInt(fila[6]), arq: parseInt(fila[7]), edad: parseInt(fila[1]) || 25, pos: fila[9], fondo: fila[11], foto: fila[12], fotoLeyenda: fila[13] ? fila[13].trim() : "" , color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21' };
-                    if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; }
                     return j;}).filter(i => i !== null);
                 aplicarFiltrosYOrden();}}); }
 
@@ -348,9 +318,7 @@
         const j = datosOriginales.find(x => x.id === parseInt(id)); 
         jugadorActualEnModal = JSON.parse(JSON.stringify(j)); 
         esModoLeyenda = false; 
-        document.getElementById('modal-card-container').innerHTML = '';
-        if(j.fotoLeyenda) { const pre = new Image(); pre.src = j.fotoLeyenda; pre.decode().then(() => renderizarModal(jugadorActualEnModal)).catch(() => renderizarModal(jugadorActualEnModal)); } 
-        else { renderizarModal(jugadorActualEnModal); }
+        renderizarModal(jugadorActualEnModal);
         document.getElementById('modal').style.display = 'flex'; 
         document.body.classList.add('modal-open');}
 
@@ -364,11 +332,12 @@
         renderizarModal(j); 
         const card = document.getElementById('carta-descarga');
         const foto = card.querySelector('.card-face'); 
-        if(card) {card.classList.add('flash-evolucion');
+        if(card) card.classList.add('flash-evolucion');
         if(foto) foto.classList.add('flash-foto'); 
         setTimeout(() => {
-        card.classList.remove('flash-evolucion');
-        if(foto) foto.classList.remove('flash-foto');}, 600);}}
+            if(card) card.classList.remove('flash-evolucion');
+            if(foto) foto.classList.remove('flash-foto');
+        }, 600);}
 
     function calcularObjetoLeyenda(base) { const keys = ['ata','def','tec','vel','res','arq']; const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); let nuevos = {}, suma = 0; const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); sorted.forEach((s, i) => { let m = CONFIG.MULT_LEYENDA[i] || 1.05; let val = s.v * (m + plus); if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); suma += nuevos[s.k]; }); return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };}
 
@@ -379,12 +348,6 @@
     function cerrarArmador() { document.getElementById('team-modal').style.display = 'none'; document.body.classList.remove('modal-open');}
 
     function agregarInvitado() { if((equipo1.length + equipo2.length) >= 10) return; const id = 9000 + invitados.length + 1; invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25, esInvitado: true}); (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); renderizarListaSeleccion();}
-
-    function borrarInvitado(id) { invitados = invitados.filter(i => i.id !== parseInt(id)); equipo1 = equipo1.filter(x=>x!==parseInt(id)); equipo2 = equipo2.filter(x=>x!==parseInt(id)); renderizarListaSeleccion();}
-
-    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id));}
-
-    function editarInvitado(id, campo, valor) { const inv = invitados.find(i => i.id === parseInt(id)); if (inv) { if (campo === 'nombre') inv.nombre = valor; else if (campo === 'prom') { inv.prom = inv.ata = inv.def = inv.tec = inv.vel = inv.res = parseInt(valor) || 0; } actualizarTablerosEquipos();}}
 
     function renderizarListaSeleccion() {
         const cont = document.getElementById('players-checklist');
@@ -397,15 +360,12 @@
 
     function toggleSeleccion(id) { const nid = parseInt(id); if (isPlayerSelected(nid)) { equipo1 = equipo1.filter(x=>x!==nid); equipo2 = equipo2.filter(x=>x!==nid); } else if ((equipo1.length + equipo2.length) < 10) (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(nid); renderizarListaSeleccion();}
 
+    function isPlayerSelected(id) { return equipo1.includes(parseInt(id)) || equipo2.includes(parseInt(id));}
+
     function cambiarDeEquipo(id) {
         const nid = parseInt(id);
-        if (equipo1.includes(nid)) {
-            equipo1 = equipo1.filter(x => x !== nid);
-            equipo2.push(nid);
-        } else if (equipo2.includes(nid)) {
-            equipo2 = equipo2.filter(x => x !== nid);
-            equipo1.push(nid);
-        }
+        if (equipo1.includes(nid)) { equipo1 = equipo1.filter(x => x !== nid); equipo2.push(nid); } 
+        else if (equipo2.includes(nid)) { equipo2 = equipo2.filter(x => x !== nid); equipo1.push(nid); }
         actualizarTablerosEquipos();}
 
     function actualizarContadorEquipos() { const t = equipo1.length + equipo2.length; const cnt = document.getElementById('team-counter'); const ok = t === 10; cnt.innerText = `SELECCIONADOS: ${t} / 10`; if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); document.getElementById('btn-generate').disabled = !ok; document.getElementById('btn-share-teams').style.display = ok ? 'block' : 'none';}
@@ -428,10 +388,61 @@
 
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze;}
 
-    function highlightTeam(idx) {
-        if(!teamRadarChart) return;
-        document.querySelectorAll('.team-box').forEach((el, i) => { if(i === idx) el.classList.add('highlight'); else el.classList.remove('highlight'); });
-        teamRadarChart.update('none');}
+    function generarAutomatico() {
+        let pool = [...equipo1, ...equipo2].map(getPlayerData);
+        if (pool.length !== 10) return;
+
+        // 1. Identificar perfiles críticos en el pool de 10
+        const sortedArq = [...pool].sort((a, b) => b.arq - a.arq);
+        const topGks = [sortedArq[0].id, sortedArq[1].id];
+
+        const sortedRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res));
+        const topRunners = [sortedRunners[0].id, sortedRunners[1].id];
+        const botRunners = [sortedRunners[8].id, sortedRunners[9].id];
+
+        const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS"));
+
+        let mejorE1 = [], mejorFealdad = Infinity;
+
+        // 2. Fuerza bruta (2000 intentos para encontrar el balance ideal)
+        for (let i = 0; i < 2000; i++) {
+            let t = [...pool].sort(() => Math.random() - 0.5);
+            let t1 = t.slice(0, 5), t2 = t.slice(5);
+            let ids1 = t1.map(p => p.id);
+            
+            let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
+            let age1 = t1.reduce((a, b) => a + b.edad, 0) / 5, age2 = t2.reduce((a, b) => a + b.edad, 0) / 5;
+
+            // PUNTUACIÓN DE "FEALDAD" (Penalizaciones)
+            let f = Math.abs(s1 - s2) * 100; // Diferencia nivel general
+            f += Math.abs(age1 - age2) * 40;  // Diferencia edad promedio
+
+            // REGLA: Graneros JUNTOS (Apellido exacto)
+            if (granerosPool.length === 2) {
+                const g1EnT1 = ids1.includes(granerosPool[0].id);
+                const g2EnT1 = ids1.includes(granerosPool[1].id);
+                if (g1EnT1 !== g2EnT1) f += 200000; // Penalización máxima si los separan
+            }
+
+            // REGLA: Mejores Arqueros SEPARADOS
+            const gksEnT1 = ids1.filter(id => topGks.includes(id)).length;
+            if (gksEnT1 !== 1) f += 15000;
+
+            // REGLA: Mejores Corredores SEPARADOS
+            const fastEnT1 = ids1.filter(id => topRunners.includes(id)).length;
+            if (fastEnT1 !== 1) f += 8000;
+
+            // REGLA: Menos Corredores SEPARADOS
+            const slowEnT1 = ids1.filter(id => botRunners.includes(id)).length;
+            if (slowEnT1 !== 1) f += 8000;
+
+            if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
+        }
+
+        equipo1 = mejorE1;
+        equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
+        actualizarTablerosEquipos();
+    }
 
     function actualizarRadar() {
         const getAvgStats = (ids) => {
@@ -445,20 +456,6 @@
             teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
         } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }}
 
-    function generarAutomatico() {
-        let pool = [...equipo1, ...equipo2].map(getPlayerData); if (pool.length !== 10) return;
-        let mejorE1 = [], mejorFealdad = 999999;
-        for (let i = 0; i < 500; i++) {
-            let t = [...pool].sort(() => Math.random() - 0.5);
-            let t1 = t.slice(0, 5), t2 = t.slice(5);
-            let s1 = t1.reduce((a,b)=>a+b.prom, 0), s2 = t2.reduce((a,b)=>a+b.prom, 0);
-            let f = Math.abs(s1 - s2) * 10; 
-            const graneros = t.filter(p => p.nombre.toUpperCase().includes("GRANERO"));
-            if(graneros.length > 1) { const gEnT1 = t1.filter(p => p.nombre.toUpperCase().includes("GRANERO")).length; if(gEnT1 > 0 && gEnT1 < graneros.length) f += 10000; }
-            if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = t1.map(p=>p.id); }}
-        equipo1 = mejorE1; equipo2 = pool.map(p=>p.id).filter(id => !equipo1.includes(id));
-        actualizarTablerosEquipos();}
-
     function compartirEquipos() { 
         const radar = document.getElementById('radar-container');
         const container = document.getElementById('main-teams-layout');
@@ -471,13 +468,9 @@
                 else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); }}); }); }
 
     function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {});}
-
     function rotateMusic() { const p = document.getElementById('audio-player'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; document.getElementById('music-control').innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause();}
-
     function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] ?? 0.03; s.play().catch(()=>{});}
-
     function playClickSfx() { const s = document.getElementById('sfx-click-player'); s.src = CONFIG.URL_SFX_CLICK; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] ?? 0.15; s.play().catch(()=>{});}
-
     function attachSounds() {
         document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
             if(!el.dataset.soundAttached) {
