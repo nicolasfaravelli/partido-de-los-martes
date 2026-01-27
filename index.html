@@ -385,58 +385,55 @@
             ul.appendChild(li); 
         }); 
         document.getElementById(avgId).innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;}
-
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze;}
 
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-
-        // 1. Identificar perfiles críticos en el pool de 10
+        // 1. Guardamos el estado actual para obligar a que el bicho tire algo distinto
+        const actualIDs = [...equipo1].sort((a, b) => a - b).join(',');
+        // 2. Identificamos perfiles para el balanceo
         const sortedArq = [...pool].sort((a, b) => b.arq - a.arq);
-        const topGks = [sortedArq[0].id, sortedArq[1].id];
-
+        const topArq = [sortedArq[0].id, sortedArq[1].id]; // Los 2 mejores arqueros
         const sortedRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res));
-        const topRunners = [sortedRunners[0].id, sortedRunners[1].id];
-        const botRunners = [sortedRunners[8].id, sortedRunners[9].id];
-
-        const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS"));
-
+        const topRunners = [sortedRunners[0].id, sortedRunners[1].id]; // Los 2 que más corren
+        const botRunners = [sortedRunners[8].id, sortedRunners[9].id]; // Los 2 que menos corren
+        const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
         let mejorE1 = [], mejorFealdad = Infinity;
-
-        // 2. Fuerza bruta (2000 intentos para encontrar el balance ideal)
+        // 3. Tiramos 2000 simulaciones
         for (let i = 0; i < 2000; i++) {
             let t = [...pool].sort(() => Math.random() - 0.5);
             let t1 = t.slice(0, 5), t2 = t.slice(5);
             let ids1 = t1.map(p => p.id);
-            
+            let ids1String = [...ids1].sort((a, b) => a - b).join(',');
+
             let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
-            let age1 = t1.reduce((a, b) => a + b.edad, 0) / 5, age2 = t2.reduce((a, b) => a + b.edad, 0) / 5;
+            
+            // Penalización base: diferencia de nivel general
+            let f = Math.abs(s1 - s2) * 100;
 
-            // PUNTUACIÓN DE "FEALDAD" (Penalizaciones)
-            let f = Math.abs(s1 - s2) * 100; // Diferencia nivel general
-            f += Math.abs(age1 - age2) * 40;  // Diferencia edad promedio
-
-            // REGLA: Graneros JUNTOS (Apellido exacto)
+            // REGLA: Graneros SIEMPRE juntos (Estricto)
             if (granerosPool.length === 2) {
-                const g1EnT1 = ids1.includes(granerosPool[0].id);
-                const g2EnT1 = ids1.includes(granerosPool[1].id);
-                if (g1EnT1 !== g2EnT1) f += 200000; // Penalización máxima si los separan
+                const g1EnT1 = ids1.includes(granerosPool[0]);
+                const g2EnT1 = ids1.includes(granerosPool[1]);
+                if (g1EnT1 !== g2EnT1) f += 1000000; 
             }
-
-            // REGLA: Mejores Arqueros SEPARADOS
-            const gksEnT1 = ids1.filter(id => topGks.includes(id)).length;
-            if (gksEnT1 !== 1) f += 15000;
-
-            // REGLA: Mejores Corredores SEPARADOS
+            // REGLA: Obligar a que sea distinto al actual
+            if (ids1String === actualIDs) f += 2000000;
+            // REGLA: Repartir mejores arqueros (No estricto, pero pesa)
+            const arqEnT1 = ids1.filter(id => topArq.includes(id)).length;
+            if (arqEnT1 !== 1) f += 15000;
+            // REGLA: Repartir los que más corren
             const fastEnT1 = ids1.filter(id => topRunners.includes(id)).length;
             if (fastEnT1 !== 1) f += 8000;
-
-            // REGLA: Menos Corredores SEPARADOS
+            // REGLA: Repartir los que menos corren
             const slowEnT1 = ids1.filter(id => botRunners.includes(id)).length;
             if (slowEnT1 !== 1) f += 8000;
 
-            if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
+            if (f < mejorFealdad) {
+                mejorFealdad = f;
+                mejorE1 = ids1;
+            }
         }
 
         equipo1 = mejorE1;
@@ -480,3 +477,4 @@
 </script>
 </body>
 </html>
+
