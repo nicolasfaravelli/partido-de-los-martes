@@ -25,7 +25,8 @@
             --blur-header: blur(15px);
             --velocidad-brillo: 1s; 
             --velocidad-botones: 0.1s;
-            --resplandor-duracion: 0.4s;}
+            --resplandor-duracion: 0.4s;
+            --escala-hover-equipo: 1.03;}
         body { 
             background-color: var(--color-fondo); 
             color: #fff; 
@@ -170,9 +171,25 @@
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box;}
         .player-row.selected { border-color: var(--color-acento); color: var(--color-acento);}
         .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start;}
-        .team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: transform 0.2s ease; height: 100%; box-sizing: border-box; cursor: default;}
-        .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 80px rgba(0,0,0,0.2);}
-        .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 80px rgba(255,255,255,0.1);}
+        
+        /* ESTILOS DE CAJA DE EQUIPO */
+        .team-box { 
+            padding: 10px; 
+            border-radius: 6px; 
+            border: 2px solid #333; 
+            display: flex; 
+            flex-direction: column; 
+            transition: all 0.2s ease; 
+            height: 100%; 
+            box-sizing: border-box; 
+            cursor: pointer;
+            position: relative;
+        }
+        .team-box:hover { transform: scale(var(--escala-hover-equipo)); z-index: 10;}
+        .team-box.highlight { border-color: var(--color-acento) !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.4);}
+
+        .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 50px rgba(0,0,0,0.2);}
+        .team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 50px rgba(255,255,255,0.05);}
         .team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px;}
         .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1);}
         .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}
@@ -194,7 +211,7 @@
     </style>
 </head>
 <body>
-    <div id="version-tag">v. 13 - Logic Revived</div>
+    <div id="version-tag">v. 13.1 - UI Fixed</div>
     <header class="main-sticky-header">
         <div class="header-container" id="header-area"></div>
         <div class="controls-area">
@@ -233,7 +250,7 @@
                 </div>
                 <div id="team-capture-area">
                     <div class="teams-container" id="main-teams-layout">
-                        <div class="team-box team-white" id="box-team-1">
+                        <div class="team-box team-white" id="box-team-1" onmouseenter="highlightTeam(0)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(0)">
                             <div class="team-header">CLARO</div>
                             <div id="avg-team-1" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-1" style="list-style:none; padding:0; margin:0;"></ul>
@@ -241,7 +258,7 @@
                         <div id="radar-container">
                             <canvas id="radarChart"></canvas>
                         </div>
-                        <div class="team-box team-black" id="box-team-2">
+                        <div class="team-box team-black" id="box-team-2" onmouseenter="highlightTeam(1)" onmouseleave="highlightTeam(-1)" onclick="highlightTeam(1)">
                             <div class="team-header">OSCURO</div>
                             <div id="avg-team-2" class="team-avg-label">PROM: 0</div>
                             <ul class="team-list-ul" id="list-team-2" style="list-style:none; padding:0; margin:0;"></ul>
@@ -385,15 +402,26 @@
             ul.appendChild(li); 
         }); 
         document.getElementById(avgId).innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;}
+
     function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze;}
+
+    function highlightTeam(idx) {
+        if(!teamRadarChart) return;
+        document.querySelectorAll('.team-box').forEach((el, i) => { 
+            if(i === idx) el.classList.add('highlight'); 
+            else el.classList.remove('highlight'); 
+        });
+        if (idx !== -1) {
+            teamRadarChart.data.datasets[0].order = (idx === 0) ? 0 : 1;
+            teamRadarChart.data.datasets[1].order = (idx === 1) ? 0 : 1;
+        }
+        teamRadarChart.update('none');}
 
     function generarAutomatico() {
         let pool = [...equipo1, ...equipo2].map(getPlayerData);
         if (pool.length !== 10) return;
-        // 1. Guardamos AMBOS equipos actuales para evitar el "cambio de camiseta"
         const actualE1 = [...equipo1].sort((a, b) => a - b).join(',');
         const actualE2 = [...equipo2].sort((a, b) => a - b).join(',');
-        // 2. Identificamos perfiles para el balanceo
         const sortedArq = [...pool].sort((a, b) => b.arq - a.arq);
         const topArq = [sortedArq[0].id, sortedArq[1].id];
         const sortedRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res));
@@ -401,37 +429,27 @@
         const botRunners = [sortedRunners[8].id, sortedRunners[9].id];
         const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
         let mejorE1 = [], mejorFealdad = Infinity;
-        // 3. 2000 simulaciones para encontrar la mejor alternativa
         for (let i = 0; i < 2000; i++) {
             let t = [...pool].sort(() => Math.random() - 0.5);
             let t1 = t.slice(0, 5), t2 = t.slice(5);
             let ids1 = t1.map(p => p.id);
             let ids1String = [...ids1].sort((a, b) => a - b).join(',');
             let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
-                        let f = Math.abs(s1 - s2) * 100;
-            // REGLA: Graneros SIEMPRE juntos
+            let f = Math.abs(s1 - s2) * 100;
             if (granerosPool.length === 2) {
                 const g1EnT1 = ids1.includes(granerosPool[0]);
                 const g2EnT1 = ids1.includes(granerosPool[1]);
                 if (g1EnT1 !== g2EnT1) f += 1000000; 
             }
-            // REGLA: OBLIGAR a que sea un partido distinto (Ni igual, ni invertido)
             if (ids1String === actualE1 || ids1String === actualE2) f += 5000000;
-            // REGLA: Repartir mejores arqueros
             const arqEnT1 = ids1.filter(id => topArq.includes(id)).length;
             if (arqEnT1 !== 1) f += 15000;
-            // REGLA: Repartir los que más corren
             const fastEnT1 = ids1.filter(id => topRunners.includes(id)).length;
             if (fastEnT1 !== 1) f += 8000;
-            // REGLA: Repartir los que menos corren
             const slowEnT1 = ids1.filter(id => botRunners.includes(id)).length;
             if (slowEnT1 !== 1) f += 8000;
-            if (f < mejorFealdad) {
-                mejorFealdad = f;
-                mejorE1 = ids1;
-            }
+            if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
         }
-
         equipo1 = mejorE1;
         equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
         actualizarTablerosEquipos();
@@ -459,7 +477,6 @@
                 const file = new File([blob], "equipos.png", { type: "image/png" }); 
                 if(navigator.share) navigator.share({ files: [file], title: 'Equipos' }); 
                 else { const a = document.createElement('a'); a.download = 'Equipos.png'; a.href = canvas.toDataURL(); a.click(); }}); }); }
-
     function initAudio() { const p = document.getElementById('audio-player'); if(!p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[0]; } p.play().catch(() => {});}
     function rotateMusic() { const p = document.getElementById('audio-player'); volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; document.getElementById('music-control').innerText = ICON_SERIES[volIndex]; if (p.volume > 0) p.play(); else p.pause();}
     function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] ?? 0.03; s.play().catch(()=>{});}
@@ -473,5 +490,3 @@
 </script>
 </body>
 </html>
-
-
