@@ -104,6 +104,7 @@ function renderizarModal(j) {
 }
 
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
+
 function toggleLeyenda() { 
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
@@ -114,8 +115,8 @@ function toggleLeyenda() {
         void card.offsetWidth;
         card.classList.add('flash-evolucion');
         setTimeout(() => {
-        card.classList.remove('flash-evolucion');
-        }, 500); 
+            card.classList.remove('flash-evolucion');
+        }, 500);
     }
 }
 
@@ -292,18 +293,41 @@ function actualizarRadar() {
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
-    if(p && !p.src) { p.src = CONFIG.URL_MUSICA; p.volume = 0.05; } 
+    if(p && !p.src) { 
+        p.src = CONFIG.URL_MUSICA; 
+        p.volume = CONFIG.VOL_SERIES[volIndex]; // Ahora arranca con el valor del índice (0)
+    } 
     if(p) p.play().catch(() => {});
 }
 
 function rotateMusic() { 
     const p = document.getElementById('audio-player'); if(!p) return;
-    volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; p.volume = CONFIG.VOL_SERIES[volIndex]; 
-    const ctrl = document.getElementById('music-control'); if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
+    volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; 
+    p.volume = CONFIG.VOL_SERIES[volIndex]; 
+    const ctrl = document.getElementById('music-control'); 
+    if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
 }
 
-function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(s) { s.src = CONFIG.URL_SFX_HOVER; s.volume = 0.03; s.play().catch(()=>{}); } }
-function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(s) { s.src = CONFIG.URL_SFX_CLICK; s.volume = 0.15; s.play().catch(()=>{}); } }
+function playHoverSfx() { 
+    const s = document.getElementById('sfx-hover-player'); 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_HOVER; 
+        // Mapeamos el volumen del SFX según el nivel de música elegido
+        s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; 
+        s.play().catch(()=>{}); 
+    } 
+}
+
+function playClickSfx() { 
+    const s = document.getElementById('sfx-click-player'); 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_CLICK; 
+        // El click usa el mismo mapa pero con un multiplicador sutil para que destaque
+        s.volume = Math.min(1, CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] * 4); 
+        s.play().catch(()=>{}); 
+    } 
+}
+
 function attachSounds() {
     document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
         if(!el.dataset.soundAttached) {
@@ -313,7 +337,3 @@ function attachSounds() {
         }
     }); 
 }
-
-
-
-
