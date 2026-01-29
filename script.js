@@ -21,6 +21,7 @@ const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 
+// --- INICIO Y CARGA ---
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
     const header = document.getElementById('header-area');
@@ -62,6 +63,7 @@ function cargarDatos() {
     }); 
 }
 
+// --- FILTROS Y CARTAS ---
 function aplicarFiltrosYOrden() {
     const grid = document.getElementById('grid-container');
     if(!grid) return;
@@ -77,6 +79,7 @@ function generarHTMLCarta(j, lazy) {
     return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
+// --- MODALES ---
 function abrirModal(id) { 
     const j = datosOriginales.find(x => x.id === parseInt(id)); 
     if(!j) return;
@@ -127,6 +130,7 @@ function descargarCarta() {
     });
 }
 
+// --- ARMADOR DE EQUIPOS ---
 function abrirArmador() { 
     const m = document.getElementById('team-modal');
     if(m) m.style.display = 'flex'; 
@@ -219,30 +223,43 @@ function highlightTeam(idx) {
     teamRadarChart.update('none');
 }
 
+// --- LÓGICA DE GENERACIÓN ---
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
     if (pool.length !== 10) return;
-    const actualE1 = [...equipo1].sort((a, b) => a - b).join(',');
-    const actualE2 = [...equipo2].sort((a, b) => a - b).join(',');
+
+    const actualSet = new Set([...equipo1]);
+    
+    // Scouting de especialistas
     const topArq = [...pool].sort((a, b) => b.arq - a.arq).slice(0, 2).map(p => p.id);
+    const topAta = [...pool].sort((a, b) => b.ata - a.ata).slice(0, 2).map(p => p.id);
+    const topDef = [...pool].sort((a, b) => b.def - a.def).slice(0, 2).map(p => p.id);
     const topRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(0, 2).map(p => p.id);
     const botRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(8, 10).map(p => p.id);
     const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
 
     let mejorE1 = [], mejorFealdad = Infinity;
+
     for (let i = 0; i < 2000; i++) {
         let t = [...pool].sort(() => Math.random() - 0.5);
         let t1 = t.slice(0, 5), t2 = t.slice(5);
         let ids1 = t1.map(p => p.id);
-        let ids1String = [...ids1].sort((a, b) => a - b).join(',');
-        let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
-        let f = Math.abs(s1 - s2) * 100;
         
+        let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
+        let f = Math.abs(s1 - s2) * 100; // Diferencia de nivel (Crítico)
+
+        // Factor Graneros (Obligatorio)
         if (granerosPool.length === 2 && ids1.includes(granerosPool[0]) !== ids1.includes(granerosPool[1])) f += 1000000;
-        if (ids1String === actualE1 || ids1String === actualE2) f += 5000000;
+
+        // Antirrepetición (Obligatorio)
+        if (ids1.every(id => actualSet.has(id))) f += 5000000;
+
+        // Reparto de Especialistas (Importante/Deseable)
         if (ids1.filter(id => topArq.includes(id)).length !== 1) f += 15000;
-        if (ids1.filter(id => topRunners.includes(id)).length !== 1) f += 8000;
-        if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 8000;
+        if (ids1.filter(id => topAta.includes(id)).length !== 1) f += 10000;
+        if (ids1.filter(id => topDef.includes(id)).length !== 1) f += 10000;
+        if (ids1.filter(id => topRunners.includes(id)).length !== 1) f += 5000;
+        if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
 
         if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
     }
@@ -267,6 +284,7 @@ function actualizarRadar() {
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
 
+// --- AUDIO Y SONIDOS ---
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
     if(p && !p.src) { p.src = CONFIG.URL_MUSICA; p.volume = 0.05; } 
