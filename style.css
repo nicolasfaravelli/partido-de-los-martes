@@ -1,21 +1,14 @@
 :root {
     --color-acento: #75AADB; 
-    --color-fondo: #0f0f0f; 
-    --color-paneles: #1a1a1a; 
     --color-bordes: #333333;
     --fuente-impacto: 'Bebas Neue', sans-serif;
     --fuente-datos: 'Montserrat', sans-serif;
-    --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
-    --blur-header: blur(15px);
     --radio-base: 6px; 
     --altura-base: 40px; 
-    /* AJUSTES DEL LOADER */
-    --loader-posicion: row; 
-    --loader-ball-size: 30px; 
 }
 
 body { 
-    background-color: var(--color-fondo); 
+    background-color: #0f0f0f; 
     color: #fff; 
     font-family: var(--fuente-datos); 
     margin: 0; 
@@ -40,7 +33,7 @@ body.modal-open { overflow: hidden; }
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    flex-direction: var(--loader-posicion);
+    flex-direction: row; /* Cambiá a 'row-reverse' para poner la pelota a la derecha */
     align-items: center;
     justify-content: center;
     gap: 15px;
@@ -52,8 +45,8 @@ body.modal-open { overflow: hidden; }
 }
 
 .soccer-ball {
-    width: var(--loader-ball-size);
-    height: var(--loader-ball-size);
+    width: 30px;
+    height: 30px;
     object-fit: contain;
     animation: spin-ball 2s linear infinite;
 }
@@ -72,17 +65,8 @@ body.modal-open { overflow: hidden; }
     animation: dots-cycle 1.5s steps(4, end) infinite;
 }
 
-@keyframes spin-ball {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes dots-cycle {
-    0% { content: ""; }
-    25% { content: "."; }
-    50% { content: ".."; }
-    75% { content: "..."; }
-}
+@keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
 /* --- ENCABEZADO --- */
 
@@ -93,7 +77,7 @@ body.modal-open { overflow: hidden; }
     margin: 0 -20px 30px -20px;
     padding: 0 20px 20px 20px;
     background: rgba(15, 15, 15, 0.85);
-    backdrop-filter: var(--blur-header);
+    backdrop-filter: blur(15px);
     border-bottom: 2px solid var(--color-acento);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
@@ -113,10 +97,7 @@ body.modal-open { overflow: hidden; }
 
 /* --- ELEMENTOS INTERACTIVOS --- */
 
-#search-input, 
-#sort-select, 
-.btn, 
-.btn-add-guest { 
+#search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
     border-radius: var(--radio-base); 
@@ -157,13 +138,23 @@ body.modal-open { overflow: hidden; }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-gold { background: #d4af37; color: #000; border-color: #b8860b; }
-.btn-gold:hover { background: #f1c40f !important; box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important; }
+
+.btn-gold { 
+    background: #1a3a5a; 
+    color: var(--color-acento); 
+    border: 1px solid var(--color-acento);
+    box-shadow: 0 0 10px rgba(117, 170, 219, 0.3);
+}
+.btn-gold:hover { 
+    background: var(--color-acento) !important; 
+    color: #000 !important;
+    box-shadow: 0 0 20px var(--color-acento) !important;
+}
 
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 
-/* --- CARTAS Y GRID --- */
+/* --- CARTAS Y TRANSICIÓN --- */
 
 .grid { 
     display: grid; 
@@ -177,13 +168,7 @@ body.modal-open { overflow: hidden; }
 .card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
 .card:hover { transform: scale(1.05); z-index: 10; }
 
-.card-bg-wrapper { 
-    position: absolute; 
-    top: 0; left: 0; width: 100%; height: 100%; 
-    overflow: hidden; 
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
-}
-
+.card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); }
 .card-bg { width: 100%; height: 100%; object-fit: contain; }
 .card-face { position: absolute; z-index: 2; top: 9.75%; left: 5.25%; width: 95%; object-fit: contain; }
 .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
@@ -195,12 +180,17 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-.shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
+.flash-evolucion { animation: evolution-flash 1s ease-out forwards; }
 
+@keyframes evolution-flash {
+    0% { filter: brightness(1) contrast(1) saturate(1); box-shadow: 0 0 0px #fff; }
+    50% { filter: brightness(2.5) contrast(0.3) saturate(0.2); box-shadow: 0 0 60px 20px #fff; }
+    100% { filter: brightness(1) contrast(1) saturate(1); box-shadow: 0 0 0px #fff; }
+}
+
+.shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
 .shine-layer::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 300%; height: 300%; 
+    content: ""; position: absolute; top: 0; left: 0; width: 300%; height: 300%; 
     background: linear-gradient(135deg, rgba(255,255,255,0) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 55%);
     pointer-events: none; opacity: 0; z-index: 6; transform: translate(-100%, -100%);
 }
@@ -208,40 +198,14 @@ body.modal-open { overflow: hidden; }
 
 @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
 
-.flash-evolucion { animation: flash-blanco 0.4s ease-out; }
-.flash-foto { animation: flash-jugador 0.4s ease-out; }
+/* --- MODALES Y ARMADOR --- */
 
-@keyframes flash-blanco {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(1.5); }
-    100% { filter: brightness(1); }
-}
-
-@keyframes flash-jugador {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(3); }
-    100% { filter: brightness(1); }
-}
-
-/* --- MODALES --- */
-
-.modal-overlay { 
-    display: none; 
-    position: fixed; 
-    top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.875); 
-    z-index: 3000; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    backdrop-filter: blur(12.5px); 
-}
-
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.875); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12.5px); }
 #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
 
 #team-modal-content { 
-    background: var(--color-paneles); 
-    background-image: var(--url-pizarra); 
+    background: #1a1a1a; 
+    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png'); 
     background-size: cover; 
     background-position: center; 
     padding: 20px; 
@@ -259,33 +223,16 @@ body.modal-open { overflow: hidden; }
 .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
 
 .player-row { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    padding: 8px; 
-    background: #252525; 
-    border-radius: var(--radio-base); 
-    cursor: pointer; 
-    font-family: var(--fuente-datos); 
-    font-weight: bold; 
-    border: 1px solid transparent; 
-    box-sizing: border-box; 
+    display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: var(--radio-base); 
+    cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; 
 }
 .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
 
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
 
 .team-box { 
-    padding: 10px; 
-    border-radius: var(--radio-base); 
-    border: 2px solid #333; 
-    display: flex; 
-    flex-direction: column; 
-    transition: all 0.2s ease; 
-    height: 100%; 
-    box-sizing: border-box; 
-    cursor: pointer; 
-    position: relative; 
+    padding: 10px; border-radius: var(--radio-base); border: 2px solid #333; display: flex; flex-direction: column; 
+    transition: all 0.2s ease; height: 100%; box-sizing: border-box; cursor: pointer; position: relative; 
 }
 .team-box:hover { transform: scale(1.03); z-index: 10; }
 .team-box.highlight { border-color: var(--color-acento) !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); }
@@ -297,22 +244,10 @@ body.modal-open { overflow: hidden; }
 .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
 .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-.completado { color: #75AADB !important; text-shadow: 0 0 15px #75AADB; }
-
 #radar-container { 
-    background: var(--color-acento); 
-    border-radius: var(--radio-base); 
-    padding: 10px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    height: 280px; 
-    position: relative; 
-    border: 2px solid rgba(255,255,255,0.2); 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+    background: var(--color-acento); border-radius: var(--radio-base); padding: 10px; display: flex; align-items: center; 
+    justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
 }
-
-/* --- OTROS --- */
 
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
@@ -322,4 +257,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
