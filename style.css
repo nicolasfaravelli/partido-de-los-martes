@@ -182,19 +182,27 @@ body.modal-open { overflow: hidden; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
 /* --- ESTA ES LA TRANSICIÓN QUE ME PEDISTE --- */
-.flash-evolucion { animation: evolution-flash 1s ease-out forwards; }
-@keyframes evolution-flash {
-    0% { 
-        /* Estado inicial: sin filtros y sin sombra */
-        filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255,255,255,0)); 
-    }
-    50% { 
-        filter: brightness(2) contrast(0.25) saturate(0.25) drop-shadow(0 0 25px rgba(255,255,255,0.5)); 
-    }
-    100% { 
-        /* Estado final: vuelve a la normalidad */
-        filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255,255,255,0)); 
-    }
+.flash-evolucion { 
+    /* Usamos 'linear' para que el impacto sea inmediato al tocar el botón */
+    animation: evolution-card-flash 1.0s linear forwards; 
+}
+
+/* Esta regla hace que, cuando la carta se está animando, la foto adentro también reaccione */
+.flash-evolucion .card-face { 
+    animation: evolution-face-flash 1.0s linear forwards; 
+}
+
+/* Animación para el cuerpo de la carta (Fondo, bordes y stats) */
+@keyframes evolution-card-flash {
+    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
+    30% { filter: brightness(2) contrast(0.5) saturate(0.25) drop-shadow(0 0 25px #fff); }
+    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
+}
+/* Animación independiente para la FOTO del jugador */
+@keyframes evolution-face-flash {
+    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
+    30% { filter: brightness(4) contrast(0.25) saturate(0) drop-shadow(0 0 25px #fff); }
+    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
 }
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -264,4 +272,5 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
 
