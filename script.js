@@ -115,9 +115,7 @@ function toggleLeyenda() {
         void card.offsetWidth;
         card.classList.add('flash-evolucion');
         setTimeout(() => {
-            card.classList.remove('flash-evolucion');
-        }, 500);
-    }
+            card.classList.remove('flash-evolucion');}, 250); }
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -337,3 +335,4 @@ function attachSounds() {
         }
     }); 
 }
+
