@@ -7,7 +7,7 @@
     --fuente-datos: 'Montserrat', sans-serif;
     --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
     --blur-header: blur(15px);
-    --radio-base: 8px; 
+    --radio-base: 6px; 
 }
 
 body { 
@@ -270,3 +270,4 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
