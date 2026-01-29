@@ -110,8 +110,8 @@ function toggleLeyenda() {
     renderizarModal(j); 
     const card = document.getElementById('carta-descarga');
     if(card) {
-        card.classList.remove('flash-evolucion'); // Limpiamos por si acaso
-        void card.offsetWidth; // Truco técnico para resetear la animación
+        card.classList.remove('flash-evolucion');
+        void card.offsetWidth;
         card.classList.add('flash-evolucion');
         setTimeout(() => {
         card.classList.remove('flash-evolucion');
@@ -313,5 +313,6 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
