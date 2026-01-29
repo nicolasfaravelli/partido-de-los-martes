@@ -47,7 +47,7 @@ body.modal-open { overflow: hidden; }
     color: #fff;
     font-family: var(--fuente-datos);
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     z-index: 10000;
 }
 
@@ -322,3 +322,4 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
