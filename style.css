@@ -7,6 +7,8 @@
     --fuente-datos: 'Montserrat', sans-serif;
     --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
     --blur-header: blur(15px);
+    /* VARIABLE DE CONTROL ÚNICA */
+    --radio-base: 8px; 
 }
 
 body { 
@@ -53,10 +55,11 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-#search-input, #sort-select, .controls-area .btn { 
+/* BOTONES Y ENTRADAS HOMOGÉNEOS */
+#search-input, #sort-select, .btn, .btn-add-guest { 
     height: 50px; 
     box-sizing: border-box; 
-    border-radius: 6px; 
+    border-radius: var(--radio-base); 
     font-family: var(--fuente-datos); 
     font-weight: 700; 
     font-size: 0.85rem; 
@@ -77,7 +80,7 @@ body.modal-open { overflow: hidden; }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #333; }
 
-.controls-area .btn {
+.btn {
     padding: 0 30px;
     background: var(--color-acento);
     color: #fff;
@@ -93,7 +96,7 @@ body.modal-open { overflow: hidden; }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 .completado { color: #75AADB !important; text-shadow: 0 0 15px #75AADB; }
 
-/* Grid y Cartas */
+/* GRID Y CARTAS */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -152,7 +155,7 @@ body.modal-open { overflow: hidden; }
     100% { filter: brightness(1); }
 }
 
-/* Modales */
+/* MODALES */
 .modal-overlay { 
     display: none; 
     position: fixed; 
@@ -167,17 +170,55 @@ body.modal-open { overflow: hidden; }
 }
 
 #modal-card-container { width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
-#team-modal-content { background: var(--color-paneles); background-image: var(--url-pizarra); background-size: cover; background-position: center; padding: 20px; border-radius: 8px; border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); }
+
+#team-modal-content { 
+    background: var(--color-paneles); 
+    background-image: var(--url-pizarra); 
+    background-size: cover; 
+    background-position: center; 
+    padding: 20px; 
+    border-radius: var(--radio-base); 
+    border: 1px solid var(--color-bordes); 
+    width: 95%; 
+    max-width: 950px; 
+    max-height: 95vh; 
+    display: flex; 
+    flex-direction: column; 
+    box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); 
+}
 
 .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
 .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
 
-.player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: 4px; cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; }
+.player-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    padding: 8px; 
+    background: #252525; 
+    border-radius: var(--radio-base); 
+    cursor: pointer; 
+    font-family: var(--fuente-datos); 
+    font-weight: bold; 
+    border: 1px solid transparent; 
+    box-sizing: border-box; 
+}
 .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
 
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
 
-.team-box { padding: 10px; border-radius: 6px; border: 2px solid #333; display: flex; flex-direction: column; transition: all 0.2s ease; height: 100%; box-sizing: border-box; cursor: pointer; position: relative; }
+.team-box { 
+    padding: 10px; 
+    border-radius: var(--radio-base); 
+    border: 2px solid #333; 
+    display: flex; 
+    flex-direction: column; 
+    transition: all 0.2s ease; 
+    height: 100%; 
+    box-sizing: border-box; 
+    cursor: pointer; 
+    position: relative; 
+}
 .team-box:hover { transform: scale(1.03); z-index: 10; }
 .team-box.highlight { border-color: var(--color-acento) !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); }
 
@@ -188,11 +229,22 @@ body.modal-open { overflow: hidden; }
 .team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
 .team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-#radar-container { background: var(--color-acento); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+#radar-container { 
+    background: var(--color-acento); 
+    border-radius: var(--radio-base); 
+    padding: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    height: 280px; 
+    position: relative; 
+    border: 2px solid rgba(255,255,255,0.2); 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+}
 
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+.btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; cursor: pointer; font-size: 0.8rem; font-weight: bold; height: auto; min-width: auto; }
 
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
