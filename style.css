@@ -9,8 +9,9 @@
     --blur-header: blur(15px);
     --radio-base: 6px; 
     --altura-base: 40px; 
-    /* POSICIÓN DE LA PELOTA: 'row' para izquierda, 'row-reverse' para derecha */
+    /* AJUSTES DEL LOADER */
     --loader-posicion: row; 
+    --loader-ball-size: 30px; 
 }
 
 body { 
@@ -42,7 +43,7 @@ body.modal-open { overflow: hidden; }
     flex-direction: var(--loader-posicion);
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
     color: #fff;
     font-family: var(--fuente-datos);
     font-weight: 700;
@@ -51,8 +52,9 @@ body.modal-open { overflow: hidden; }
 }
 
 .soccer-ball {
-    width: 40px;
-    height: 40px;
+    width: var(--loader-ball-size);
+    height: var(--loader-ball-size);
+    object-fit: contain;
     animation: spin-ball 2s linear infinite;
 }
 
@@ -109,7 +111,7 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* --- BOTONES E INPUTS UNIFICADOS --- */
+/* --- ELEMENTOS INTERACTIVOS --- */
 
 #search-input, 
 #sort-select, 
