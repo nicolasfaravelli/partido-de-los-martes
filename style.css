@@ -8,6 +8,8 @@
     --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
     --blur-header: blur(15px);
     --radio-base: 6px; 
+    /* MODIFICÁ ESTE VALOR PARA CAMBIAR LA ALTURA DE TODO */
+    --altura-base: 40px; 
 }
 
 body { 
@@ -55,10 +57,13 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* --- ELEMENTOS DE FORMA --- */
+/* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
 
-#search-input, #sort-select, .btn { 
-    height: 50px; 
+#search-input, 
+#sort-select, 
+.btn, 
+.btn-add-guest { 
+    height: var(--altura-base); 
     box-sizing: border-box; 
     border-radius: var(--radio-base); 
     font-family: var(--fuente-datos); 
@@ -69,6 +74,10 @@ body.modal-open { overflow: hidden; }
     border: 1px solid var(--color-bordes);
     transition: all 0.2s ease;
     outline: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
 }
 
 #search-input, #sort-select { 
@@ -87,10 +96,6 @@ body.modal-open { overflow: hidden; }
     color: #fff;
     cursor: pointer;
     border: none;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
     width: auto;
 }
 
@@ -102,20 +107,10 @@ body.modal-open { overflow: hidden; }
 .btn-gold:hover { background: #f1c40f !important; box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important; }
 
 .btn-add-guest { 
-    height: 38px;
     background: #111; 
-    border: 1px solid var(--color-bordes); 
     color: #eee; 
     padding: 0 15px; 
     cursor: pointer; 
-    font-size: 0.75rem; 
-    font-weight: bold;
-    border-radius: var(--radio-base);
-    font-family: var(--fuente-datos);
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    transition: all 0.2s ease;
 }
 
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
@@ -269,7 +264,7 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
 }
 
-/* --- COMPONENTES --- */
+/* --- FOOTER Y OTROS --- */
 
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 
