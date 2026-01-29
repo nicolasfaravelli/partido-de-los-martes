@@ -17,22 +17,19 @@ const CONFIG = {
 const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
 const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
-
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 
-// --- INICIO Y CARGA ---
+/* --- INICIO Y CARGA --- */
+
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
     const header = document.getElementById('header-area');
     if(header) header.innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
-    
     document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
     document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
-    
     window.addEventListener('click', initAudio, {once:true});
     window.addEventListener('touchstart', initAudio, {once:true});
-    
     cargarDatos();
     new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
 });
@@ -63,7 +60,8 @@ function cargarDatos() {
     }); 
 }
 
-// --- FILTROS Y CARTAS ---
+/* --- FILTROS Y CARTAS --- */
+
 function aplicarFiltrosYOrden() {
     const grid = document.getElementById('grid-container');
     if(!grid) return;
@@ -79,7 +77,8 @@ function generarHTMLCarta(j, lazy) {
     return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
-// --- MODALES ---
+/* --- MODALES --- */
+
 function abrirModal(id) { 
     const j = datosOriginales.find(x => x.id === parseInt(id)); 
     if(!j) return;
@@ -94,7 +93,13 @@ function renderizarModal(j) {
     const cardCont = document.getElementById('modal-card-container');
     const btnCont = document.getElementById('modal-buttons');
     if(cardCont) cardCont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; 
-    if(btnCont) btnCont.innerHTML = `${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" style="height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>`:''}<button class="btn" style="background:var(--color-acento); color:#fff; height:45px; padding:0 20px; border-radius:4px; font-weight:900; cursor:pointer;" onclick="descargarCarta()">DESCARGAR</button><button class="btn btn-ghost" style="height:45px; padding: 0 20px; border-radius:6px;" onclick="cerrarModalCarta()">CERRAR</button>`; 
+    if(btnCont) {
+        btnCont.innerHTML = `
+            ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
+            <button class="btn" onclick="descargarCarta()">DESCARGAR</button>
+            <button class="btn btn-ghost" onclick="cerrarModalCarta()">CERRAR</button>
+        `; 
+    }
     attachSounds();
 }
 
@@ -130,12 +135,13 @@ function descargarCarta() {
     });
 }
 
-// --- ARMADOR DE EQUIPOS ---
+/* --- ARMADOR DE EQUIPOS --- */
+
 function abrirArmador() { 
     const m = document.getElementById('team-modal');
     if(m) m.style.display = 'flex'; 
     document.body.classList.add('modal-open'); 
-    equipo1 = []; equipo2 = []; renderizarListaSeleccion(); 
+    renderizarListaSeleccion(); 
 }
 
 function cerrarArmador() { 
@@ -223,14 +229,12 @@ function highlightTeam(idx) {
     teamRadarChart.update('none');
 }
 
-// --- LÓGICA DE GENERACIÓN ---
+/* --- LÓGICA DE GENERACIÓN --- */
+
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
     if (pool.length !== 10) return;
-
     const actualSet = new Set([...equipo1]);
-    
-    // Scouting de especialistas
     const topArq = [...pool].sort((a, b) => b.arq - a.arq).slice(0, 2).map(p => p.id);
     const topAta = [...pool].sort((a, b) => b.ata - a.ata).slice(0, 2).map(p => p.id);
     const topDef = [...pool].sort((a, b) => b.def - a.def).slice(0, 2).map(p => p.id);
@@ -244,23 +248,15 @@ function generarAutomatico() {
         let t = [...pool].sort(() => Math.random() - 0.5);
         let t1 = t.slice(0, 5), t2 = t.slice(5);
         let ids1 = t1.map(p => p.id);
-        
         let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
-        let f = Math.abs(s1 - s2) * 100; // Diferencia de nivel (Crítico)
-
-        // Factor Graneros (Obligatorio)
+        let f = Math.abs(s1 - s2) * 100;
         if (granerosPool.length === 2 && ids1.includes(granerosPool[0]) !== ids1.includes(granerosPool[1])) f += 1000000;
-
-        // Antirrepetición (Obligatorio)
         if (ids1.every(id => actualSet.has(id))) f += 5000000;
-
-        // Reparto de Especialistas (Importante/Deseable)
         if (ids1.filter(id => topArq.includes(id)).length !== 1) f += 15000;
         if (ids1.filter(id => topAta.includes(id)).length !== 1) f += 10000;
         if (ids1.filter(id => topDef.includes(id)).length !== 1) f += 10000;
         if (ids1.filter(id => topRunners.includes(id)).length !== 1) f += 5000;
         if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
-
         if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
     }
     equipo1 = mejorE1;
@@ -284,7 +280,8 @@ function actualizarRadar() {
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
 
-// --- AUDIO Y SONIDOS ---
+/* --- AUDIO Y SONIDOS --- */
+
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
     if(p && !p.src) { p.src = CONFIG.URL_MUSICA; p.volume = 0.05; } 
@@ -299,7 +296,6 @@ function rotateMusic() {
 
 function playHoverSfx() { const s = document.getElementById('sfx-hover-player'); if(s) { s.src = CONFIG.URL_SFX_HOVER; s.volume = 0.03; s.play().catch(()=>{}); } }
 function playClickSfx() { const s = document.getElementById('sfx-click-player'); if(s) { s.src = CONFIG.URL_SFX_CLICK; s.volume = 0.15; s.play().catch(()=>{}); } }
-
 function attachSounds() {
     document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
         if(!el.dataset.soundAttached) {
@@ -309,4 +305,3 @@ function attachSounds() {
         }
     }); 
 }
-
