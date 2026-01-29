@@ -115,7 +115,7 @@ function toggleLeyenda() {
         card.classList.add('flash-evolucion');
         setTimeout(() => {
         card.classList.remove('flash-evolucion');
-        }, 1000); 
+        }, 500); 
     }
 }
 
@@ -313,6 +313,7 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
 
