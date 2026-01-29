@@ -106,22 +106,29 @@ function renderizarModal(j) {
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
 function toggleLeyenda() { 
-    const cont = document.getElementById('modal-card-container');
-    if(!cont) return;
+    const card = document.getElementById('carta-descarga');
+    if(!card) return;
 
-    cont.classList.remove('flash-evolucion');
-    void cont.offsetWidth; 
-    cont.classList.add('flash-evolucion');
+    // Disparamos el flash (se pone blanco respetando la forma)
+    card.classList.remove('flash-evolucion');
+    void card.offsetWidth; 
+    card.classList.add('flash-evolucion');
 
+    // Cambiamos la cara de la carta exactamente al 50% de la animación (200ms)
     setTimeout(() => {
         esModoLeyenda = !esModoLeyenda; 
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
-    }, 160); 
+        
+        // Mantener la animación activa en el nuevo renderizado hasta que termine
+        const nuevaCarta = document.getElementById('carta-descarga');
+        if(nuevaCarta) nuevaCarta.classList.add('flash-evolucion');
+    }, 200); 
 
+    // Limpiamos al finalizar los 400ms
     setTimeout(() => {
-        const finalCont = document.getElementById('modal-card-container');
-        if(finalCont) finalCont.classList.remove('flash-evolucion');
+        const finalCard = document.getElementById('carta-descarga');
+        if(finalCard) finalCard.classList.remove('flash-evolucion');
     }, 400); 
 }
 
@@ -243,7 +250,7 @@ function highlightTeam(idx) {
     teamRadarChart.update('none');
 }
 
-/* --- LÓGICA DE GENERACIÓN --- */
+/* --- GENERACIÓN AUTOMÁTICA --- */
 
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
@@ -300,7 +307,7 @@ function initAudio() {
     const p = document.getElementById('audio-player'); 
     if(p && !p.src) { 
         p.src = CONFIG.URL_MUSICA; 
-        p.volume = CONFIG.VOL_SERIES[volIndex];
+        p.volume = CONFIG.VOL_SERIES[volIndex]; 
     } 
     if(p) p.play().catch(() => {});
 }
