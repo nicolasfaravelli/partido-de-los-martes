@@ -7,7 +7,6 @@
     --fuente-datos: 'Montserrat', sans-serif;
     --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
     --blur-header: blur(15px);
-    /* VARIABLE DE CONTROL ÚNICA */
     --radio-base: 8px; 
 }
 
@@ -29,6 +28,7 @@ body.modal-open { overflow: hidden; }
 
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
+/* ENCABEZADO */
 .main-sticky-header {
     position: sticky;
     top: 0;
@@ -45,6 +45,7 @@ body.modal-open { overflow: hidden; }
 .header-container { text-align: center; padding: 15px 0 10px 0; }
 .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
+/* ÁREA DE CONTROLES */
 .controls-area { 
     max-width: 1100px; 
     margin: 0 auto; 
@@ -55,7 +56,7 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* BOTONES Y ENTRADAS HOMOGÉNEOS */
+/* INPUTS, SELECTS Y BOTONES UNIFICADOS */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: 50px; 
     box-sizing: border-box; 
@@ -67,36 +68,39 @@ body.modal-open { overflow: hidden; }
     letter-spacing: 0.5px;
     border: 1px solid var(--color-bordes);
     transition: all 0.2s ease;
+    outline: none;
 }
 
+/* BUSCADOR Y SELECTOR: Mantienen flexibilidad pero sin ancho fijo molesto */
 #search-input, #sort-select { 
-    flex: 1; 
     padding: 0 15px; 
     background: rgba(42, 42, 42, 0.9); 
     color: white; 
-    min-width: 180px; 
-    outline: none;
+    min-width: 150px;
+    flex: 1;
 }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #333; }
 
+/* BOTONES: Adaptables al texto */
 .btn {
-    padding: 0 30px;
+    padding: 0 25px; /* Padding constante para que el largo dependa del texto */
     background: var(--color-acento);
     color: #fff;
     cursor: pointer;
     border: none;
-    min-width: 220px;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
+    white-space: nowrap; /* Evita que el texto se rompa en dos líneas */
+    width: auto; /* El botón solo ocupa lo que necesita su contenido */
 }
 
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 .completado { color: #75AADB !important; text-shadow: 0 0 15px #75AADB; }
 
-/* GRID Y CARTAS */
+/* CARTAS */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -242,9 +246,20 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
 }
 
+/* GRUPOS DE BOTONES */
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-add-guest { background: #111; border: 1px solid #444; color: #eee; padding: 5px 12px; cursor: pointer; font-size: 0.8rem; font-weight: bold; height: auto; min-width: auto; }
+
+/* Botón de invitado más compacto pero siguiendo el estilo */
+.btn-add-guest { 
+    background: #111; 
+    border: 1px solid #444; 
+    color: #eee; 
+    padding: 0 15px; 
+    cursor: pointer; 
+    font-size: 0.8rem; 
+    font-weight: bold; 
+}
 
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
