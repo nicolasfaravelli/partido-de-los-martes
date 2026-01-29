@@ -139,7 +139,6 @@ body.modal-open { overflow: hidden; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 
-/* Botón de Leyenda: usa el azul de acento con un brillo sutil */
 .btn-gold { 
     background: var(--color-acento); 
     color: #000; 
@@ -166,7 +165,28 @@ body.modal-open { overflow: hidden; }
     padding-bottom: 50px;
 }
 
-.card { position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; transition: transform 0.2s; container-type: size; outline: none; -webkit-tap-highlight-color: transparent; }
+.card { 
+    position: relative; 
+    width: 100%; 
+    aspect-ratio: 2 / 3; 
+    cursor: pointer; 
+    transition: transform 0.2s; 
+    container-type: size; 
+    outline: none; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    border-radius: inherit;
+}
+
 .card:hover { transform: scale(1.05); z-index: 10; }
 
 .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); }
@@ -181,22 +201,24 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-.flash-evolucion { 
-    /* Usamos 'linear' para que el impacto sea inmediato al tocar el botón */
-    animation: evolution-card-flash 0.25s linear forwards; 
+.flash-evolucion::after {
+    animation: pokemon-flash 0.4s linear forwards;
 }
-.flash-evolucion .card-face { 
-    animation: evolution-face-flash 0.25s linear forwards; 
+
+.flash-evolucion {
+    animation: card-glow 0.4s linear forwards;
 }
-@keyframes evolution-card-flash {
-    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    50% { filter: brightness(1.5) contrast(0.5) saturate(0.5) drop-shadow(0 0 20px rgba(255, 255, 255, 0.4)); }
-    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0)); }
+
+@keyframes pokemon-flash {
+    0% { opacity: 0; }
+    40%, 60% { opacity: 1; }
+    100% { opacity: 0; }
 }
-@keyframes evolution-face-flash {
-    0% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    50% { filter: brightness(3) contrast(0) saturate(0) blur(1.5px) drop-shadow(0 0 10px rgba(255, 0, 0, 0.2)); }
-    100% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 5px rgba(255, 255, 255, 0)); }
+
+@keyframes card-glow {
+    0% { filter: drop-shadow(0 0 0px #fff); }
+    50% { filter: drop-shadow(0 0 40px #fff); }
+    100% { filter: drop-shadow(0 0 0px #fff); }
 }
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -266,13 +288,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
-
-
-
-
-
-
-
-
-
