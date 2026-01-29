@@ -10,8 +10,8 @@ const CONFIG = {
     BONUS_RESISTENCIA: 1.05,
     BONUS_VELOCIDAD: 1.03,
     TOPE_STAT_LEYENDA: 98,
-    VOL_SERIES: [0, 0.05, 0.2],
-    SFX_MAP: { 0: 0, 0.05: 0.0375, 0.2: 0.15 }
+    VOL_SERIES: [0, 0.05, 0.3],
+    SFX_MAP: { 0: 0, 0.05: 0.0375, 0.3: 0.225 }
 };
 
 const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
@@ -309,3 +309,4 @@ function attachSounds() {
         }
     }); 
 }
+
