@@ -8,8 +8,9 @@
     --url-pizarra: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png');
     --blur-header: blur(15px);
     --radio-base: 6px; 
-    /* MODIFICÁ ESTE VALOR PARA CAMBIAR LA ALTURA DE TODO */
     --altura-base: 40px; 
+    /* POSICIÓN DE LA PELOTA: 'row' para izquierda, 'row-reverse' para derecha */
+    --loader-posicion: row; 
 }
 
 body { 
@@ -29,6 +30,57 @@ body {
 body.modal-open { overflow: hidden; }
 
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
+
+/* --- PANTALLA DE CARGA --- */
+
+#loader { 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: var(--loader-posicion);
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: #fff;
+    font-family: var(--fuente-datos);
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 10000;
+}
+
+.soccer-ball {
+    width: 40px;
+    height: 40px;
+    animation: spin-ball 2s linear infinite;
+}
+
+.loading-text {
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.loading-text::after {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    text-align: left;
+    animation: dots-cycle 1.5s steps(4, end) infinite;
+}
+
+@keyframes spin-ball {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes dots-cycle {
+    0% { content: ""; }
+    25% { content: "."; }
+    50% { content: ".."; }
+    75% { content: "..."; }
+}
 
 /* --- ENCABEZADO --- */
 
@@ -57,7 +109,7 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
+/* --- BOTONES E INPUTS UNIFICADOS --- */
 
 #search-input, 
 #sort-select, 
@@ -106,13 +158,7 @@ body.modal-open { overflow: hidden; }
 .btn-gold { background: #d4af37; color: #000; border-color: #b8860b; }
 .btn-gold:hover { background: #f1c40f !important; box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important; }
 
-.btn-add-guest { 
-    background: #111; 
-    color: #eee; 
-    padding: 0 15px; 
-    cursor: pointer; 
-}
-
+.btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 
 /* --- CARTAS Y GRID --- */
@@ -264,78 +310,13 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
 }
 
-/* --- FOOTER Y OTROS --- */
+/* --- OTROS --- */
+
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
-
-#loader { 
-    text-align: center; 
-    color: #fff; 
-    margin-top: 150px; 
-    font-family: var(--fuente-impacto); 
-    letter-spacing: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-}
-.soccer-scene {
-    position: relative;
-    width: 300px;
-    height: 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-.player {
-    width: 60px;
-    height: 60px;
-    transition: transform 0.1s;
-}
-.p-right {
-    transform: scaleX(-1); /* Espeja al segundo jugador */
-}
-.ball {
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    bottom: 5px;
-    left: 45px;
-    animation: pass 2s infinite ease-in-out;
-}
-/* Animación de los puntos suspensivos */
-.loading-text::after {
-    content: "";
-    animation: dots 1.5s infinite;
-}
-@keyframes pass {
-    0%, 100% { left: 45px; transform: rotate(0deg); }
-    50% { left: 240px; transform: rotate(360deg); }
-}
-@keyframes dots {
-    0% { content: ""; }
-    25% { content: "."; }
-    50% { content: ".."; }
-    75% { content: "..."; }
-}
-/* Efecto de "patear" en las siluetas */
-.p-left { animation: kick-left 2s infinite ease-in-out; }
-.p-right { animation: kick-right 2s infinite ease-in-out; }
-
-@keyframes kick-left {
-    0%, 100% { transform: rotate(-5deg); }
-    10% { transform: rotate(10deg); }
-}
-@keyframes kick-right {
-    0%, 100% { transform: scaleX(-1) rotate(-5deg); }
-    50% { transform: scaleX(-1) rotate(-5deg); }
-    60% { transform: scaleX(-1) rotate(10deg); }
-}
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) {
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
