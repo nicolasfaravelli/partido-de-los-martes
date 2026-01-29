@@ -104,18 +104,18 @@ function renderizarModal(j) {
 }
 
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
-
 function toggleLeyenda() { 
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
     renderizarModal(j); 
-    
     const card = document.getElementById('carta-descarga');
     if(card) {
+        card.classList.remove('flash-evolucion'); // Limpiamos por si acaso
+        void card.offsetWidth; // Truco técnico para resetear la animación
         card.classList.add('flash-evolucion');
         setTimeout(() => {
-            card.classList.remove('flash-evolucion');
-        }, 1000); // 1000ms = 1 segundo
+        card.classList.remove('flash-evolucion');
+        }, 1000); 
     }
 }
 
@@ -313,4 +313,5 @@ function attachSounds() {
         }
     }); 
 }
+
 
