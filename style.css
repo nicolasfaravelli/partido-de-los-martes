@@ -189,17 +189,17 @@ body.modal-open { overflow: hidden; }
 
 /* Esta regla hace que, cuando la carta se está animando, la foto adentro también reaccione */
 .flash-evolucion .card-face { 
-    animation: evolution-face-flash 0.5s linear forwards; 
+    animation: evolution-face-flash 0.25s linear forwards; 
 }
 
 @keyframes evolution-card-flash {
     0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    30% { filter: brightness(1.5) contrast(0.5) saturate(0.25) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5)); }
+    30% { filter: brightness(2) contrast(0.5) saturate(0.25) blur(2px) drop-shadow(0 0 40px rgba(255, 255, 255, 0.4)); }
     100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
 }
 @keyframes evolution-face-flash {
     0% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    30% { filter: brightness(3) contrast(0.25) saturate(0) blur(2px) drop-shadow(0 0 25px rgba(255, 255, 255, 0.25)); }
+    30% { filter: brightness(4) contrast(0.25) saturate(0) blur(2px) drop-shadow(0 0 20px rgba(255, 255, 255, 0.2)); }
     100% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
 }
 
@@ -270,6 +270,7 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
 
 
 
