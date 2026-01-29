@@ -189,20 +189,18 @@ body.modal-open { overflow: hidden; }
 
 /* Esta regla hace que, cuando la carta se está animando, la foto adentro también reaccione */
 .flash-evolucion .card-face { 
-    animation: evolution-face-flash 1.0s linear forwards; 
+    animation: evolution-face-flash 0.5s linear forwards; 
 }
 
-/* Animación para el cuerpo de la carta (Fondo, bordes y stats) */
 @keyframes evolution-card-flash {
-    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
-    30% { filter: brightness(2) contrast(0.5) saturate(0.25) drop-shadow(0 0 25px #fff); }
-    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
+    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
+    30% { filter: brightness(1.5) contrast(0.5) saturate(0.25) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5)); }
+    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
 }
-/* Animación independiente para la FOTO del jugador */
 @keyframes evolution-face-flash {
-    0% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
-    30% { filter: brightness(4) contrast(0.25) saturate(0) drop-shadow(0 0 25px #fff); }
-    100% { filter: brightness(1) contrast(1) saturate(1) drop-shadow(0 0 0px #fff); }
+    0% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
+    30% { filter: brightness(3) contrast(0.25) saturate(0) blur(2px) drop-shadow(0 0 25px rgba(255, 255, 255, 0.25)); }
+    100% { filter: brightness(1) contrast(1) saturate(1) blur(0px) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
 }
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -272,5 +270,6 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
 
 
