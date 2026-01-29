@@ -28,7 +28,8 @@ body.modal-open { overflow: hidden; }
 
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-/* ENCABEZADO */
+/* --- ESTRUCTURA HEADER --- */
+
 .main-sticky-header {
     position: sticky;
     top: 0;
@@ -45,7 +46,6 @@ body.modal-open { overflow: hidden; }
 .header-container { text-align: center; padding: 15px 0 10px 0; }
 .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-/* ÁREA DE CONTROLES */
 .controls-area { 
     max-width: 1100px; 
     margin: 0 auto; 
@@ -56,8 +56,9 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* INPUTS, SELECTS Y BOTONES UNIFICADOS */
-#search-input, #sort-select, .btn, .btn-add-guest { 
+/* --- ELEMENTOS DE FORMA UNIFICADA --- */
+
+#search-input, #sort-select, .btn { 
     height: 50px; 
     box-sizing: border-box; 
     border-radius: var(--radio-base); 
@@ -71,7 +72,6 @@ body.modal-open { overflow: hidden; }
     outline: none;
 }
 
-/* BUSCADOR Y SELECTOR: Mantienen flexibilidad pero sin ancho fijo molesto */
 #search-input, #sort-select { 
     padding: 0 15px; 
     background: rgba(42, 42, 42, 0.9); 
@@ -82,9 +82,8 @@ body.modal-open { overflow: hidden; }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #333; }
 
-/* BOTONES: Adaptables al texto */
 .btn {
-    padding: 0 25px; /* Padding constante para que el largo dependa del texto */
+    padding: 0 25px;
     background: var(--color-acento);
     color: #fff;
     cursor: pointer;
@@ -92,15 +91,35 @@ body.modal-open { overflow: hidden; }
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    white-space: nowrap; /* Evita que el texto se rompa en dos líneas */
-    width: auto; /* El botón solo ocupa lo que necesita su contenido */
+    white-space: nowrap;
+    width: auto;
 }
 
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 .completado { color: #75AADB !important; text-shadow: 0 0 15px #75AADB; }
 
-/* CARTAS */
+.btn-add-guest { 
+    height: 38px;
+    background: #111; 
+    border: 1px solid var(--color-bordes); 
+    color: #eee; 
+    padding: 0 15px; 
+    cursor: pointer; 
+    font-size: 0.75rem; 
+    font-weight: bold;
+    border-radius: var(--radio-base);
+    font-family: var(--fuente-datos);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
+
+/* --- CARTAS Y GRID --- */
+
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -159,7 +178,8 @@ body.modal-open { overflow: hidden; }
     100% { filter: brightness(1); }
 }
 
-/* MODALES */
+/* --- MODALES --- */
+
 .modal-overlay { 
     display: none; 
     position: fixed; 
@@ -246,20 +266,10 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
 }
 
-/* GRUPOS DE BOTONES */
+/* --- GRUPOS Y FOOTERS --- */
+
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-
-/* Botón de invitado más compacto pero siguiendo el estilo */
-.btn-add-guest { 
-    background: #111; 
-    border: 1px solid #444; 
-    color: #eee; 
-    padding: 0 15px; 
-    cursor: pointer; 
-    font-size: 0.8rem; 
-    font-weight: bold; 
-}
 
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
@@ -270,4 +280,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
