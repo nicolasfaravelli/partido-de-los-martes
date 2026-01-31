@@ -95,7 +95,7 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* --- BOTONES E INPUTS --- */
+/* --- ELEMENTOS INTERACTIVOS --- */
 
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
@@ -177,7 +177,7 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- TRANSICIÓN EVOLUCIÓN --- */
+/* --- TRANSICIÓN EVOLUCIÓN (CONTROLES INDEPENDIENTES) --- */
 #modal-card-container.flash-evolucion .card {
     animation: evolution-card-flash 0.3s linear forwards;
 }
@@ -186,15 +186,16 @@ body.modal-open { overflow: hidden; }
 }
 
 @keyframes evolution-card-flash {
-    0% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0); }
-    50% { filter: brightness(10) saturate(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5); }
-    100% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0); }
+    0% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
+    50% { filter: brightness(5) saturate(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5)); }
+    100% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
 }
 @keyframes evolution-face-flash {
     0% { filter: brightness(1) saturate(1); }
     50% { filter: brightness(20) saturate(0); }
     100% { filter: brightness(1) saturate(1); }
 }
+
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
 .shine-layer::after {
     content: ""; position: absolute; top: 0; left: 0; width: 300%; height: 300%; 
@@ -204,7 +205,7 @@ body.modal-open { overflow: hidden; }
 .card:hover .shine-layer::after { animation: brillo-diagonal-ida 1s ease-in-out forwards; }
 @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
 
-/* --- MODALES --- */
+/* --- MODALES Y ARMADOR --- */
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.875); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12.5px); }
 
