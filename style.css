@@ -180,12 +180,12 @@ body.modal-open { overflow: hidden; }
 /* --- TRANSICIÓN LEYENDA (FILTROS DIRECTOS) --- */
 
 .flash-evolucion {
-    animation: pokemon-flash 0.5s linear forwards;
+    animation: pokemon-flash 0.3s linear forwards;
 }
 
 @keyframes pokemon-flash {
     0% { filter: brightness(1) saturate(1); }
-    50% { filter: brightness(20) saturate(0); }
+    50% { filter: brightness(30) saturate(0); }
     100% { filter: brightness(1) saturate(1); }
 }
 
@@ -264,3 +264,4 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
