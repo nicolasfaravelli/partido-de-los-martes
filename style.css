@@ -177,47 +177,16 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- EFECTO POKÉMON --- */
+/* --- TRANSICIÓN LEYENDA (FILTROS DIRECTOS) --- */
 
-#modal-card-container {
-    position: relative;
-    width: 340px;
-    aspect-ratio: 2 / 3;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-/* Capa blanca del flash */
-#modal-card-container::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: white;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 100;
-    border-radius: 12px;
-}
-
-#modal-card-container.flash-evolucion::after {
-    animation: pokemon-flash 0.4s linear forwards;
-}
-
-#modal-card-container.flash-evolucion {
-    animation: card-glow 0.4s linear forwards;
+.flash-evolucion {
+    animation: pokemon-flash 0.5s linear forwards;
 }
 
 @keyframes pokemon-flash {
-    0% { opacity: 0; }
-    40%, 60% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-@keyframes card-glow {
-    0% { filter: drop-shadow(0 0 0px #fff); }
-    50% { filter: drop-shadow(0 0 40px #fff); }
-    100% { filter: drop-shadow(0 0 0px #fff); }
+    0% { filter: brightness(1) saturate(1); }
+    50% { filter: brightness(20) saturate(0); }
+    100% { filter: brightness(1) saturate(1); }
 }
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -233,6 +202,15 @@ body.modal-open { overflow: hidden; }
 /* --- MODALES Y ARMADOR --- */
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.875); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12.5px); }
+
+#modal-card-container {
+    position: relative;
+    width: 340px;
+    aspect-ratio: 2 / 3;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
 
 #team-modal-content { 
     background: #1a1a1a; 
