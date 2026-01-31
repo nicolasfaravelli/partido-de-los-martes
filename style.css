@@ -187,13 +187,13 @@ body.modal-open { overflow: hidden; }
 
 @keyframes evolution-card-flash {
     0% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    50% { filter: brightness(5) saturate(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5)); }
-    100% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
+    50% { filter: brightness(5) saturate(0) drop-shadow(0 0 75px rgba(255, 255, 255, 0.5)); }
+    100% { filter: brightness(1) saturate(1) drop-shadow(0 0 50px rgba(255, 255, 255, 0)); }
 }
 @keyframes evolution-face-flash {
-    0% { filter: brightness(1) saturate(1); }
-    50% { filter: brightness(30) saturate(0); }
-    100% { filter: brightness(1) saturate(1); }
+    0% { filter: brightness(1) saturate(1) blur(0); }
+    50% { filter: brightness(50) saturate(0) blur(1.5); }
+    100% { filter: brightness(1) saturate(1) blur(0); }
 }
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
@@ -270,4 +270,5 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
 
