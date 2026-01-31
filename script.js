@@ -122,7 +122,7 @@ function toggleLeyenda() {
     setTimeout(() => {
         const finalCont = document.getElementById('modal-card-container');
         if(finalCont) finalCont.classList.remove('flash-evolucion');
-    }, 300); 
+    }, 400); 
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -340,5 +340,6 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
