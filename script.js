@@ -20,7 +20,7 @@ const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 
-/* --- INICIO --- */
+/* --- INICIO Y CARGA --- */
 
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
@@ -36,7 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function cargarDatos() {
     Papa.parse(CONFIG.URL_CSV, { 
-        download: true, header: false, skipEmptyLines: true, 
+        download: true, 
+        header: false, 
+        skipEmptyLines: true, 
         complete: (results) => {
             const loader = document.getElementById('loader');
             if(loader) loader.style.display = 'none';
@@ -104,26 +106,22 @@ function renderizarModal(j) {
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
 function toggleLeyenda() { 
-    const card = document.getElementById('carta-descarga');
-    if(!card) return;
+    const cont = document.getElementById('modal-card-container');
+    if(!cont) return;
 
-    card.classList.remove('flash-evolucion');
-    void card.offsetWidth; 
-    card.classList.add('flash-evolucion');
+    cont.classList.remove('flash-evolucion');
+    void cont.offsetWidth; 
+    cont.classList.add('flash-evolucion');
 
-    // Cambiamos datos en el pico del blanco (200ms)
     setTimeout(() => {
         esModoLeyenda = !esModoLeyenda; 
         const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
         renderizarModal(j); 
-        const nueva = document.getElementById('carta-descarga');
-        if(nueva) nueva.classList.add('flash-evolucion');
-    }, 200); 
+    }, 160); 
 
-    // Limpiamos al final (400ms)
     setTimeout(() => {
-        const final = document.getElementById('carta-descarga');
-        if(final) final.classList.remove('flash-evolucion');
+        const finalCont = document.getElementById('modal-card-container');
+        if(finalCont) finalCont.classList.remove('flash-evolucion');
     }, 400); 
 }
 
@@ -151,7 +149,7 @@ function descargarCarta() {
     });
 }
 
-/* --- ARMADOR --- */
+/* --- ARMADOR DE EQUIPOS --- */
 
 function abrirArmador() { 
     const m = document.getElementById('team-modal');
@@ -202,12 +200,13 @@ function cambiarDeEquipo(id) {
 function actualizarContadorEquipos() { 
     const t = equipo1.length + equipo2.length; 
     const cnt = document.getElementById('team-counter'); 
+    const ok = t === 10; 
     if(cnt) {
         cnt.innerText = `SELECCIONADOS: ${t} / 10`; 
-        if(t === 10) cnt.classList.add('completado'); else cnt.classList.remove('completado'); 
+        if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); 
     }
     const btnGen = document.getElementById('btn-generate');
-    if(btnGen) btnGen.disabled = t !== 10; 
+    if(btnGen) btnGen.disabled = !ok; 
 }
 
 function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
@@ -244,11 +243,65 @@ function highlightTeam(idx) {
     teamRadarChart.update('none');
 }
 
-/* --- AUDIO --- */
+/* --- LÓGICA DE GENERACIÓN --- */
+
+function generarAutomatico() {
+    let pool = [...equipo1, ...equipo2].map(getPlayerData);
+    if (pool.length !== 10) return;
+    const actualSet = new Set([...equipo1]);
+    const topArq = [...pool].sort((a, b) => b.arq - a.arq).slice(0, 2).map(p => p.id);
+    const topAta = [...pool].sort((a, b) => b.ata - a.ata).slice(0, 2).map(p => p.id);
+    const topDef = [...pool].sort((a, b) => b.def - a.def).slice(0, 2).map(p => p.id);
+    const topRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(0, 2).map(p => p.id);
+    const botRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(8, 10).map(p => p.id);
+    const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
+
+    let mejorE1 = [], mejorFealdad = Infinity;
+
+    for (let i = 0; i < 2000; i++) {
+        let t = [...pool].sort(() => Math.random() - 0.5);
+        let t1 = t.slice(0, 5), t2 = t.slice(5);
+        let ids1 = t1.map(p => p.id);
+        let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
+        let f = Math.abs(s1 - s2) * 100;
+        if (granerosPool.length === 2 && ids1.includes(granerosPool[0]) !== ids1.includes(granerosPool[1])) f += 1000000;
+        if (ids1.every(id => actualSet.has(id))) f += 5000000;
+        if (ids1.filter(id => topArq.includes(id)).length !== 1) f += 15000;
+        if (ids1.filter(id => topAta.includes(id)).length !== 1) f += 10000;
+        if (ids1.filter(id => topDef.includes(id)).length !== 1) f += 10000;
+        if (ids1.filter(id => topRunners.includes(id)).length !== 1) f += 5000;
+        if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
+        if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
+    }
+    equipo1 = mejorE1;
+    equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
+    actualizarTablerosEquipos();
+}
+
+function actualizarRadar() {
+    const canvas = document.getElementById('radarChart');
+    if(!canvas) return;
+    const getAvgStats = (ids) => {
+        if (!ids.length) return [0,0,0,0,0,0];
+        const ps = ids.map(getPlayerData);
+        const sum = ps.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
+        return [sum.ata/ids.length, sum.def/ids.length, sum.tec/ids.length, sum.vel/ids.length, sum.res/ids.length, sum.arq/ids.length];
+    };
+    const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
+    if (!teamRadarChart) {
+        const ctx = canvas.getContext('2d');
+        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
+    } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
+}
+
+/* --- AUDIO Y SONIDOS --- */
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
-    if(p && !p.src) { p.src = CONFIG.URL_MUSICA; p.volume = CONFIG.VOL_SERIES[volIndex]; } 
+    if(p && !p.src) { 
+        p.src = CONFIG.URL_MUSICA; 
+        p.volume = CONFIG.VOL_SERIES[volIndex];
+    } 
     if(p) p.play().catch(() => {});
 }
 
@@ -256,17 +309,26 @@ function rotateMusic() {
     const p = document.getElementById('audio-player'); if(!p) return;
     volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; 
     p.volume = CONFIG.VOL_SERIES[volIndex]; 
-    const ctrl = document.getElementById('music-control'); if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
+    const ctrl = document.getElementById('music-control'); 
+    if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
 }
 
 function playHoverSfx() { 
     const s = document.getElementById('sfx-hover-player'); 
-    if(s) { s.src = CONFIG.URL_SFX_HOVER; s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; s.play().catch(()=>{}); } 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_HOVER; 
+        s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; 
+        s.play().catch(()=>{}); 
+    } 
 }
 
 function playClickSfx() { 
     const s = document.getElementById('sfx-click-player'); 
-    if(s) { s.src = CONFIG.URL_SFX_CLICK; s.volume = Math.min(1, CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] * 4); s.play().catch(()=>{}); } 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_CLICK; 
+        s.volume = Math.min(1, CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] * 4); 
+        s.play().catch(()=>{}); 
+    } 
 }
 
 function attachSounds() {
