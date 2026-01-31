@@ -25,7 +25,7 @@ body.modal-open { overflow: hidden; }
 
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-/* --- PANTALLA DE CARGA --- */
+/* --- LOADER --- */
 
 #loader { 
     position: fixed;
@@ -68,7 +68,7 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- ENCABEZADO --- */
+/* --- HEADER --- */
 
 .main-sticky-header {
     position: sticky;
@@ -95,7 +95,7 @@ body.modal-open { overflow: hidden; }
     align-items: center;
 }
 
-/* --- ELEMENTOS INTERACTIVOS --- */
+/* --- BOTONES E INPUTS --- */
 
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
@@ -151,7 +151,7 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 
-/* --- CARTAS Y GRID --- */
+/* --- CARTAS GRID --- */
 
 .grid { 
     display: grid; 
@@ -177,18 +177,24 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- TRANSICIÓN LEYENDA (FILTROS DIRECTOS) --- */
-
-.flash-evolucion {
-    animation: pokemon-flash 0.3s linear forwards;
+/* --- TRANSICIÓN EVOLUCIÓN --- */
+#modal-card-container.flash-evolucion .card {
+    animation: evolution-card-flash 0.3s linear forwards;
+}
+#modal-card-container.flash-evolucion .card-face {
+    animation: evolution-face-flash 0.3s linear forwards;
 }
 
-@keyframes pokemon-flash {
+@keyframes evolution-card-flash {
+    0% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0); }
+    50% { filter: brightness(10) saturate(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5); }
+    100% { filter: brightness(1) saturate(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0); }
+}
+@keyframes evolution-face-flash {
     0% { filter: brightness(1) saturate(1); }
-    50% { filter: brightness(30) saturate(0); }
+    50% { filter: brightness(20) saturate(0); }
     100% { filter: brightness(1) saturate(1); }
 }
-
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
 .shine-layer::after {
     content: ""; position: absolute; top: 0; left: 0; width: 300%; height: 300%; 
@@ -196,10 +202,9 @@ body.modal-open { overflow: hidden; }
     pointer-events: none; opacity: 0; z-index: 6; transform: translate(-100%, -100%);
 }
 .card:hover .shine-layer::after { animation: brillo-diagonal-ida 1s ease-in-out forwards; }
-
 @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
 
-/* --- MODALES Y ARMADOR --- */
+/* --- MODALES --- */
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.875); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12.5px); }
 
@@ -264,4 +269,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
