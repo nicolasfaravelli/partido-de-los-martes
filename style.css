@@ -181,11 +181,11 @@ body.modal-open { overflow: hidden; }
     width: 12%;             /* TUS VALORES EXACTOS */
     z-index: 5; 
     object-fit: contain;
-        aspect-ratio: 1 / 1;    
-    padding: 2.5px;           /* Subí el padding para que respire */
+    aspect-ratio: 1 / 1;    
+    padding: 2.5px;           
     box-sizing: border-box; 
-    border-radius: 2.5px;     /* Redondeo mínimo */
-    box-shadow: inset 0 0 3px rgba(0,0,0,0.5); /* Efecto de profundidad */
+    border-radius: 2.5px;     
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
 }
 
 .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
@@ -194,18 +194,24 @@ body.modal-open { overflow: hidden; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
 /* --- TRANSICIÓN EVOLUCIÓN (CONTROLES INDEPENDIENTES) --- */
+/* Forcé !important para asegurar que nada sobreescriba la animación */
 #modal-card-container.flash-evolucion .card {
-    animation: evolution-card-flash 0.4s linear forwards;}
+    animation: evolution-card-flash 0.4s linear forwards !important;
+}
 #modal-card-container.flash-evolucion .card-face {
-    animation: evolution-face-flash 0.4s linear forwards;}
+    animation: evolution-face-flash 0.4s linear forwards !important;
+}
+
 @keyframes evolution-card-flash {
     0% { filter: brightness(1) saturate(1) blur(0) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
     50% { filter: brightness(6) saturate(0) blur(1.5) drop-shadow(0 0 75px rgba(255, 255, 255, 0.5)); }
-    100% { filter: brightness(1) saturate(1) blur(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0)); }}
+    100% { filter: brightness(1) saturate(1) blur(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0)); }
+}
 @keyframes evolution-face-flash {
     0% { filter: brightness(1) saturate(1) blur(0); }
     50% { filter: brightness(60) saturate(0) blur(2); }
-    100% { filter: brightness(1) saturate(1) blur(0); }}
+    100% { filter: brightness(1) saturate(1) blur(0); }
+}
 
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
 .shine-layer::after {
@@ -252,6 +258,20 @@ body.modal-open { overflow: hidden; }
 }
 .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
 
+/* FLECHAS EN EL ARMADOR */
+.armador-flecha {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    background: rgba(0,0,0,0.4);
+    padding: 2px;
+    border-radius: 2px;
+}
+.armador-flecha-spacer {
+    width: 18px;
+    height: 18px;
+}
+
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
 
 .team-box { 
@@ -281,4 +301,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
