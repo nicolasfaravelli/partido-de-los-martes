@@ -52,6 +52,7 @@ function cargarDatos() {
                     vel: parseInt(fila[5]) || 0, res: parseInt(fila[6]) || 0, arq: parseInt(fila[7]) || 0, 
                     edad: parseInt(fila[1]) || 25, pos: fila[9] || '?', fondo: fila[11] || '', 
                     foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
+                    flecha: fila[14] || '',
                     color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21' 
                 };
             }).filter(i => i !== null);
@@ -74,7 +75,7 @@ function aplicarFiltrosYOrden() {
 }
 
 function generarHTMLCarta(j, lazy) { 
-    return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div><div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
+    return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${j.flecha ? `<img src="${j.flecha}" class="card-arrow" crossorigin="anonymous">` : ''}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
 /* --- MODALES --- */
@@ -340,6 +341,3 @@ function attachSounds() {
         }
     }); 
 }
-
-
-
