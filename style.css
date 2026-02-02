@@ -186,6 +186,9 @@ body.modal-open { overflow: hidden; }
     box-sizing: border-box; 
     border-radius: 2.5px;     
     box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+
+    /* ACÁ MANEJÁS LA OPACIDAD: Cambiá el 20% por el valor que quieras de transparencia */
+    background-color: color-mix(in srgb, var(--color-flecha), transparent 20%);
 }
 
 .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
@@ -193,13 +196,12 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- TRANSICIÓN EVOLUCIÓN (CONTROLES INDEPENDIENTES) --- */
-/* Forcé !important para asegurar que nada sobreescriba la animación */
+/* --- TRANSICIÓN EVOLUCIÓN (REPARADA) --- */
 #modal-card-container.flash-evolucion .card {
-    animation: evolution-card-flash 0.4s linear forwards !important;
+    animation: evolution-card-flash 0.45s linear forwards !important;
 }
 #modal-card-container.flash-evolucion .card-face {
-    animation: evolution-face-flash 0.4s linear forwards !important;
+    animation: evolution-face-flash 0.45s linear forwards !important;
 }
 
 @keyframes evolution-card-flash {
@@ -258,19 +260,16 @@ body.modal-open { overflow: hidden; }
 }
 .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
 
-/* FLECHAS EN EL ARMADOR */
-.armador-flecha {
+/* FLECHAS EN LISTAS */
+.list-arrow-img {
     width: 18px;
     height: 18px;
     object-fit: contain;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     padding: 2px;
     border-radius: 2px;
 }
-.armador-flecha-spacer {
-    width: 18px;
-    height: 18px;
-}
+.list-arrow-spacer { width: 18px; height: 18px; }
 
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
 
