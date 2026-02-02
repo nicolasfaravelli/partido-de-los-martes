@@ -75,10 +75,8 @@ function aplicarFiltrosYOrden() {
 }
 
 function generarHTMLCarta(j, lazy) { 
-    // Opacidad: El sufijo 'CC' al final del color le da un 80% de opacidad. 
-    // Podés cambiar 'CC' por otro valor hex (00 a FF).
-    const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="background-color: ${j.color}CC" crossorigin="anonymous">` : '';
-    
+    // Le pasamos el color a la variable CSS --color-flecha. La opacidad se maneja en el CSS ahora.
+    const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="--color-flecha: ${j.color}" crossorigin="anonymous">` : '';
     return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
@@ -114,20 +112,24 @@ function toggleLeyenda() {
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
 
+    esModoLeyenda = !esModoLeyenda; 
+    const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
+    
+    // 1. Limpiamos la clase vieja
     cont.classList.remove('flash-evolucion');
-    void cont.offsetWidth; // Trigger reflow para reiniciar animación
-    cont.classList.add('flash-evolucion');
+    
+    // 2. Renderizamos la carta nueva
+    renderizarModal(j); 
+    
+    // 3. Forzamos el "reflow" y aplicamos el flash después de un pequeño delay
+    // Esto asegura que la animación se aplique a la CARTA NUEVA ya cargada.
+    setTimeout(() => {
+        cont.classList.add('flash-evolucion');
+    }, 20);
 
     setTimeout(() => {
-        esModoLeyenda = !esModoLeyenda; 
-        const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
-        renderizarModal(j); 
-    }, 160); 
-
-    setTimeout(() => {
-        const finalCont = document.getElementById('modal-card-container');
-        if(finalCont) finalCont.classList.remove('flash-evolucion');
-    }, 400); 
+        cont.classList.remove('flash-evolucion');
+    }, 500); 
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -180,17 +182,12 @@ function agregarInvitado() {
 function renderizarListaSeleccion() {
     const cont = document.getElementById('players-checklist');
     if(!cont) return;
-    
-    // Invitados no tienen flecha por ahora
     let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
-    
-    // Jugadores con flecha a la izquierda del nombre
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
-        const flechaUrl = j.flecha ? `<img src="${j.flecha}" class="armador-flecha">` : '<div class="armador-flecha-spacer"></div>';
-        return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaUrl}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;
-    }).join('');
-    
+        // Flecha incorporada al armador
+        const flechaHtml = j.flecha ? `<img src="${j.flecha}" class="list-arrow-img">` : '<div class="list-arrow-spacer"></div>';
+        return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;}).join('');
     cont.innerHTML = html;
     actualizarContadorEquipos(); actualizarTablerosEquipos();
 }
@@ -236,7 +233,10 @@ function renderListaEquipo(ulId, ids, avgId) {
         if(!p) return;
         suma += p.prom; 
         const li = document.createElement('li'); li.className = 'team-player-li'; li.onclick = () => cambiarDeEquipo(p.id);
-        li.innerHTML = `<span>${p.nombre}</span><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; ul.appendChild(li); 
+        // Flecha incorporada a la lista de equipos definitivos
+        const flechaHtml = p.flecha ? `<img src="${p.flecha}" class="list-arrow-img team-list-arrow">` : '';
+        li.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">${flechaHtml}<span>${p.nombre}</span></div><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; 
+        ul.appendChild(li); 
     }); 
     const avg = document.getElementById(avgId); if(avg) avg.innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
 }
@@ -285,68 +285,4 @@ function generarAutomatico() {
         if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
         if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
     }
-    equipo1 = mejorE1;
-    equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
-    actualizarTablerosEquipos();
-}
-
-function actualizarRadar() {
-    const canvas = document.getElementById('radarChart');
-    if(!canvas) return;
-    const getAvgStats = (ids) => {
-        if (!ids.length) return [0,0,0,0,0,0];
-        const ps = ids.map(getPlayerData);
-        const sum = ps.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
-        return [sum.ata/ids.length, sum.def/ids.length, sum.tec/ids.length, sum.vel/ids.length, sum.res/ids.length, sum.arq/ids.length];
-    };
-    const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
-    if (!teamRadarChart) {
-        const ctx = canvas.getContext('2d');
-        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
-    } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
-}
-
-function initAudio() { 
-    const p = document.getElementById('audio-player'); 
-    if(p && !p.src) { 
-        p.src = CONFIG.URL_MUSICA; 
-        p.volume = CONFIG.VOL_SERIES[volIndex];
-    } 
-    if(p) p.play().catch(() => {});
-}
-
-function rotateMusic() { 
-    const p = document.getElementById('audio-player'); if(!p) return;
-    volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; 
-    p.volume = CONFIG.VOL_SERIES[volIndex]; 
-    const ctrl = document.getElementById('music-control'); 
-    if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
-}
-
-function playHoverSfx() { 
-    const s = document.getElementById('sfx-hover-player'); 
-    if(s) { 
-        s.src = CONFIG.URL_SFX_HOVER; 
-        s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; 
-        s.play().catch(()=>{}); 
-    } 
-}
-
-function playClickSfx() { 
-    const s = document.getElementById('sfx-click-player'); 
-    if(s) { 
-        s.src = CONFIG.URL_SFX_CLICK; 
-        s.volume = Math.min(1, CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] * 4); 
-        s.play().catch(()=>{}); 
-    } 
-}
-
-function attachSounds() {
-    document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
-        if(!el.dataset.soundAttached) {
-            if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
-            el.addEventListener('mousedown', () => { if(el.classList.contains('player-row')) playHoverSfx(); else playClickSfx(); });
-            el.dataset.soundAttached = "true";
-        }
-    }); 
-}
+    equ
