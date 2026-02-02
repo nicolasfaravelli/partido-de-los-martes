@@ -75,8 +75,11 @@ function aplicarFiltrosYOrden() {
 }
 
 function generarHTMLCarta(j, lazy) { 
-    // Se agregó style="background-color: ${j.color}" directamente a la imagen de la flecha
-    return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="background-color: ${j.color}" crossorigin="anonymous">` : ''}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
+    // Opacidad: El sufijo 'CC' al final del color le da un 80% de opacidad. 
+    // Podés cambiar 'CC' por otro valor hex (00 a FF).
+    const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="background-color: ${j.color}CC" crossorigin="anonymous">` : '';
+    
+    return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
 /* --- MODALES --- */
@@ -112,7 +115,7 @@ function toggleLeyenda() {
     if(!cont) return;
 
     cont.classList.remove('flash-evolucion');
-    void cont.offsetWidth; 
+    void cont.offsetWidth; // Trigger reflow para reiniciar animación
     cont.classList.add('flash-evolucion');
 
     setTimeout(() => {
@@ -177,10 +180,17 @@ function agregarInvitado() {
 function renderizarListaSeleccion() {
     const cont = document.getElementById('players-checklist');
     if(!cont) return;
+    
+    // Invitados no tienen flecha por ahora
     let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
+    
+    // Jugadores con flecha a la izquierda del nombre
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
-        return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})"><span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;}).join('');
+        const flechaUrl = j.flecha ? `<img src="${j.flecha}" class="armador-flecha">` : '<div class="armador-flecha-spacer"></div>';
+        return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaUrl}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;
+    }).join('');
+    
     cont.innerHTML = html;
     actualizarContadorEquipos(); actualizarTablerosEquipos();
 }
@@ -295,8 +305,6 @@ function actualizarRadar() {
         teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
-
-/* --- AUDIO Y SONIDOS --- */
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
