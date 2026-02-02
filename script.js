@@ -34,6 +34,11 @@ document.addEventListener("DOMContentLoaded", () => {
     new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
 });
 
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0,0,0";
+}
+
 function cargarDatos() {
     Papa.parse(CONFIG.URL_CSV, { 
         download: true, 
@@ -75,8 +80,8 @@ function aplicarFiltrosYOrden() {
 }
 
 function generarHTMLCarta(j, lazy) { 
-    // Le pasamos el color a la variable CSS --color-flecha. La opacidad se maneja en el CSS ahora.
-    const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="--color-flecha: ${j.color}" crossorigin="anonymous">` : '';
+    const rgb = hexToRgb(j.color);
+    const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="--color-rgb: ${rgb}" crossorigin="anonymous">` : '';
     return `<div class="card-bg-wrapper"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
@@ -115,21 +120,15 @@ function toggleLeyenda() {
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
     
-    // 1. Limpiamos la clase vieja
     cont.classList.remove('flash-evolucion');
-    
-    // 2. Renderizamos la carta nueva
     renderizarModal(j); 
     
-    // 3. Forzamos el "reflow" y aplicamos el flash después de un pequeño delay
-    // Esto asegura que la animación se aplique a la CARTA NUEVA ya cargada.
-    setTimeout(() => {
-        cont.classList.add('flash-evolucion');
-    }, 20);
-
-    setTimeout(() => {
-        cont.classList.remove('flash-evolucion');
-    }, 500); 
+    // Animación sin delays: usamos requestAnimationFrame para que el navegador sepa que hay que animar la carta nueva
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            cont.classList.add('flash-evolucion');
+        });
+    });
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -185,7 +184,6 @@ function renderizarListaSeleccion() {
     let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
-        // Flecha incorporada al armador
         const flechaHtml = j.flecha ? `<img src="${j.flecha}" class="list-arrow-img">` : '<div class="list-arrow-spacer"></div>';
         return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;}).join('');
     cont.innerHTML = html;
@@ -233,7 +231,6 @@ function renderListaEquipo(ulId, ids, avgId) {
         if(!p) return;
         suma += p.prom; 
         const li = document.createElement('li'); li.className = 'team-player-li'; li.onclick = () => cambiarDeEquipo(p.id);
-        // Flecha incorporada a la lista de equipos definitivos
         const flechaHtml = p.flecha ? `<img src="${p.flecha}" class="list-arrow-img team-list-arrow">` : '';
         li.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">${flechaHtml}<span>${p.nombre}</span></div><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; 
         ul.appendChild(li); 
@@ -254,8 +251,6 @@ function highlightTeam(idx) {
     }
     teamRadarChart.update('none');
 }
-
-/* --- LÓGICA DE GENERACIÓN --- */
 
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
@@ -305,8 +300,6 @@ function actualizarRadar() {
         teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
-
-/* --- AUDIO Y SONIDOS --- */
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
