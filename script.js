@@ -285,4 +285,70 @@ function generarAutomatico() {
         if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
         if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
     }
-    equ
+    equipo1 = mejorE1;
+    equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
+    actualizarTablerosEquipos();
+}
+
+function actualizarRadar() {
+    const canvas = document.getElementById('radarChart');
+    if(!canvas) return;
+    const getAvgStats = (ids) => {
+        if (!ids.length) return [0,0,0,0,0,0];
+        const ps = ids.map(getPlayerData);
+        const sum = ps.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
+        return [sum.ata/ids.length, sum.def/ids.length, sum.tec/ids.length, sum.vel/ids.length, sum.res/ids.length, sum.arq/ids.length];
+    };
+    const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
+    if (!teamRadarChart) {
+        const ctx = canvas.getContext('2d');
+        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
+    } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
+}
+
+/* --- AUDIO Y SONIDOS --- */
+
+function initAudio() { 
+    const p = document.getElementById('audio-player'); 
+    if(p && !p.src) { 
+        p.src = CONFIG.URL_MUSICA; 
+        p.volume = CONFIG.VOL_SERIES[volIndex];
+    } 
+    if(p) p.play().catch(() => {});
+}
+
+function rotateMusic() { 
+    const p = document.getElementById('audio-player'); if(!p) return;
+    volIndex = (volIndex + 1) % CONFIG.VOL_SERIES.length; 
+    p.volume = CONFIG.VOL_SERIES[volIndex]; 
+    const ctrl = document.getElementById('music-control'); 
+    if(ctrl) ctrl.innerText = ICON_SERIES[volIndex]; 
+}
+
+function playHoverSfx() { 
+    const s = document.getElementById('sfx-hover-player'); 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_HOVER; 
+        s.volume = CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]]; 
+        s.play().catch(()=>{}); 
+    } 
+}
+
+function playClickSfx() { 
+    const s = document.getElementById('sfx-click-player'); 
+    if(s) { 
+        s.src = CONFIG.URL_SFX_CLICK; 
+        s.volume = Math.min(1, CONFIG.SFX_MAP[CONFIG.VOL_SERIES[volIndex]] * 4); 
+        s.play().catch(()=>{}); 
+    } 
+}
+
+function attachSounds() {
+    document.querySelectorAll('.btn, .card, .player-row, .team-player-li').forEach(el => {
+        if(!el.dataset.soundAttached) {
+            if(!el.classList.contains('player-row')) el.addEventListener('mouseenter', playHoverSfx);
+            el.addEventListener('mousedown', () => { if(el.classList.contains('player-row')) playHoverSfx(); else playClickSfx(); });
+            el.dataset.soundAttached = "true";
+        }
+    }); 
+}
