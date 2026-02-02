@@ -173,7 +173,7 @@ body.modal-open { overflow: hidden; }
 .rating { font-family: var(--fuente-impacto); position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
 .position { font-family: var(--fuente-impacto); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
 
-/* FLECHA CON CUADRADO AUTOMÁTICO */
+/* FLECHA CON CUADRADO AUTOMÁTICO SÓLIDO */
 .card-arrow { 
     position: absolute; 
     top: 40%;               /* TUS VALORES EXACTOS */
@@ -187,8 +187,8 @@ body.modal-open { overflow: hidden; }
     border-radius: 2.5px;     
     box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
 
-    /* ACÁ MANEJÁS LA OPACIDAD: Cambiá el 0.7 por el valor que quieras (ej: 0.1 invisible, 1 sólido) */
-    background-color: rgba(var(--color-rgb), 0.9);
+    /* COLOR SÓLIDO: rgb sin canal alfa para evitar transparencia */
+    background-color: rgb(var(--color-rgb));
 }
 
 .name { font-family: var(--fuente-impacto); position: absolute; top: 64.25%; left: 5%; width: 90%; text-align: center; font-size: 14.5cqw; text-transform: uppercase; }
