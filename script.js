@@ -120,15 +120,11 @@ function toggleLeyenda() {
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
     
+    // Solución pragmática para la transición:
     cont.classList.remove('flash-evolucion');
+    void cont.offsetWidth; // ESTO fuerza al navegador a resetear el estado de la animación
     renderizarModal(j); 
-    
-    // Animación sin delays: usamos requestAnimationFrame para que el navegador sepa que hay que animar la carta nueva
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            cont.classList.add('flash-evolucion');
-        });
-    });
+    cont.classList.add('flash-evolucion');
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -144,7 +140,8 @@ function calcularObjetoLeyenda(base) {
         nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); 
         suma += nuevos[s.k]; 
     }); 
-    return { ...base, foto: base.fotoLeyenda, fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
+    // Forzamos la flecha especial de leyenda aquí:
+    return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
 }
 
 function descargarCarta() { 
