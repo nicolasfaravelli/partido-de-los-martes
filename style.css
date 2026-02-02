@@ -195,25 +195,6 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- TRANSICIÓN EVOLUCIÓN (BLINDADA) --- */
-#modal-card-container.flash-evolucion .card {
-    animation: evolution-card-flash 0.45s linear forwards !important;
-}
-#modal-card-container.flash-evolucion .card-face {
-    animation: evolution-face-flash 0.45s linear forwards !important;
-}
-
-@keyframes evolution-card-flash {
-    0% { filter: brightness(1) saturate(1) blur(0) drop-shadow(0 0 0px rgba(255, 255, 255, 0)); }
-    50% { filter: brightness(6) saturate(0) blur(1.5) drop-shadow(0 0 75px rgba(255, 255, 255, 0.5)); }
-    100% { filter: brightness(1) saturate(1) blur(0) drop-shadow(0 0 50px rgba(255, 255, 255, 0)); }
-}
-@keyframes evolution-face-flash {
-    0% { filter: brightness(1) saturate(1) blur(0); }
-    50% { filter: brightness(60) saturate(0) blur(2); }
-    100% { filter: brightness(1) saturate(1) blur(0); }
-}
-
 .shine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; overflow: hidden; mask-size: contain; mask-repeat: no-repeat; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; pointer-events: none; }
 .shine-layer::after {
     content: ""; position: absolute; top: 0; left: 0; width: 300%; height: 300%; 
