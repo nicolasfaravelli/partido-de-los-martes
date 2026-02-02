@@ -177,8 +177,8 @@ body.modal-open { overflow: hidden; }
 .card-arrow { 
     position: absolute; 
     top: 40%; 
-    left: 10%; 
-    width: 14%; 
+    left: 12%; 
+    width: 13%; 
     z-index: 5; 
     object-fit: contain;
 }
@@ -276,5 +276,6 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
+
 
 
