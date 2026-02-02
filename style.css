@@ -176,9 +176,9 @@ body.modal-open { overflow: hidden; }
 /* FLECHA CON CUADRADO AUTOMÁTICO SÓLIDO */
 .card-arrow { 
     position: absolute; 
-    top: 40%;               /* TUS VALORES EXACTOS */
-    left: 12.5%;            /* TUS VALORES EXACTOS */
-    width: 12%;             /* TUS VALORES EXACTOS */
+    top: 40%;               
+    left: 12.5%;            
+    width: 12%;             
     z-index: 5; 
     object-fit: contain;
     aspect-ratio: 1 / 1;    
@@ -187,7 +187,6 @@ body.modal-open { overflow: hidden; }
     border-radius: 2.5px;     
     box-shadow: inset 0 0 2.5px rgba(0,0,0,0.25); 
 
-    /* COLOR SÓLIDO: rgb sin canal alfa para evitar transparencia */
     background-color: rgb(var(--color-rgb));
 }
 
@@ -196,12 +195,12 @@ body.modal-open { overflow: hidden; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 81%; left: 8%; width: 84.1%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
-/* --- TRANSICIÓN EVOLUCIÓN (REPARADA) --- */
+/* --- TRANSICIÓN EVOLUCIÓN (BLINDADA) --- */
 #modal-card-container.flash-evolucion .card {
-    animation: evolution-card-flash 0.4s linear forwards !important;
+    animation: evolution-card-flash 0.45s linear forwards !important;
 }
 #modal-card-container.flash-evolucion .card-face {
-    animation: evolution-face-flash 0.4s linear forwards !important;
+    animation: evolution-face-flash 0.45s linear forwards !important;
 }
 
 @keyframes evolution-card-flash {
@@ -300,4 +299,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
