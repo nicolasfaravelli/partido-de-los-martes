@@ -116,10 +116,8 @@ function cerrarModalCarta() { document.getElementById('modal').style.display='no
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
-
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
-    
     renderizarModal(j); 
 }
 
@@ -206,6 +204,10 @@ function actualizarContadorEquipos() {
     }
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.disabled = !ok; 
+    
+    // Mostramos/Ocultamos el botón compartir según si llegamos a 10
+    const btnShare = document.getElementById('btn-share-teams');
+    if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
 }
 
 function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
@@ -291,6 +293,41 @@ function actualizarRadar() {
         const ctx = canvas.getContext('2d');
         teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
+}
+
+async function compartirEquipos() {
+    const area = document.getElementById('main-teams-layout');
+    const radar = document.getElementById('radar-container');
+    if(!area || !radar) return;
+
+    // Escondemos el radar para la foto
+    radar.style.display = 'none';
+
+    html2canvas(area, { useCORS: true, backgroundColor: "#1a1a1a", scale: 2 }).then(async canvas => {
+        // Volvemos a mostrar el radar en la web
+        radar.style.display = 'flex';
+
+        canvas.toBlob(async blob => {
+            const file = new File([blob], 'Equipos.png', { type: 'image/png' });
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Partido de los Martes',
+                        text: '¡Equipos armados!'
+                    });
+                } catch (err) {
+                    console.error("Error sharing:", err);
+                }
+            } else {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL();
+                a.download = 'Equipos.png';
+                a.click();
+                alert("Navegador no compatible con compartir. Se descargó la imagen.");
+            }
+        }, 'image/png');
+    });
 }
 
 function initAudio() { 
