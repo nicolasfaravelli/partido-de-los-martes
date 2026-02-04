@@ -237,17 +237,42 @@ body.modal-open { overflow: hidden; }
 .player-row { 
     display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: var(--radio-base); 
     cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; 
+    transition: opacity 0.3s ease;
 }
-.player-row.selected { border-color: var(--color-acento); color: var(--color-acento); }
+.player-row.selected { border-color: var(--color-acento); color: var(--color-acento); opacity: 1 !important; }
+
+/* ESTADO INHABILITADO CUANDO LLEGA A 10 */
+.players-list-scroll.limit-reached .player-row:not(.selected) {
+    opacity: 0.3;
+    color: #666;
+    pointer-events: none; /* Evita que sigan clickeando */
+}
+
+.players-list-scroll.limit-reached .player-row:not(.selected) .list-arrow-img {
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+/* CONTADOR CON DESTELLO */
+#team-counter.completado {
+    color: var(--color-acento) !important;
+    animation: counter-flash 0.5s ease-out;
+}
+
+@keyframes counter-flash {
+    0% { color: #fff; text-shadow: 0 0 15px #fff; }
+    100% { color: var(--color-acento); text-shadow: none; }
+}
 
 /* FLECHAS EN LISTAS (ARMADOR Y EQUIPOS) */
 .list-arrow-img {
     width: 18px;
     height: 18px;
     object-fit: contain;
-    background: #666; /* Gris medio para contraste en fondos blanco/negro */
+    background: #666; 
     padding: 2px;
     border-radius: 2px;
+    transition: filter 0.3s ease;
 }
 .list-arrow-spacer { width: 18px; height: 18px; }
 
