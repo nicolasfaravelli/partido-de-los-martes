@@ -245,7 +245,7 @@ body.modal-open { overflow: hidden; }
     width: 18px;
     height: 18px;
     object-fit: contain;
-    background: rgba(0,0,0,0.25);
+    background: #666; /* Gris medio para contraste en fondos blanco/negro */
     padding: 2px;
     border-radius: 2px;
 }
