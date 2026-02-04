@@ -198,14 +198,22 @@ function actualizarContadorEquipos() {
     const t = equipo1.length + equipo2.length; 
     const cnt = document.getElementById('team-counter'); 
     const ok = t === 10; 
+
     if(cnt) {
         cnt.innerText = `SELECCIONADOS: ${t} / 10`; 
         if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); 
     }
+
+    // Agregamos/Quitamos la clase para inhabilitar visualmente la lista
+    const checklist = document.getElementById('players-checklist');
+    if(checklist) {
+        if(ok) checklist.classList.add('limit-reached');
+        else checklist.classList.remove('limit-reached');
+    }
+
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.disabled = !ok; 
     
-    // Mostramos/Ocultamos el botón compartir según si llegamos a 10
     const btnShare = document.getElementById('btn-share-teams');
     if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
 }
@@ -300,11 +308,9 @@ async function compartirEquipos() {
     const radar = document.getElementById('radar-container');
     if(!area || !radar) return;
 
-    // Escondemos el radar para la foto
     radar.style.display = 'none';
 
     html2canvas(area, { useCORS: true, backgroundColor: "#1a1a1a", scale: 2 }).then(async canvas => {
-        // Volvemos a mostrar el radar en la web
         radar.style.display = 'flex';
 
         canvas.toBlob(async blob => {
