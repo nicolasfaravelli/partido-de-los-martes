@@ -204,12 +204,15 @@ function actualizarContadorEquipos() {
         if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); 
     }
 
-    // Agregamos/Quitamos la clase para inhabilitar visualmente la lista
     const checklist = document.getElementById('players-checklist');
     if(checklist) {
         if(ok) checklist.classList.add('limit-reached');
         else checklist.classList.remove('limit-reached');
     }
+
+    // Inhabilitar botón de invitado si llegamos a 10
+    const btnAddGuest = document.querySelector('.btn-add-guest');
+    if(btnAddGuest) btnAddGuest.disabled = ok;
 
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.disabled = !ok; 
@@ -299,7 +302,7 @@ function actualizarRadar() {
     const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
     if (!teamRadarChart) {
         const ctx = canvas.getContext('2d');
-        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
+        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
 
