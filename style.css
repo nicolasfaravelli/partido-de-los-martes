@@ -151,6 +151,14 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 
+/* INVITADO INHABILITADO */
+.btn-add-guest:disabled {
+    opacity: 0.3;
+    color: #666;
+    cursor: not-allowed;
+    border-color: #333;
+}
+
 /* --- CARTAS GRID --- */
 
 .grid { 
@@ -245,7 +253,7 @@ body.modal-open { overflow: hidden; }
 .players-list-scroll.limit-reached .player-row:not(.selected) {
     opacity: 0.5;
     color: #666;
-    pointer-events: none; /* Evita que sigan clickeando */
+    pointer-events: none; 
 }
 
 .players-list-scroll.limit-reached .player-row:not(.selected) .list-arrow-img {
@@ -305,4 +313,3 @@ body.modal-open { overflow: hidden; }
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; }
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; }
 }
-
