@@ -78,7 +78,6 @@ body.modal-open { overflow: hidden; }
     text-transform: uppercase; 
     letter-spacing: 0.5px;
     border: 1px solid var(--color-bordes);
-    /* UNIFICADO: Transición a 0.3s para todos */
     transition: all 0.3s ease; 
     outline: none;
     display: inline-flex;
@@ -110,7 +109,6 @@ body.modal-open { overflow: hidden; }
 /* UNIFICADO: Efecto HOVER para Botón Principal */
 .btn:hover:not(:disabled) { 
     background: #8bb7e2 !important; 
-    /* Mismo resplandor unificado */
     box-shadow: 0 0 20px var(--color-acento) !important; 
     transform: translateY(-1px); 
 }
@@ -144,8 +142,8 @@ body.modal-open { overflow: hidden; }
 
 /* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
 .grid:has(.card:hover) .card:not(:hover) { 
-    opacity: 0.9; 
-    filter: saturate(0.9) brightness(0.9); 
+    opacity: 0.85; 
+    filter: saturate(0.85) brightness(0.85); 
 }
 
 .card { 
@@ -155,7 +153,7 @@ body.modal-open { overflow: hidden; }
     cursor: pointer; 
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                 opacity 0.5s ease, 
-                filter 1s ease, 
+                filter 1.5s ease, 
                 box-shadow 0.5s ease; 
     container-type: size; 
     outline: none; 
@@ -270,5 +268,6 @@ body.modal-open { overflow: hidden; }
     opacity: 0.5; 
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
+
 
 
