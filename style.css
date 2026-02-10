@@ -109,8 +109,8 @@ body.modal-open { overflow: hidden; }
 
 /* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
 .grid:has(.card:hover) .card:not(:hover) { 
-    opacity: 0.85; 
-    filter: saturate(0.7) brightness(0.8); 
+    opacity: 0.9; 
+    filter: saturate(0.75) brightness(0.75); 
 }
 
 .card { 
@@ -128,7 +128,7 @@ body.modal-open { overflow: hidden; }
 }
 
 .card:hover { 
-    transform: scale(1.08); 
+    transform: scale(1.05); 
     z-index: 10; 
     /* Resplandor más amplio y definido */
     box-shadow: 0 0 45px var(--card-glow-color);
@@ -198,3 +198,4 @@ body.modal-open { overflow: hidden; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
+
