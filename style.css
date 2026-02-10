@@ -56,11 +56,11 @@ body.modal-open { overflow: hidden; }
     z-index: 2000;
     margin: 0 -20px 30px -20px;
     padding: 0 20px 20px 20px;
-    background: rgba(10, 10, 10, 0.9);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(1px);
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
 
 .header-container { text-align: center; padding: 15px 0 10px 0; }
@@ -78,8 +78,7 @@ body.modal-open { overflow: hidden; }
     text-transform: uppercase; 
     letter-spacing: 0.5px;
     border: 1px solid var(--color-bordes);
-    /* UNIFICADO: Transición a 0.3s para todos */
-    transition: all 0.3s ease; 
+    transition: all 0.2s ease;
     outline: none;
     display: inline-flex;
     justify-content: center;
@@ -88,48 +87,16 @@ body.modal-open { overflow: hidden; }
 }
 
 #search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; }
-
-/* UNIFICADO: Efecto HOVER para Inputs */
-#search-input:hover, #sort-select:hover {
-    border-color: var(--color-acento);
-    /* Mismo resplandor que tendrán los botones */
-    box-shadow: 0 0 15px var(--color-acento); 
-}
-
-/* UNIFICADO: Efecto FOCUS para Inputs */
-#search-input:focus, #sort-select:focus { 
-    border-color: var(--color-acento); 
-    background: #222; 
-    /* Resplandor un poco más fuerte al escribir */
-    box-shadow: 0 0 20px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); 
-    color: #fff;
-}
+#search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
 .btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
-
-/* UNIFICADO: Efecto HOVER para Botón Principal */
-.btn:hover:not(:disabled) { 
-    background: #8bb7e2 !important; 
-    /* Mismo resplandor unificado */
-    box-shadow: 0 0 20px var(--color-acento) !important; 
-    transform: translateY(-1px); 
-}
-
+.btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 .btn-gold { background: var(--color-acento); color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(117, 170, 219, 0.5); font-weight: 900; }
-
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
-
-/* UNIFICADO: Efecto HOVER para Botón Invitado */
-.btn-add-guest:hover { 
-    border-color: var(--color-acento); 
-    background: #1a1a1a; 
-    /* Mismo resplandor unificado */
-    box-shadow: 0 0 15px var(--color-acento); 
-}
-
+.btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
 /* --- CARTAS GRID Y EFECTO FOCO CORREGIDO --- */
@@ -140,6 +107,20 @@ body.modal-open { overflow: hidden; }
     max-width: 1200px; 
     margin: 0 auto; 
     padding-bottom: 50px; 
+}
+
+/* Efecto de iluminación al pasar el mouse */
+#search-input:hover, #sort-select:hover {
+    border-color: var(--color-acento);
+    box-shadow: 0 0 10px rgba(117, 170, 219, 0.3); /* Brillo suave */
+}
+
+/* Efecto de iluminación fuerte al escribir (Foco) */
+#search-input:focus, #sort-select:focus { 
+    border-color: var(--color-acento); 
+    background: #222; 
+    box-shadow: 0 0 15px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); /* Brillo fuerte neón */
+    color: #fff;
 }
 
 /* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
@@ -223,18 +204,4 @@ body.modal-open { overflow: hidden; }
 .team-box.highlight { border-color: var(--color-acento) !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.4); }
 
 .team-white { background: #ffffff; color: #111; border-color: #ccc; box-shadow: inset 0 0 50px rgba(0,0,0,0.2); }
-.team-black { background: #000000; color: #ffffff; border-color: #333; box-shadow: inset 0 0 50px rgba(255,255,255,0.05); }
-
-.team-header { font-size: 1.8rem; font-family: var(--fuente-impacto); text-align: center; border-bottom: 2px solid; font-weight: bold; margin-bottom: 5px; }
-.team-avg-label { text-align: center; font-family: var(--fuente-impacto); font-size: 1.1rem; letter-spacing: 1px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
-.team-player-li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 1.1rem; font-family: var(--fuente-datos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-
-#radar-container { background: var(--color-acento); border-radius: var(--radio-base); padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-
-.btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-.modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
-#music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
-
-@media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
-
-
+.
