@@ -1,53 +1,23 @@
 :root {
-
     --color-acento: #75AADB; 
-
     --color-bordes: #333333;
-
     --fuente-impacto: 'Bebas Neue', sans-serif;
-
     --fuente-datos: 'Montserrat', sans-serif;
-
     --radio-base: 6px; 
-
-    --altura-base: 40px; 
-
-}
-
-
-
+    --altura-base: 40px;}
 body { 
-
     background-color: #0f0f0f; 
-
     color: #fff; 
-
     font-family: var(--fuente-datos); 
-
     margin: 0; 
-
     padding: 0 20px 20px 20px; 
-
     background-image: var(--fondo-url); 
-
     background-position: center; 
-
     background-repeat: no-repeat; 
-
     background-size: cover; 
-
     background-attachment: fixed; 
-
-    user-select: none;
-
-}
-
-
-
+    user-select: none;}
 body.modal-open { overflow: hidden; }
-
-
-
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
 
@@ -397,3 +367,4 @@ body.modal-open { overflow: hidden; }
 
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
+
