@@ -55,11 +55,9 @@ body.modal-open { overflow: hidden; }
     z-index: 2000;
     margin: 0 -20px 30px -20px;
     padding: 0 20px 20px 20px;
-    /* Efecto de cristal más oscuro y pulido */
     background: rgba(10, 10, 10, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    /* Borde sutil para dar volumen */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
@@ -99,27 +97,41 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
-/* --- CARTAS GRID Y EFECTO FOCO --- */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+/* --- CARTAS GRID Y EFECTO FOCO CORREGIDO --- */
+.grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
+    gap: 25px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding-bottom: 50px; 
+}
 
-/* Oscurece el resto de las cartas cuando el mouse entra al grid */
-.grid:hover .card:not(:hover) { opacity: 0.75; filter: saturate(0.8); }
+/* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
+.grid:has(.card:hover) .card:not(:hover) { 
+    opacity: 0.85; 
+    filter: saturate(0.7) brightness(0.8); 
+}
 
 .card { 
     position: relative; 
     width: 100%; 
     aspect-ratio: 2 / 3; 
     cursor: pointer; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                opacity 0.3s ease, 
+                filter 0.3s ease, 
+                box-shadow 0.3s ease; 
     container-type: size; 
     outline: none; 
     -webkit-tap-highlight-color: transparent; 
 }
+
 .card:hover { 
     transform: scale(1.08); 
     z-index: 10; 
-    /* Resplandor dinámico usando la variable inyectada por JS */
-    box-shadow: 0 0 30px var(--card-glow-color);
+    /* Resplandor más amplio y definido */
+    box-shadow: 0 0 45px var(--card-glow-color);
 }
 
 .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); }
