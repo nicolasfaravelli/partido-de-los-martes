@@ -82,11 +82,11 @@ body.modal-open { overflow: hidden; }
 
     padding: 0 20px 20px 20px;
 
-    background: rgba(10, 10, 10, 0.7);
+    background: rgba(10, 10, 10, 0.8);
 
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
 
-    -webkit-backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(25px);
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -184,6 +184,20 @@ body.modal-open { overflow: hidden; }
 
 }
 
+
+/* Efecto de iluminación al pasar el mouse */
+#search-input:hover, #sort-select:hover {
+    border-color: var(--color-acento);
+    box-shadow: 0 0 10px rgba(117, 170, 219, 0.3); /* Brillo suave */
+}
+
+/* Efecto de iluminación fuerte al escribir (Foco) */
+#search-input:focus, #sort-select:focus { 
+    border-color: var(--color-acento); 
+    background: #222; 
+    box-shadow: 0 0 15px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); /* Brillo fuerte neón */
+    color: #fff;
+}
 
 
 /* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
@@ -367,3 +381,4 @@ body.modal-open { overflow: hidden; }
 
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
+
