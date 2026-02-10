@@ -48,22 +48,48 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER MEJORADO --- */
+/* --- HEADER MEJORADO Y HORIZONTAL --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    padding: 0 20px 20px 20px;
-    background: rgba(10, 10, 10, 0.7);
+    /* Ajuste de padding para que respire */
+    padding: 10px 20px;
+    background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    /* Flexbox para alinear logo y controles */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
 }
-.header-container { text-align: center; padding: 15px 0 10px 0; }
-.title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
-.controls-area { max-width: 1100px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; }
+
+.header-container { 
+    /* El logo ya no ocupa todo el ancho */
+    flex: 0 0 auto; 
+    padding: 0;
+}
+
+.title-img { 
+    /* Logo un poco más chico para que entre en línea */
+    max-height: 50px; 
+    width: auto; 
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
+}
+
+.controls-area { 
+    /* Los controles ocupan el resto y se alinean a la derecha */
+    flex: 1; 
+    display: flex; 
+    gap: 12px; 
+    flex-wrap: wrap; 
+    justify-content: flex-end; /* Alineados a la derecha */
+    align-items: center;
+}
 
 /* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
@@ -84,7 +110,7 @@ body.modal-open { overflow: hidden; }
     white-space: nowrap;
 }
 
-#search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; }
+#search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; max-width: 300px; /* Límite para que no se estiren infinito */ }
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
 .btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
@@ -107,10 +133,9 @@ body.modal-open { overflow: hidden; }
     padding-bottom: 50px; 
 }
 
-/* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
 .grid:has(.card:hover) .card:not(:hover) { 
-    opacity: 0.9; 
-    filter: saturate(0.9) brightness(0.9); 
+    opacity: 0.85; 
+    filter: saturate(0.7) brightness(0.8); 
 }
 
 .card { 
@@ -118,19 +143,18 @@ body.modal-open { overflow: hidden; }
     width: 100%; 
     aspect-ratio: 2 / 3; 
     cursor: pointer; 
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                opacity 0.5s ease, 
-                filter 0.5s ease, 
-                box-shadow 0.5s ease; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                opacity 0.3s ease, 
+                filter 0.3s ease, 
+                box-shadow 0.3s ease; 
     container-type: size; 
     outline: none; 
     -webkit-tap-highlight-color: transparent; 
 }
 
 .card:hover { 
-    transform: scale(1.05); 
+    transform: scale(1.08); 
     z-index: 10; 
-    /* Resplandor más amplio y definido */
     box-shadow: 0 0 45px var(--card-glow-color);
 }
 
@@ -197,8 +221,9 @@ body.modal-open { overflow: hidden; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
-@media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
-
-
-
-
+@media (max-width: 900px) { 
+    .main-sticky-header { flex-direction: column; gap: 15px; } 
+    .controls-area { width: 100%; justify-content: center; } 
+    .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
+    #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } 
+}
