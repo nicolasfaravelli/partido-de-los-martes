@@ -231,6 +231,17 @@ body.modal-open { overflow: hidden; }
 
 #radar-container { background: var(--color-acento); border-radius: var(--radio-base); padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
+/* CONTENEDOR DE BOTONES DEL MODAL (Nuevo estilo para centrar) */
+#modal-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
