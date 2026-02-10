@@ -48,55 +48,54 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER HORIZONTAL ANTI-DESBORDE --- */
+/* --- HEADER HORIZONTAL (LÓGICA LÍQUIDA) --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    padding: 10px 20px; 
+    padding: 10px 20px;
     background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* FLEXBOX ESTRICTO */
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    /* Configuración Flex estricta */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Prohibido bajar de línea */
     justify-content: space-between;
     align-items: center;
-    gap: 15px; /* Gap reducido para ganar espacio */
+    gap: 15px; /* Espacio reducido entre logo y controles */
 }
 
-/* 1. LOGO A LA IZQUIERDA */
+/* 1. LOGO (Izquierda, Fijo) */
 .header-container { 
-    flex: 0 0 auto; /* Fijo, no se encoge */
+    flex: 0 0 auto; /* No se estira ni se encoge */
     display: flex;
     align-items: center;
-    margin-right: auto; /* Empuja todo lo demás a la derecha si sobra espacio */
 }
 
 .title-img { 
-    height: 70px; 
+    height: 60px; /* Altura fija controlada */
     width: auto;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
-/* 2. CONTROLES (OCUPAN EL RESTO) */
+/* 2. CONTROLES (Derecha, Adaptables) */
 .controls-area { 
-    flex: 1 1 auto; /* Flexible */
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-end; /* Alineados a la derecha */
+    flex: 1 1 auto; /* Toma todo el espacio disponible */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Prohibido bajar de línea */
+    justify-content: flex-end; /* Pegados a la derecha */
     align-items: center;
-    gap: 10px; /* Espacio justo entre inputs */
-    min-width: 0; /* CLAVE: Permite que el contenedor se encoja si es necesario */
+    gap: 10px; /* Espacio entre inputs */
+    min-width: 0; /* CRUCIAL: Permite que el contenedor se achique si no hay espacio */
 }
 
-/* --- ELEMENTOS INTERACTIVOS (LÓGICA ADAPTATIVA) --- */
+/* --- ELEMENTOS INTERACTIVOS --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -112,7 +111,7 @@ body.modal-open { overflow: hidden; }
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    white-space: nowrap;
+    white-space: nowrap; /* Texto en una sola línea siempre */
 }
 
 #search-input, #sort-select { 
@@ -121,31 +120,32 @@ body.modal-open { overflow: hidden; }
     color: white; 
 }
 
-/* BUSCADOR: Elástico pero permisivo */
+/* BUSCADOR: Elástico (prioridad para achicarse) */
 #search-input {
-    flex: 10 1 auto; /* Prioridad para crecer */
-    min-width: 100px; /* CLAVE: Mínimo pequeño para que entre en 100% zoom */
-    width: 100%; /* Intenta llenar */
+    flex: 1 1 auto; /* Crece y SE ENCOGE */
+    min-width: 0; /* Puede achicarse hasta casi desaparecer si es necesario */
+    width: 100%; 
 }
 
-/* FILTRO: Compacto */
+/* FILTRO: Semi-fijo */
 #sort-select {
-    flex: 2 1 auto; /* Crece menos que el buscador */
+    flex: 0 1 auto; /* No crece más de su contenido, pero se encoge */
     width: auto;
-    min-width: 100px; /* Mínimo para que se lea algo */
+    min-width: 0;
     max-width: 200px;
+    text-overflow: ellipsis; /* Si el texto es largo, pone tres puntos */
 }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
-/* BOTÓN: Fijo a la derecha */
+/* BOTÓN: Intocable */
 .btn { 
     padding: 0 20px; 
     background: var(--color-acento); 
     color: #fff; 
     cursor: pointer; 
     border: none; 
-    flex: 0 0 auto; /* No se estira ni se encoge */
+    flex: 0 0 auto; /* No se deforma nunca */
 }
 
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
@@ -233,14 +233,14 @@ body.modal-open { overflow: hidden; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) { 
-    /* En celular volvemos a apilar */
-    .main-sticky-header { flex-direction: column !important; gap: 15px; padding: 15px 20px; } 
-    .header-container { width: 100%; text-align: center; justify-content: center; margin-right: 0; }
+    /* En celular se apila */
+    .main-sticky-header { flex-direction: column !important; gap: 10px; height: auto; } 
+    .header-container { width: 100%; text-align: center; justify-content: center; margin: 0; }
     .title-img { height: 70px; }
-    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
-    #search-input { min-width: 100%; max-width: none; }
-    #sort-select { min-width: 100%; max-width: none; }
-    .btn { width: 100%; }
+    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    #search-input { width: 100%; max-width: none; min-width: 100%; flex: 1 1 100%; }
+    #sort-select { width: 100%; max-width: none; flex: 1 1 100%; }
+    .btn { width: 100%; flex: 1 1 100%; }
     
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } 
