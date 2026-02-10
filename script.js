@@ -114,12 +114,31 @@ function renderizarModal(j) {
 
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
+/* --- FUNCIÓN NUEVA: FLASH BLANCO --- */
+function flashPantalla() {
+    const overlay = document.getElementById('white-flash-overlay');
+    if (overlay) {
+        overlay.classList.add('flash-active');
+        setTimeout(() => {
+            overlay.classList.remove('flash-active');
+        }, 250); // 0.25 segundos de duración
+    }
+}
+
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
+    
+    // Activar flash blanco al cambiar
+    flashPantalla();
+    
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
-    renderizarModal(j); 
+    
+    // Pequeño delay para que el cambio ocurra justo cuando la pantalla está blanca
+    setTimeout(() => {
+        renderizarModal(j); 
+    }, 125); // Mitad de la duración del flash (para que cambie en el pico de blancura)
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -217,7 +236,7 @@ function actualizarContadorEquipos() {
 
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.disabled = !ok; 
-    
+     
     const btnShare = document.getElementById('btn-share-teams');
     if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
 }
