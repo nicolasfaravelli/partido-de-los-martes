@@ -247,3 +247,21 @@ body.modal-open { overflow: hidden; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
+
+/* --- CARTA BLANCA DE TRANSICIÓN --- */
+#white-flash-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999; pointer-events: none;
+    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/BLANCA.png');
+    background-size: cover; background-position: center;
+    opacity: 0; /* Empieza invisible */
+    transition: opacity 0.25s ease-in-out; /* Transición suave */
+}
+
+/* Cuando se activa, se vuelve visible y brilla */
+#white-flash-overlay.active {
+    opacity: 1;
+    /* Resplandor blanco intenso alrededor */
+    box-shadow: inset 0 0 100px 50px rgba(255, 255, 255, 0.8);
+}
