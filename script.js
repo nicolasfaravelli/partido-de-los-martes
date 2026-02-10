@@ -215,9 +215,14 @@ function renderizarListaSeleccion() {
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
         const flechaHtml = j.flecha ? `<img src="${j.flecha}" class="list-arrow-img">` : '<div class="list-arrow-spacer"></div>';
-        return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`;}).join('');
+        const esLesionado = j.flecha && (j.flecha.includes("/0.") || j.flecha.includes("0.png"));
+        if (esLesionado) {return `<div class="player-row disabled">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:#666">${j.prom}</span></div>`;
+        } else {return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`; }
+    }).join('');
+    
     cont.innerHTML = html;
-    actualizarContadorEquipos(); actualizarTablerosEquipos();
+    actualizarContadorEquipos(); 
+    actualizarTablerosEquipos();
 }
 
 function toggleSeleccion(id) { 
@@ -425,6 +430,7 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
 
