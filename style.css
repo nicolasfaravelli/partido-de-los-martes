@@ -248,26 +248,21 @@ body.modal-open { overflow: hidden; }
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
 
-/* --- CARTA BLANCA DE TRANSICIÓN (CORREGIDO) --- */
+/* --- CARTA BLANCA DE TRANSICIÓN --- */
 #white-flash-overlay {
     position: fixed;
     z-index: 9999; 
     pointer-events: none;
-    
-    /* 1. SOLUCIÓN AL RECTÁNGULO NEGRO */
-    background-color: transparent; /* Fondo transparente explícito */
+    background-color: transparent;
     background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/BLANCA.png');
-    background-size: 100% 100%; /* Forza a la imagen a llenar el hueco exacto */
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-        /* 2. VALOR INICIAL */
     opacity: 0; 
-        /* 3. CONTROL DE TIEMPO (VELOCIDAD) */
-    transition: opacity 0.2s ease-in-out; 
+    transition: opacity 0.15s ease-in-out; 
 }
 #white-flash-overlay.active {
-    /* 4. CONTROL DE OPACIDAD MÁXIMA */
     opacity: 0.5; 
-     /* 5. RESPLANDOR (GLOW) */
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
+
