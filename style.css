@@ -48,47 +48,51 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER MEJORADO Y HORIZONTAL --- */
+/* --- HEADER HORIZONTAL --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    /* Ajuste de padding para que respire */
-    padding: 10px 20px;
-    background: rgba(10, 10, 10, 0.85);
+    /* Padding lateral para que no toque los bordes */
+    padding: 10px 25px;
+    background: rgba(10, 10, 10, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    /* Flexbox para alinear logo y controles */
+    
+    /* FLEXBOX para poner logo a la izq y controles a la der */
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
 }
 
 .header-container { 
-    /* El logo ya no ocupa todo el ancho */
-    flex: 0 0 auto; 
     padding: 0;
+    text-align: left;
+    flex: 0 0 auto;
 }
 
 .title-img { 
-    /* Logo un poco más chico para que entre en línea */
-    max-height: 50px; 
-    width: auto; 
+    /* Quitamos el ancho forzado para que use su tamaño real pero limitado en altura */
+    max-width: none; 
+    height: auto; 
+    max-height: 70px; /* Altura controlada para que entre en la barra */
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
+/* Área de Controles alineada a la derecha */
 .controls-area { 
-    /* Los controles ocupan el resto y se alinean a la derecha */
-    flex: 1; 
+    margin: 0; 
     display: flex; 
     gap: 12px; 
-    flex-wrap: wrap; 
-    justify-content: flex-end; /* Alineados a la derecha */
+    flex-wrap: nowrap; /* Forzamos que se mantengan en línea */
+    justify-content: flex-end; 
     align-items: center;
+    flex: 1; 
 }
 
 /* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
@@ -110,20 +114,48 @@ body.modal-open { overflow: hidden; }
     white-space: nowrap;
 }
 
-#search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; max-width: 300px; /* Límite para que no se estiren infinito */ }
+/* Input y Select base */
+#search-input, #sort-select { 
+    padding: 0 15px; 
+    background: rgba(30, 30, 30, 0.9); 
+    color: white; 
+}
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
-.btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
+/* Ajustes de tamaño para distribución horizontal */
+#search-input {
+    flex: 1 1 auto; /* El buscador se estira */
+    min-width: 150px;
+    max-width: 400px;
+}
+
+#sort-select {
+    flex: 0 0 auto; /* El select NO se estira */
+    width: auto;
+    min-width: auto;
+    max-width: 220px;
+}
+
+.btn { 
+    padding: 0 25px; 
+    background: var(--color-acento); 
+    color: #fff; 
+    cursor: pointer; 
+    border: none; 
+    width: auto;
+    flex: 0 0 auto;
+}
+
+/* ... estilos de estados de botones ... */
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
-
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 .btn-gold { background: var(--color-acento); color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(117, 170, 219, 0.5); font-weight: 900; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 .btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
-/* --- CARTAS GRID Y EFECTO FOCO CORREGIDO --- */
+/* --- CARTAS GRID Y EFECTO FOCO --- */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -222,8 +254,15 @@ body.modal-open { overflow: hidden; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) { 
-    .main-sticky-header { flex-direction: column; gap: 15px; } 
-    .controls-area { width: 100%; justify-content: center; } 
+    /* En celular volvemos a apilar */
+    .main-sticky-header { flex-direction: column; gap: 15px; padding: 15px 20px; } 
+    .header-container { width: 100%; text-align: center; }
+    .title-img { max-height: 90px; }
+    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
+    #search-input { min-width: 100%; max-width: none; }
+    #sort-select { min-width: 100%; max-width: none; }
+    .btn { width: 100%; }
+    
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } 
 }
