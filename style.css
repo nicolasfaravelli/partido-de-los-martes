@@ -48,54 +48,56 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER HORIZONTAL --- */
+/* --- HEADER HORIZONTAL (CORREGIDO) --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    /* Padding lateral para que no toque los bordes */
-    padding: 10px 25px;
-    background: rgba(10, 10, 10, 0.7);
+    padding: 10px 30px;
+    background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* FLEXBOX para poner logo a la izq y controles a la der */
-    display: flex;
-    flex-direction: row;
+    /* ESTO FUERZA LA LÍNEA ÚNICA */
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; 
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
 }
 
 .header-container { 
+    flex: 0 0 auto; /* El logo no se achica ni se estira */
     padding: 0;
-    text-align: left;
-    flex: 0 0 auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .title-img { 
-    /* Quitamos el ancho forzado para que use su tamaño real pero limitado en altura */
-    max-width: none; 
-    height: auto; 
-    max-height: 70px; /* Altura controlada para que entre en la barra */
+    height: 85px; /* Tamaño más grande para que se vea bien */
+    width: auto;
+    max-width: 300px;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
-/* Área de Controles alineada a la derecha */
 .controls-area { 
-    margin: 0; 
-    display: flex; 
-    gap: 12px; 
-    flex-wrap: nowrap; /* Forzamos que se mantengan en línea */
-    justify-content: flex-end; 
+    flex: 1; /* Ocupa el resto del espacio */
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end;
     align-items: center;
-    flex: 1; 
+    gap: 15px;
+    margin: 0;
+    max-width: none;
 }
 
-/* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
+/* --- ELEMENTOS INTERACTIVOS --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -114,41 +116,27 @@ body.modal-open { overflow: hidden; }
     white-space: nowrap;
 }
 
-/* Input y Select base */
-#search-input, #sort-select { 
+#search-input { 
     padding: 0 15px; 
     background: rgba(30, 30, 30, 0.9); 
     color: white; 
+    flex: 0 1 350px; /* Buscador con tamaño máximo de 350px */
 }
+
+#sort-select { 
+    padding: 0 10px; 
+    background: rgba(30, 30, 30, 0.9); 
+    color: white; 
+    flex: 0 0 auto; /* No se estira */
+    max-width: 180px; /* Filtro más pequeño */
+}
+
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
-/* Ajustes de tamaño para distribución horizontal */
-#search-input {
-    flex: 1 1 auto; /* El buscador se estira */
-    min-width: 150px;
-    max-width: 400px;
-}
-
-#sort-select {
-    flex: 0 0 auto; /* El select NO se estira */
-    width: auto;
-    min-width: auto;
-    max-width: 220px;
-}
-
-.btn { 
-    padding: 0 25px; 
-    background: var(--color-acento); 
-    color: #fff; 
-    cursor: pointer; 
-    border: none; 
-    width: auto;
-    flex: 0 0 auto;
-}
-
-/* ... estilos de estados de botones ... */
+.btn { padding: 0 20px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; flex: 0 0 auto; }
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
+
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 .btn-gold { background: var(--color-acento); color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(117, 170, 219, 0.5); font-weight: 900; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
@@ -156,39 +144,16 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
 /* --- CARTAS GRID Y EFECTO FOCO --- */
-.grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
-    gap: 25px; 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding-bottom: 50px; 
-}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
 
-.grid:has(.card:hover) .card:not(:hover) { 
-    opacity: 0.85; 
-    filter: saturate(0.7) brightness(0.8); 
-}
+.grid:has(.card:hover) .card:not(:hover) { opacity: 0.85; filter: saturate(0.7) brightness(0.8); }
 
 .card { 
-    position: relative; 
-    width: 100%; 
-    aspect-ratio: 2 / 3; 
-    cursor: pointer; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                opacity 0.3s ease, 
-                filter 0.3s ease, 
-                box-shadow 0.3s ease; 
-    container-type: size; 
-    outline: none; 
-    -webkit-tap-highlight-color: transparent; 
+    position: relative; width: 100%; aspect-ratio: 2 / 3; cursor: pointer; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease; 
+    container-type: size; outline: none; -webkit-tap-highlight-color: transparent; 
 }
-
-.card:hover { 
-    transform: scale(1.08); 
-    z-index: 10; 
-    box-shadow: 0 0 45px var(--card-glow-color);
-}
+.card:hover { transform: scale(1.08); z-index: 10; box-shadow: 0 0 45px var(--card-glow-color); }
 
 .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); }
 .card-bg { width: 100%; height: 100%; object-fit: contain; }
@@ -253,14 +218,14 @@ body.modal-open { overflow: hidden; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
+/* RESPONSIVE */
 @media (max-width: 900px) { 
-    /* En celular volvemos a apilar */
-    .main-sticky-header { flex-direction: column; gap: 15px; padding: 15px 20px; } 
-    .header-container { width: 100%; text-align: center; }
-    .title-img { max-height: 90px; }
+    .main-sticky-header { flex-direction: column !important; gap: 15px; padding: 15px 20px; } 
+    .header-container { width: 100%; text-align: center; justify-content: center; }
+    .title-img { height: 70px; }
     .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
-    #search-input { min-width: 100%; max-width: none; }
-    #sort-select { min-width: 100%; max-width: none; }
+    #search-input { min-width: 100%; }
+    #sort-select { min-width: 100%; }
     .btn { width: 100%; }
     
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
