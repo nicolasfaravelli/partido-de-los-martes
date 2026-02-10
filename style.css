@@ -1,3 +1,6 @@
+/* --- RESET BÁSICO --- */
+* { box-sizing: border-box; }
+
 :root {
     --color-acento: #75AADB; 
     --color-bordes: #333333;
@@ -7,15 +10,13 @@
     --altura-base: 40px; 
 }
 
-/* RESET IMPORTANTE: Evita que los bordes sumen tamaño extra */
-* { box-sizing: border-box; }
-
 body { 
     background-color: #0f0f0f; 
     color: #fff; 
     font-family: var(--fuente-datos); 
     margin: 0; 
-    padding: 20px; /* Padding general para que nada toque los bordes */
+    /* Quitamos el padding del body para que el header toque los bordes */
+    padding: 0; 
     background-image: var(--fondo-url); 
     background-position: center; 
     background-repeat: no-repeat; 
@@ -40,61 +41,72 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER: ALINEADO A LAS CARTAS --- */
+/* --- HEADER BORDE A BORDE (FULL WIDTH) --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     
-    /* DIMENSIONES IGUALES A LA GRILLA */
+    /* ANCHO TOTAL SIN MÁRGENES */
     width: 100%;
-    max-width: 1200px; /* Clavado en 1200px igual que las cartas */
-    margin: 0 auto 30px auto; /* Centrado automático */
+    margin: 0 0 30px 0;
+    padding: 10px 20px;
     
     /* ESTÉTICA */
-    padding: 10px 20px;
-    background: rgba(10, 10, 10, 0.95); /* Casi opaco para que se lea bien */
+    background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0 0 8px 8px; /* Bordes redondeados abajo */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    /* Sin bordes redondeados, es una barra */
+    border-radius: 0; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* DISTRIBUCIÓN HORIZONTAL (FLEX) */
+    /* CENTRADO DEL CONTENIDO INTERNO */
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap; /* Fuerza una sola línea */
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
+    justify-content: center; /* Centramos el contenedor interno */
 }
 
-/* LOGO A LA IZQUIERDA */
+/* CONTENEDOR INTERNO PARA ALINEAR CON CARTAS */
+/* Este div no existe en el HTML, así que usamos el header como flex container
+   y forzamos a los hijos a comportarse, O usamos un truco de max-width en los hijos.
+   Como no puedo cambiar el HTML, aplico la distribución directa acá: */
+
+.main-sticky-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between; /* Extremos */
+    align-items: center;
+}
+
+/* LOGO */
 .header-container { 
-    flex: 0 0 auto; /* Fijo */
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
+    padding-left: 10px; /* Un poco de aire lateral */
 }
 
 .title-img { 
-    height: 55px; /* Altura controlada */
+    height: 55px; 
     width: auto;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
-/* CONTROLES A LA DERECHA */
+/* CONTROLES */
 .controls-area { 
-    flex: 1 1 auto; /* Ocupa el espacio que sobra */
+    flex: 1 1 auto;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-end; /* Pegado a la derecha */
+    justify-content: flex-end;
     align-items: center;
     gap: 10px;
-    min-width: 0; /* Permite achicarse */
+    min-width: 0;
+    padding-right: 10px; /* Un poco de aire lateral */
 }
 
-/* --- INPUTS Y BOTONES --- */
+/* --- INPUTS --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     border-radius: var(--radio-base); 
@@ -118,21 +130,19 @@ body.modal-open { overflow: hidden; }
     color: white; 
 }
 
-/* BUSCADOR FLEXIBLE */
 #search-input {
-    flex: 1 1 auto; /* Se estira */
-    min-width: 80px; /* Se permite achicar mucho si hace falta */
+    flex: 10 1 auto;
+    min-width: 80px; 
     width: 100%; 
+    max-width: 400px; /* Límite para que no sea eterno en pantallas ultra-wide */
 }
 
-/* FILTRO */
 #sort-select {
-    flex: 0 0 auto; /* No se estira */
+    flex: 0 0 auto;
     width: auto;
     max-width: 180px;
 }
 
-/* BOTÓN FIJO */
 .btn { 
     flex: 0 0 auto; 
     padding: 0 20px; 
@@ -152,13 +162,14 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
 /* --- CARTAS GRID --- */
+/* IMPORTANTE: Padding lateral para el body/grid ya que sacamos el del body general */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
     gap: 25px; 
-    max-width: 1200px; /* ALINEADO CON HEADER */
+    max-width: 1200px; 
     margin: 0 auto; 
-    padding-bottom: 50px; 
+    padding: 0 20px 50px 20px; /* Padding lateral agregado aquí */
 }
 
 .grid:has(.card:hover) .card:not(:hover) { opacity: 0.85; filter: saturate(0.7) brightness(0.8); }
@@ -219,13 +230,13 @@ body.modal-open { overflow: hidden; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
-/* RESPONSIVE: Solo apila en pantallas MUY chicas (menos de 700px) */
 @media (max-width: 700px) { 
-    .main-sticky-header { flex-direction: column !important; gap: 10px; } 
-    .header-container { width: 100%; text-align: center; justify-content: center; }
-    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
-    #search-input { width: 100%; max-width: none; }
-    #sort-select { width: 100%; max-width: none; }
+    .main-sticky-header { flex-direction: column !important; gap: 10px; padding: 10px 15px; } 
+    .header-container { width: 100%; text-align: center; justify-content: center; margin: 0; padding: 0; }
+    .title-img { height: 50px; }
+    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 0; }
+    #search-input { min-width: 100%; max-width: none; }
+    #sort-select { min-width: 100%; max-width: none; }
     .btn { width: 100%; }
     
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
