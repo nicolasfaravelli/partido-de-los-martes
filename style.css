@@ -48,56 +48,52 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER HORIZONTAL (CORREGIDO) --- */
+/* --- HEADER MEJORADO (HORIZONTAL COMPACTO) --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    padding: 10px 30px;
+    padding: 10px 20px; /* Padding justo para que no coma pantalla */
     background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* ESTO FUERZA LA LÍNEA ÚNICA */
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important; 
+    /* DISTRIBUCIÓN HORIZONTAL */
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
 }
 
 .header-container { 
-    flex: 0 0 auto; /* El logo no se achica ni se estira */
+    flex: 0 0 auto; /* El logo ocupa lo justo y necesario */
     padding: 0;
-    margin: 0;
     display: flex;
     align-items: center;
 }
 
 .title-img { 
-    height: 85px; /* Tamaño más grande para que se vea bien */
+    height: 65px; /* Altura controlada para que la barra no sea gigante */
     width: auto;
-    max-width: 300px;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
+/* Área de Controles: Se adapta al espacio restante */
 .controls-area { 
-    flex: 1; /* Ocupa el resto del espacio */
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-end;
+    flex: 1; 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end; /* Todo pegado a la derecha */
     align-items: center;
-    gap: 15px;
-    margin: 0;
-    max-width: none;
+    gap: 10px; /* Espacio entre inputs */
+    min-width: 0; /* Permite que los hijos se achiquen si es necesario */
 }
 
-/* --- ELEMENTOS INTERACTIVOS --- */
+/* --- ELEMENTOS INTERACTIVOS (INPUTS AJUSTADOS) --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -116,24 +112,37 @@ body.modal-open { overflow: hidden; }
     white-space: nowrap;
 }
 
-#search-input { 
+#search-input, #sort-select { 
     padding: 0 15px; 
     background: rgba(30, 30, 30, 0.9); 
     color: white; 
-    flex: 0 1 350px; /* Buscador con tamaño máximo de 350px */
 }
 
-#sort-select { 
-    padding: 0 10px; 
-    background: rgba(30, 30, 30, 0.9); 
-    color: white; 
-    flex: 0 0 auto; /* No se estira */
-    max-width: 180px; /* Filtro más pequeño */
+/* EL BUSCADOR ES ELÁSTICO: Se estira pero permite encogerse */
+#search-input {
+    flex: 1 1 auto; 
+    min-width: 120px; /* Mínimo para que se pueda escribir */
+    max-width: 400px; /* Máximo para que no se vea ridículo */
+}
+
+/* EL FILTRO SE ADAPTA AL TEXTO */
+#sort-select {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 200px; 
 }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
-.btn { padding: 0 20px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; flex: 0 0 auto; }
+.btn { 
+    padding: 0 20px; 
+    background: var(--color-acento); 
+    color: #fff; 
+    cursor: pointer; 
+    border: none; 
+    flex: 0 0 auto; 
+}
+
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
@@ -220,12 +229,11 @@ body.modal-open { overflow: hidden; }
 
 /* RESPONSIVE */
 @media (max-width: 900px) { 
-    .main-sticky-header { flex-direction: column !important; gap: 15px; padding: 15px 20px; } 
+    .main-sticky-header { flex-direction: column; gap: 10px; } 
     .header-container { width: 100%; text-align: center; justify-content: center; }
-    .title-img { height: 70px; }
     .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
-    #search-input { min-width: 100%; }
-    #sort-select { min-width: 100%; }
+    #search-input { min-width: 100%; max-width: none; }
+    #sort-select { min-width: 100%; max-width: none; }
     .btn { width: 100%; }
     
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
