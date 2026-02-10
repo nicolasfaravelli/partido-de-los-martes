@@ -56,11 +56,11 @@ body.modal-open { overflow: hidden; }
     z-index: 2000;
     margin: 0 -20px 30px -20px;
     padding: 0 20px 20px 20px;
-    background: rgba(10, 10, 10, 0.85);
+    background: rgba(10, 10, 10, 0.9);
     backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+    -webkit-backdrop-filter: blur(1px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
 }
 
 .header-container { text-align: center; padding: 15px 0 10px 0; }
@@ -236,4 +236,5 @@ body.modal-open { overflow: hidden; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
 @media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
+
 
