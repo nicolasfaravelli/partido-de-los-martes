@@ -158,7 +158,7 @@ function triggerWhiteFlash() {
     // 5. Apagamos a los 0.3 segundos
     setTimeout(() => {
         overlay.classList.remove('active');
-    }, 300);
+    }, 200);
 }
 
 function calcularObjetoLeyenda(base) { 
@@ -425,5 +425,6 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
