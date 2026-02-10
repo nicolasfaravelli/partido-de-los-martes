@@ -48,54 +48,54 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER HORIZONTAL (LÓGICA LÍQUIDA) --- */
+/* --- HEADER PRINCIPAL --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    padding: 10px 20px;
-    background: rgba(10, 10, 10, 0.85);
+    padding: 10px 25px;
+    background: rgba(10, 10, 10, 0.9); /* Un poco más oscuro para legibilidad */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* Configuración Flex estricta */
+    /* MODO ESCRITORIO: FUERZA FILA ÚNICA */
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap; /* Prohibido bajar de línea */
+    flex-wrap: nowrap; /* IMPORTANTE: No permite bajar de renglón */
     justify-content: space-between;
     align-items: center;
-    gap: 15px; /* Espacio reducido entre logo y controles */
+    gap: 20px;
 }
 
-/* 1. LOGO (Izquierda, Fijo) */
+/* LOGO */
 .header-container { 
-    flex: 0 0 auto; /* No se estira ni se encoge */
+    flex: 0 0 auto; /* Tamaño fijo */
     display: flex;
     align-items: center;
 }
 
 .title-img { 
-    height: 60px; /* Altura fija controlada */
+    height: 60px; /* Altura controlada escritorio */
     width: auto;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
-/* 2. CONTROLES (Derecha, Adaptables) */
+/* CONTROLES */
 .controls-area { 
-    flex: 1 1 auto; /* Toma todo el espacio disponible */
+    flex: 1 1 auto; /* Ocupa el resto */
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap; /* Prohibido bajar de línea */
-    justify-content: flex-end; /* Pegados a la derecha */
+    flex-wrap: nowrap; /* IMPORTANTE: No permite bajar de renglón */
+    justify-content: flex-end;
     align-items: center;
-    gap: 10px; /* Espacio entre inputs */
-    min-width: 0; /* CRUCIAL: Permite que el contenedor se achique si no hay espacio */
+    gap: 10px;
+    min-width: 0; /* Permite achicar elementos internos */
 }
 
-/* --- ELEMENTOS INTERACTIVOS --- */
+/* --- INPUTS Y BOTONES --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -111,7 +111,7 @@ body.modal-open { overflow: hidden; }
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    white-space: nowrap; /* Texto en una sola línea siempre */
+    white-space: nowrap;
 }
 
 #search-input, #sort-select { 
@@ -120,37 +120,32 @@ body.modal-open { overflow: hidden; }
     color: white; 
 }
 
-/* BUSCADOR: Elástico (prioridad para achicarse) */
+/* LÓGICA DE TAMAÑOS FLEXIBLES */
 #search-input {
-    flex: 1 1 auto; /* Crece y SE ENCOGE */
-    min-width: 0; /* Puede achicarse hasta casi desaparecer si es necesario */
-    width: 100%; 
+    flex: 10 1 auto; /* Prioridad para crecer */
+    min-width: 50px; /* MUY CHICO: Permite que entre en cualquier pantalla sin romper */
+    width: 100%;
 }
 
-/* FILTRO: Semi-fijo */
 #sort-select {
-    flex: 0 1 auto; /* No crece más de su contenido, pero se encoge */
+    flex: 2 1 auto;
     width: auto;
-    min-width: 0;
-    max-width: 200px;
-    text-overflow: ellipsis; /* Si el texto es largo, pone tres puntos */
+    min-width: 50px; /* MUY CHICO: Permite encogerse */
+    max-width: 200px; /* Tope máximo */
 }
 
-#search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
-
-/* BOTÓN: Intocable */
 .btn { 
+    flex: 0 0 auto; /* Botón fijo, no se aplasta */
     padding: 0 20px; 
     background: var(--color-acento); 
     color: #fff; 
     cursor: pointer; 
     border: none; 
-    flex: 0 0 auto; /* No se deforma nunca */
 }
 
+#search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
-
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 .btn-gold { background: var(--color-acento); color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(117, 170, 219, 0.5); font-weight: 900; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
@@ -232,15 +227,36 @@ body.modal-open { overflow: hidden; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
+/* RESPONSIVE (CELULARES) */
 @media (max-width: 900px) { 
-    /* En celular se apila */
-    .main-sticky-header { flex-direction: column !important; gap: 10px; height: auto; } 
-    .header-container { width: 100%; text-align: center; justify-content: center; margin: 0; }
-    .title-img { height: 70px; }
-    .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; gap: 10px; }
-    #search-input { width: 100%; max-width: none; min-width: 100%; flex: 1 1 100%; }
-    #sort-select { width: 100%; max-width: none; flex: 1 1 100%; }
-    .btn { width: 100%; flex: 1 1 100%; }
+    /* Cambiamos a columna, pero más compacto */
+    .main-sticky-header { 
+        flex-direction: column !important; 
+        gap: 10px; /* Menos espacio entre logo y botones */
+        padding: 10px 15px; 
+    } 
+    
+    .header-container { 
+        width: 100%; 
+        text-align: center; 
+        justify-content: center; 
+        margin-right: 0; 
+    }
+    
+    /* Logo más chico en celular para no ocupar media pantalla */
+    .title-img { height: 50px; } 
+    
+    /* Controles apilados pero ordenados */
+    .controls-area { 
+        width: 100%; 
+        justify-content: center; 
+        flex-wrap: wrap; 
+        gap: 8px;
+    }
+    
+    #search-input { min-width: 100%; max-width: none; }
+    #sort-select { min-width: 100%; max-width: none; }
+    .btn { width: 100%; }
     
     .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
     #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } 
