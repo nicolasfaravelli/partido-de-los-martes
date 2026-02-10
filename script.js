@@ -131,7 +131,14 @@ function toggleLeyenda() {
 }
 
 function triggerWhiteFlash() {
-    // Si la carta blanca no existe, la creamos al vuelo
+    // 1. Buscamos el contenedor de la carta para copiar su posición
+    const cont = document.getElementById('modal-card-container');
+    if (!cont) return;
+    
+    // Obtenemos las coordenadas exactas y tamaño
+    const rect = cont.getBoundingClientRect(); 
+
+    // 2. Buscamos o creamos el overlay
     let overlay = document.getElementById('white-flash-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -139,10 +146,16 @@ function triggerWhiteFlash() {
         document.body.appendChild(overlay);
     }
     
-    // La encendemos
+    // 3. Le aplicamos la posición exacta de la carta actual
+    overlay.style.top = rect.top + 'px';
+    overlay.style.left = rect.left + 'px';
+    overlay.style.width = rect.width + 'px';
+    overlay.style.height = rect.height + 'px';
+
+    // 4. Encendemos
     overlay.classList.add('active');
     
-    // La apagamos a los 0.3 segundos
+    // 5. Apagamos a los 0.3 segundos
     setTimeout(() => {
         overlay.classList.remove('active');
     }, 300);
@@ -412,3 +425,4 @@ function attachSounds() {
         }
     }); 
 }
+
