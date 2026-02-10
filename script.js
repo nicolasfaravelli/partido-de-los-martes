@@ -82,7 +82,6 @@ function aplicarFiltrosYOrden() {
 function generarHTMLCarta(j, lazy) { 
     const rgb = hexToRgb(j.color);
     const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="--color-rgb: ${rgb}" crossorigin="anonymous">` : '';
-    // Agregamos la variable --card-glow-color para el resplandor dinámico en el Style
     return `<div class="card-bg-wrapper" style="--card-glow-color:${j.color}"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
@@ -114,12 +113,39 @@ function renderizarModal(j) {
 
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
+/* FUNCIÓN DE TRANSICIÓN BLANCA (NUEVA) */
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
+    
+    // 1. Activar el flash blanco
+    triggerWhiteFlash();
+    
+    // 2. Cambiar los datos (esperamos un poquito para que no se vea el corte)
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
-    renderizarModal(j); 
+    
+    setTimeout(() => {
+        renderizarModal(j); 
+    }, 150); // Cambia la carta cuando la pantalla está blanca
+}
+
+function triggerWhiteFlash() {
+    // Si la carta blanca no existe, la creamos al vuelo
+    let overlay = document.getElementById('white-flash-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'white-flash-overlay';
+        document.body.appendChild(overlay);
+    }
+    
+    // La encendemos
+    overlay.classList.add('active');
+    
+    // La apagamos a los 0.3 segundos
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 300);
 }
 
 function calcularObjetoLeyenda(base) { 
