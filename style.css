@@ -48,52 +48,55 @@ body.modal-open { overflow: hidden; }
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER MEJORADO (HORIZONTAL COMPACTO) --- */
+/* --- HEADER HORIZONTAL ANTI-DESBORDE --- */
 .main-sticky-header {
     position: sticky;
     top: 0;
     z-index: 2000;
     margin: 0 -20px 30px -20px;
-    padding: 10px 20px; /* Padding justo para que no coma pantalla */
+    padding: 10px 20px; 
     background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     
-    /* DISTRIBUCIÓN HORIZONTAL */
-    display: flex;
-    flex-direction: row;
+    /* FLEXBOX ESTRICTO */
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 15px; /* Gap reducido para ganar espacio */
 }
 
+/* 1. LOGO A LA IZQUIERDA */
 .header-container { 
-    flex: 0 0 auto; /* El logo ocupa lo justo y necesario */
-    padding: 0;
+    flex: 0 0 auto; /* Fijo, no se encoge */
     display: flex;
     align-items: center;
+    margin-right: auto; /* Empuja todo lo demás a la derecha si sobra espacio */
 }
 
 .title-img { 
-    height: 65px; /* Altura controlada para que la barra no sea gigante */
+    height: 70px; 
     width: auto;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
 }
 
-/* Área de Controles: Se adapta al espacio restante */
+/* 2. CONTROLES (OCUPAN EL RESTO) */
 .controls-area { 
-    flex: 1; 
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end; /* Todo pegado a la derecha */
+    flex: 1 1 auto; /* Flexible */
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end; /* Alineados a la derecha */
     align-items: center;
-    gap: 10px; /* Espacio entre inputs */
-    min-width: 0; /* Permite que los hijos se achiquen si es necesario */
+    gap: 10px; /* Espacio justo entre inputs */
+    min-width: 0; /* CLAVE: Permite que el contenedor se encoja si es necesario */
 }
 
-/* --- ELEMENTOS INTERACTIVOS (INPUTS AJUSTADOS) --- */
+/* --- ELEMENTOS INTERACTIVOS (LÓGICA ADAPTATIVA) --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -118,29 +121,31 @@ body.modal-open { overflow: hidden; }
     color: white; 
 }
 
-/* EL BUSCADOR ES ELÁSTICO: Se estira pero permite encogerse */
+/* BUSCADOR: Elástico pero permisivo */
 #search-input {
-    flex: 1 1 auto; 
-    min-width: 120px; /* Mínimo para que se pueda escribir */
-    max-width: 400px; /* Máximo para que no se vea ridículo */
+    flex: 10 1 auto; /* Prioridad para crecer */
+    min-width: 100px; /* CLAVE: Mínimo pequeño para que entre en 100% zoom */
+    width: 100%; /* Intenta llenar */
 }
 
-/* EL FILTRO SE ADAPTA AL TEXTO */
+/* FILTRO: Compacto */
 #sort-select {
-    flex: 0 0 auto;
+    flex: 2 1 auto; /* Crece menos que el buscador */
     width: auto;
-    max-width: 200px; 
+    min-width: 100px; /* Mínimo para que se lea algo */
+    max-width: 200px;
 }
 
 #search-input:focus, #sort-select:focus { border-color: var(--color-acento); background: #222; }
 
+/* BOTÓN: Fijo a la derecha */
 .btn { 
     padding: 0 20px; 
     background: var(--color-acento); 
     color: #fff; 
     cursor: pointer; 
     border: none; 
-    flex: 0 0 auto; 
+    flex: 0 0 auto; /* No se estira ni se encoge */
 }
 
 .btn:hover:not(:disabled) { background: #8bb7e2 !important; box-shadow: 0 0 20px rgba(117, 170, 219, 0.6) !important; transform: translateY(-1px); }
@@ -227,10 +232,11 @@ body.modal-open { overflow: hidden; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
-/* RESPONSIVE */
 @media (max-width: 900px) { 
-    .main-sticky-header { flex-direction: column; gap: 10px; } 
-    .header-container { width: 100%; text-align: center; justify-content: center; }
+    /* En celular volvemos a apilar */
+    .main-sticky-header { flex-direction: column !important; gap: 15px; padding: 15px 20px; } 
+    .header-container { width: 100%; text-align: center; justify-content: center; margin-right: 0; }
+    .title-img { height: 70px; }
     .controls-area { width: 100%; justify-content: center; flex-wrap: wrap; }
     #search-input { min-width: 100%; max-width: none; }
     #sort-select { min-width: 100%; max-width: none; }
