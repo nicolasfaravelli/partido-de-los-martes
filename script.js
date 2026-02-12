@@ -260,7 +260,7 @@ function actualizarContadorEquipos() {
     if(btnAddGuest) btnAddGuest.disabled = ok;
 
     const btnGen = document.getElementById('btn-generate');
-    if(btnGen) btnGen.disabled = !ok; 
+    if(btnGen) btnGen.style.display = ok ? 'inline-flex' : 'none';
      
     const btnShare = document.getElementById('btn-share-teams');
     if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
@@ -430,8 +430,3 @@ function attachSounds() {
         }
     }); 
 }
-
-
-
-
-
