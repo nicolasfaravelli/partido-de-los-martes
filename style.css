@@ -154,9 +154,9 @@ body.modal-open { overflow: hidden; }
     aspect-ratio: 2 / 3; 
     cursor: pointer; 
     /* MODIFICACIÓN 2: Al "volver" (activarse), demora 0.3s */
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                opacity 0.3s ease, 
-                filter 0.3s ease, 
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                opacity 0.5s ease, 
+                filter 0.5s ease, 
                 box-shadow 0.5s ease; 
     container-type: size; 
     outline: none; 
@@ -220,7 +220,7 @@ body.modal-open { overflow: hidden; }
 #team-counter.completado { color: var(--color-acento) !important; animation: counter-flash 0.5s ease-out; }
 @keyframes counter-flash { 0% { color: #fff; text-shadow: 0 0 15px #fff; } 100% { color: var(--color-acento); text-shadow: none; } }
 
-.list-arrow-img { width: 18px; height: 18px; object-fit: contain; background: #666; padding: 2px; border-radius: 2px; transition: filter 0.3s ease; }
+.list-arrow-img { width: 18px; height: 18px; object-fit: contain; background: #000; padding: 2px; border-radius: 2px; transition: filter 0.3s ease; }
 .list-arrow-spacer { width: 18px; height: 18px; }
 
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
@@ -271,3 +271,4 @@ body.modal-open { overflow: hidden; }
     opacity: 0.5; 
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
+
