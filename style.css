@@ -145,7 +145,7 @@ body.modal-open { overflow: hidden; }
     opacity: 0.9; 
     filter: saturate(0.5) brightness(0.75);
     /* MODIFICACIÓN 1: Al "irse" (desactivarse), demora 3s */
-    transition: opacity 3s ease, filter 3s ease; 
+    transition: opacity 2s ease, filter 2s ease; 
 }
 
 .card { 
@@ -271,4 +271,5 @@ body.modal-open { overflow: hidden; }
     opacity: 0.5; 
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
+
 
