@@ -5,11 +5,6 @@ const CONFIG = {
     URL_MUSICA: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3",
     URL_SFX_HOVER: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 1.mp3",
     URL_SFX_CLICK: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3",
-    MULT_LEYENDA: [1.15, 1.14, 1.13, 1.12, 1.11, 1.10], 
-    PLUS_EDAD_COEF: 0.0028,
-    BONUS_RESISTENCIA: 1.01, 
-    BONUS_VELOCIDAD: 1.01,
-    TOPE_STAT_LEYENDA: 98,
     VOL_SERIES: [0, 0.05, 0.3],
     SFX_MAP: { 0: 0, 0.05: 0.0375, 0.3: 0.225 }
 };
@@ -19,8 +14,6 @@ const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
-
-/* --- INICIO Y CARGA --- */
 
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
@@ -66,8 +59,6 @@ function cargarDatos() {
     }); 
 }
 
-/* --- FILTROS Y CARTAS --- */
-
 function aplicarFiltrosYOrden() {
     const grid = document.getElementById('grid-container');
     if(!grid) return;
@@ -84,8 +75,6 @@ function generarHTMLCarta(j, lazy) {
     const flechaImg = j.flecha ? `<img src="${j.flecha}" class="card-arrow" style="--color-rgb: ${rgb}" crossorigin="anonymous">` : '';
     return `<div class="card-bg-wrapper" style="--card-glow-color:${j.color}"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
-
-/* --- MODALES --- */
 
 function abrirModal(id) { 
     const j = datosOriginales.find(x => x.id === parseInt(id)); 
@@ -113,68 +102,64 @@ function renderizarModal(j) {
 
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
-/* FUNCIÓN DE TRANSICIÓN BLANCA (NUEVA) */
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
-    
-    // 1. Activar el flash blanco
     triggerWhiteFlash();
-    
-    // 2. Cambiar los datos (esperamos un poquito para que no se vea el corte)
     esModoLeyenda = !esModoLeyenda; 
     const j = esModoLeyenda ? calcularObjetoLeyenda(jugadorActualEnModal) : jugadorActualEnModal; 
-    
     setTimeout(() => {
         renderizarModal(j); 
-    }, 150); // Cambia la carta cuando la pantalla está blanca
+    }, 150);
 }
 
 function triggerWhiteFlash() {
-    // 1. Buscamos el contenedor de la carta para copiar su posición
     const cont = document.getElementById('modal-card-container');
     if (!cont) return;
-    
-    // Obtenemos las coordenadas exactas y tamaño
     const rect = cont.getBoundingClientRect(); 
-
-    // 2. Buscamos o creamos el overlay
     let overlay = document.getElementById('white-flash-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'white-flash-overlay';
         document.body.appendChild(overlay);
     }
-    
-    // 3. Le aplicamos la posición exacta de la carta actual
     overlay.style.top = rect.top + 'px';
     overlay.style.left = rect.left + 'px';
     overlay.style.width = rect.width + 'px';
     overlay.style.height = rect.height + 'px';
-
-    // 4. Encendemos
     overlay.classList.add('active');
-    
-    // 5. Apagamos a los 0.3 segundos
     setTimeout(() => {
         overlay.classList.remove('active');
     }, 150);
 }
 
 function calcularObjetoLeyenda(base) { 
+    const sumaStatsBase = base.ata + base.def + base.tec + base.vel + base.res + base.arq;
+    const promedioRealBase = sumaStatsBase / 6;
+    const F = base.prom / promedioRealBase;
     const keys = ['ata','def','tec','vel','res','arq']; 
-    const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b)=>b.v-a.v); 
-    let nuevos = {}, suma = 0; 
-    const plus = Math.max(0, (base.edad - 33) * CONFIG.PLUS_EDAD_COEF); 
+    const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b) => b.v - a.v); 
+    const escala = [1.085, 1.075, 1.070, 1.065, 1.060, 1.055];
+    const plusEdad = Math.max(0, (base.edad - 33) * 0.0028);
+    let nuevosStats = {}, sumaRealLeyenda = 0; 
     sorted.forEach((s, i) => { 
-        let m = CONFIG.MULT_LEYENDA[i] || 1.05; 
-        let val = s.v * (m + plus); 
-        if(s.k === 'res') val *= CONFIG.BONUS_RESISTENCIA; 
-        if(s.k === 'vel') val *= CONFIG.BONUS_VELOCIDAD; 
-        nuevos[s.k] = Math.min(CONFIG.TOPE_STAT_LEYENDA, Math.round(val)); 
-        suma += nuevos[s.k]; 
+        let m = escala[i] + plusEdad; 
+        if(s.k === 'res') m += 0.015; 
+        if(s.k === 'vel') m += 0.005; 
+        nuevosStats[s.k] = Math.min(98, Math.round(base[s.k] * m)); 
+        sumaRealLeyenda += nuevosStats[s.k]; 
     }); 
-    return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: COLORES['leyenda'], ...nuevos, prom: Math.min(98, Math.round(suma/6)) };
+    const promedioRealLeyenda = sumaRealLeyenda / 6;
+    const promFinal = Math.min(98, Math.round(promedioRealLeyenda * F));
+    return { 
+        ...base, 
+        foto: base.fotoLeyenda, 
+        flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", 
+        fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", 
+        color: '#644b14', 
+        ...nuevosStats, 
+        prom: promFinal 
+    };
 }
 
 function descargarCarta() { 
@@ -184,8 +169,6 @@ function descargarCarta() {
         const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); 
     });
 }
-
-/* --- ARMADOR DE EQUIPOS --- */
 
 function abrirArmador() { 
     const m = document.getElementById('team-modal');
@@ -219,7 +202,6 @@ function renderizarListaSeleccion() {
         if (esLesionado) {return `<div class="player-row disabled">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:#666">${j.prom}</span></div>`;
         } else {return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`; }
     }).join('');
-    
     cont.innerHTML = html;
     actualizarContadorEquipos(); 
     actualizarTablerosEquipos();
@@ -243,25 +225,19 @@ function actualizarContadorEquipos() {
     const t = equipo1.length + equipo2.length; 
     const cnt = document.getElementById('team-counter'); 
     const ok = t === 10; 
-
     if(cnt) {
         cnt.innerText = `SELECCIONADOS: ${t} / 10`; 
         if(ok) cnt.classList.add('completado'); else cnt.classList.remove('completado'); 
     }
-
     const checklist = document.getElementById('players-checklist');
     if(checklist) {
         if(ok) checklist.classList.add('limit-reached');
         else checklist.classList.remove('limit-reached');
     }
-
-    // Inhabilitar botón de invitado si llegamos a 10
     const btnAddGuest = document.querySelector('.btn-add-guest');
     if(btnAddGuest) btnAddGuest.disabled = ok;
-
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.style.display = ok ? 'inline-flex' : 'none';
-     
     const btnShare = document.getElementById('btn-share-teams');
     if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
 }
@@ -312,9 +288,7 @@ function generarAutomatico() {
     const topRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(0, 2).map(p => p.id);
     const botRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(8, 10).map(p => p.id);
     const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
-
     let mejorE1 = [], mejorFealdad = Infinity;
-
     for (let i = 0; i < 2000; i++) {
         let t = [...pool].sort(() => Math.random() - 0.5);
         let t1 = t.slice(0, 5), t2 = t.slice(5);
@@ -347,9 +321,7 @@ function actualizarRadar() {
     const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
     if (!teamRadarChart) {
         const ctx = canvas.getContext('2d');
-        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { 
-            min: 0, // AHORA PARTE DESDE CERO
-            max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
+        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
     } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
 }
 
@@ -357,24 +329,15 @@ async function compartirEquipos() {
     const area = document.getElementById('main-teams-layout');
     const radar = document.getElementById('radar-container');
     if(!area || !radar) return;
-
     radar.style.display = 'none';
-
     html2canvas(area, { useCORS: true, backgroundColor: "#1a1a1a", scale: 2 }).then(async canvas => {
         radar.style.display = 'flex';
-
         canvas.toBlob(async blob => {
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
             if (navigator.share) {
                 try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'Partido de los Martes',
-                        text: '¡Equipos armados!'
-                    });
-                } catch (err) {
-                    console.error("Error sharing:", err);
-                }
+                    await navigator.share({ files: [file], title: 'Partido de los Martes', text: '¡Equipos armados!' });
+                } catch (err) { console.error("Error sharing:", err); }
             } else {
                 const a = document.createElement('a');
                 a.href = canvas.toDataURL();
@@ -430,6 +393,3 @@ function attachSounds() {
         }
     }); 
 }
-
-
-
