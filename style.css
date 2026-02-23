@@ -91,7 +91,6 @@ body.modal-open { overflow: hidden; }
 /* UNIFICADO: Efecto HOVER para Inputs */
 #search-input:hover, #sort-select:hover {
     border-color: var(--color-acento);
-    /* Mismo resplandor que tendrán los botones */
     box-shadow: 0 0 15px var(--color-acento); 
 }
 
@@ -99,7 +98,6 @@ body.modal-open { overflow: hidden; }
 #search-input:focus, #sort-select:focus { 
     border-color: var(--color-acento); 
     background: #222; 
-    /* Resplandor un poco más fuerte al escribir */
     box-shadow: 0 0 20px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); 
     color: #fff;
 }
@@ -124,7 +122,6 @@ body.modal-open { overflow: hidden; }
 .btn-add-guest:hover { 
     border-color: var(--color-acento); 
     background: #1a1a1a; 
-    /* Mismo resplandor unificado */
     box-shadow: 0 0 15px var(--color-acento); 
 }
 
@@ -153,7 +150,6 @@ body.modal-open { overflow: hidden; }
     width: 100%; 
     aspect-ratio: 2 / 3; 
     cursor: pointer; 
-    /* MODIFICACIÓN 2: Al "volver" (activarse), demora 0.3s */
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                 opacity 0.5s ease, 
                 filter 0.5s ease, 
@@ -178,7 +174,7 @@ body.modal-open { overflow: hidden; }
 .position { font-family: var(--fuente-impacto); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
 
 .card-arrow { 
-    position: absolute; top: 40%; left: 12.5%; width: 12%; z-index: 5; object-fit: contain;
+    position: absolute; top: 40.5%; left: 12.5%; width: 12%; z-index: 5; object-fit: contain;
     aspect-ratio: 1 / 1; padding: 2.5px; box-sizing: border-box; border-radius: 2.5px;      
     box-shadow: inset 0 0 2.5px rgba(0,0,0,0.25); background-color: rgb(var(--color-rgb));
 }
@@ -271,5 +267,6 @@ body.modal-open { overflow: hidden; }
     opacity: 0.5; 
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
+
 
 
