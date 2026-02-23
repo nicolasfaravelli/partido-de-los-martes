@@ -5,10 +5,10 @@ const CONFIG = {
     URL_MUSICA: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Musica.mp3",
     URL_SFX_HOVER: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 1.mp3",
     URL_SFX_CLICK: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Click 2.mp3",
-    MULT_LEYENDA: [1.20, 1.17, 1.14, 1.12, 1.10, 1.08],
+    MULT_LEYENDA: [1.13, 1.11, 1.09, 1.08, 1.07, 1.06], 
     PLUS_EDAD_COEF: 0.0028,
-    BONUS_RESISTENCIA: 1.05,
-    BONUS_VELOCIDAD: 1.03,
+    BONUS_RESISTENCIA: 1.01, 
+    BONUS_VELOCIDAD: 1.01,
     TOPE_STAT_LEYENDA: 98,
     VOL_SERIES: [0, 0.05, 0.3],
     SFX_MAP: { 0: 0, 0.05: 0.0375, 0.3: 0.225 }
@@ -430,4 +430,5 @@ function attachSounds() {
         }
     }); 
 }
+
 
