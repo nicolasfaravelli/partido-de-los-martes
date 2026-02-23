@@ -139,8 +139,8 @@ function calcularObjetoLeyenda(base) {
     const F = base.prom / promedioRealBase;
     const keys = ['ata','def','tec','vel','res','arq']; 
     const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b) => b.v - a.v); 
-    const escala = [1.085, 1.075, 1.070, 1.065, 1.060, 1.055];
-    const plusEdad = Math.max(0, (base.edad - 33) * 0.0028);
+    const escala = [1.0855, 1.0755, 1.0705, 1.0655, 1.0605, 1.0555];
+    const plusEdad = Math.max(0, (base.edad - 33) * 0.0025);
     let nuevosStats = {}, sumaRealLeyenda = 0; 
     sorted.forEach((s, i) => { 
         let m = escala[i] + plusEdad; 
@@ -150,16 +150,8 @@ function calcularObjetoLeyenda(base) {
         sumaRealLeyenda += nuevosStats[s.k]; 
     }); 
     const promedioRealLeyenda = sumaRealLeyenda / 6;
-    const promFinal = Math.min(98, Math.round(promedioRealLeyenda * F));
-    return { 
-        ...base, 
-        foto: base.fotoLeyenda, 
-        flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", 
-        fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", 
-        color: '#644b14', 
-        ...nuevosStats, 
-        prom: promFinal 
-    };
+    const promFinal = Math.min(98.4, Math.round(promedioRealLeyenda * F));
+    return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: '#644b14', ...nuevosStats, prom: promFinal };
 }
 
 function descargarCarta() { 
@@ -281,7 +273,8 @@ function highlightTeam(idx) {
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
     if (pool.length !== 10) return;
-    const actualSet = new Set([...equipo1]);
+    const currentT1 = new Set(equipo1);
+    const currentT2 = new Set(equipo2);
     const topArq = [...pool].sort((a, b) => b.arq - a.arq).slice(0, 2).map(p => p.id);
     const topAta = [...pool].sort((a, b) => b.ata - a.ata).slice(0, 2).map(p => p.id);
     const topDef = [...pool].sort((a, b) => b.def - a.def).slice(0, 2).map(p => p.id);
@@ -289,14 +282,16 @@ function generarAutomatico() {
     const botRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(8, 10).map(p => p.id);
     const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
     let mejorE1 = [], mejorFealdad = Infinity;
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 5000; i++) {
         let t = [...pool].sort(() => Math.random() - 0.5);
         let t1 = t.slice(0, 5), t2 = t.slice(5);
         let ids1 = t1.map(p => p.id);
         let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
         let f = Math.abs(s1 - s2) * 100;
         if (granerosPool.length === 2 && ids1.includes(granerosPool[0]) !== ids1.includes(granerosPool[1])) f += 1000000;
-        if (ids1.every(id => actualSet.has(id))) f += 5000000;
+        const matchesT1 = ids1.every(id => currentT1.has(id));
+        const matchesT2 = ids1.every(id => currentT2.has(id));
+        if (matchesT1 || matchesT2) f += 10000000;
         if (ids1.filter(id => topArq.includes(id)).length !== 1) f += 15000;
         if (ids1.filter(id => topAta.includes(id)).length !== 1) f += 10000;
         if (ids1.filter(id => topDef.includes(id)).length !== 1) f += 10000;
