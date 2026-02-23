@@ -139,14 +139,14 @@ function calcularObjetoLeyenda(base) {
     const F = base.prom / promedioRealBase;
     const keys = ['ata','def','tec','vel','res','arq']; 
     const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b) => b.v - a.v); 
-    const escala = [1.0855, 1.0755, 1.0705, 1.0655, 1.0605, 1.0555];
-    const plusEdad = Math.max(0, (base.edad - 33) * 0.0025);
+    const escala = [1.086, 1.076, 1.076, 1.066, 1.066, 1.056];
+    const plusEdad = Math.max(0, (base.edad - 33) * 0.004);
     let nuevosStats = {}, sumaRealLeyenda = 0; 
     sorted.forEach((s, i) => { 
         let m = escala[i] + plusEdad; 
         if(s.k === 'res') m += 0.015; 
         if(s.k === 'vel') m += 0.005; 
-        nuevosStats[s.k] = Math.min(98, Math.round(base[s.k] * m)); 
+        nuevosStats[s.k] = Math.min(98.4, Math.round(base[s.k] * m)); 
         sumaRealLeyenda += nuevosStats[s.k]; 
     }); 
     const promedioRealLeyenda = sumaRealLeyenda / 6;
@@ -388,3 +388,4 @@ function attachSounds() {
         }
     }); 
 }
+
