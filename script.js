@@ -324,44 +324,35 @@ async function compartirEquipos() {
     const team1 = document.getElementById('list-team-1');
     const team2 = document.getElementById('list-team-2');
     const btnShare = document.getElementById('btn-share-teams');
-
     if (!team1 || !team2 || btnShare.disabled) return;
 
     btnShare.disabled = true;
     const textoOriginal = btnShare.innerText;
     btnShare.innerText = "GENERANDO...";
 
-    // 1. Creamos un contenedor fantasma solo para la captura
     const capturador = document.createElement('div');
     capturador.style.cssText = `
-        position: absolute; 
-        left: -9999px; 
-        top: 0; 
-        display: flex; 
-        gap: 20px; 
-        padding: 20px; 
-        background-color: #1a1a1a; 
-        width: auto;
+        position: absolute; left: -9999px; top: 0;
+        display: flex; gap: 16px; padding: 16px;
+        background-color: #1a1a1a; width: auto;
     `;
 
-    // 2. Clonamos solo las tablas de los equipos
     const t1Clon = team1.closest('.team-box').cloneNode(true);
     const t2Clon = team2.closest('.team-box').cloneNode(true);
-
     capturador.appendChild(t1Clon);
     capturador.appendChild(t2Clon);
     document.body.appendChild(capturador);
 
+    t1Clon.style.width = (t1Clon.offsetWidth + 6) + 'px';
+    t2Clon.style.width = (t2Clon.offsetWidth + 6) + 'px';
+
     try {
-        // 3. Capturamos el contenedor fantasma
         const canvas = await html2canvas(capturador, {
-            useCORS: true,
+            useCORS: true, 
             backgroundColor: "#1a1a1a",
-            scale: 2,
+            scale: 3, 
             logging: false
         });
-
-        // 4. Limpiamos el DOM
         document.body.removeChild(capturador);
 
         canvas.toBlob(async blob => {
@@ -370,15 +361,12 @@ async function compartirEquipos() {
                 btnShare.innerText = textoOriginal;
                 return;
             }
-
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-
             if (navigator.share) {
-                try {
-                    // Compartimos solo el archivo, sin textos extra
-                    await navigator.share({ files: [file] });
-                } catch (err) {
-                    console.error("Error al compartir:", err);
+                try { 
+                    await navigator.share({ files: [file] }); 
+                } catch (err) { 
+                    console.error(err); 
                 }
             } else {
                 const a = document.createElement('a');
@@ -386,13 +374,10 @@ async function compartirEquipos() {
                 a.download = 'Equipos.png';
                 a.click();
             }
-
             btnShare.disabled = false;
             btnShare.innerText = textoOriginal;
         }, 'image/png');
-
     } catch (error) {
-        console.error("Error en la captura:", error);
         if (document.body.contains(capturador)) document.body.removeChild(capturador);
         btnShare.disabled = false;
         btnShare.innerText = textoOriginal;
@@ -443,6 +428,7 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
 
