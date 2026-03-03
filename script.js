@@ -324,53 +324,72 @@ async function compartirEquipos() {
     const area = document.getElementById('main-teams-layout');
     const radar = document.getElementById('radar-container');
     const btnShare = document.getElementById('btn-share-teams');
+    
     if(!area || !radar || btnShare.disabled) return;
+    
     btnShare.disabled = true;
     const textoOriginal = btnShare.innerText;
     btnShare.innerText = "GENERANDO...";
-    radar.style.display = 'none';
+
+    // Mantenemos el espacio pero lo hacemos invisible para que nada se mueva
+    radar.style.visibility = 'hidden';
+
     try {
+        // Pequeño delay para que el render se estabilice antes de la captura
+        await new Promise(resolve => setTimeout(resolve, 150));
+
+        const rect = area.getBoundingClientRect();
+
         const canvas = await html2canvas(area, { 
             useCORS: true, 
             backgroundColor: "#1a1a1a", 
-            scale: 2,
+            scale: 3, // Mayor calidad
             logging: false,
-            width: area.offsetWidth,
-            windowWidth: area.offsetWidth
+            width: rect.width,
+            height: rect.height,
+            x: window.scrollX + rect.left,
+            y: window.scrollY + rect.top,
+            scrollX: 0,
+            scrollY: 0
         });
-        radar.style.display = 'flex';
+
+        radar.style.visibility = 'visible';
+
         canvas.toBlob(async blob => {
             if (!blob) {
                 btnShare.disabled = false;
                 btnShare.innerText = textoOriginal;
                 return;
             }
+
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({ 
-                        files: [file], 
-                        title: 'Partido de los Martes', 
-                        text: '¡Equipos armados!' 
+                        files: [file] 
                     });
                 } catch (err) { 
-                    console.error("Error al compartir:", err);                }
+                    console.error("Error al compartir:", err); 
+                }
             } else {
                 const a = document.createElement('a');
                 a.href = canvas.toDataURL('image/png');
                 a.download = 'Equipos.png';
                 a.click();
-                alert("Navegador no compatible con compartir. Se descargó la imagen.");
             }
+            
             btnShare.disabled = false;
             btnShare.innerText = textoOriginal;
         }, 'image/png');
+
     } catch (error) {
-        console.error("Error en html2canvas:", error);
-        radar.style.display = 'flex';
+        console.error("Error:", error);
+        radar.style.visibility = 'visible';
         btnShare.disabled = false;
         btnShare.innerText = textoOriginal;
-    }}
+    }
+}
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
@@ -416,5 +435,6 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
