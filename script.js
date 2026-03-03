@@ -323,26 +323,54 @@ function actualizarRadar() {
 async function compartirEquipos() {
     const area = document.getElementById('main-teams-layout');
     const radar = document.getElementById('radar-container');
-    if(!area || !radar) return;
+    const btnShare = document.getElementById('btn-share-teams');
+    if(!area || !radar || btnShare.disabled) return;
+    btnShare.disabled = true;
+    const textoOriginal = btnShare.innerText;
+    btnShare.innerText = "GENERANDO...";
     radar.style.display = 'none';
-    html2canvas(area, { useCORS: true, backgroundColor: "#1a1a1a", scale: 2 }).then(async canvas => {
+    try {
+        const canvas = await html2canvas(area, { 
+            useCORS: true, 
+            backgroundColor: "#1a1a1a", 
+            scale: 2,
+            logging: false,
+            width: area.offsetWidth,
+            windowWidth: area.offsetWidth
+        });
         radar.style.display = 'flex';
         canvas.toBlob(async blob => {
+            if (!blob) {
+                btnShare.disabled = false;
+                btnShare.innerText = textoOriginal;
+                return;
+            }
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-            if (navigator.share) {
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
-                    await navigator.share({ files: [file], title: 'Partido de los Martes', text: '¡Equipos armados!' });
-                } catch (err) { console.error("Error sharing:", err); }
+                    await navigator.share({ 
+                        files: [file], 
+                        title: 'Partido de los Martes', 
+                        text: '¡Equipos armados!' 
+                    });
+                } catch (err) { 
+                    console.error("Error al compartir:", err);                }
             } else {
                 const a = document.createElement('a');
-                a.href = canvas.toDataURL();
+                a.href = canvas.toDataURL('image/png');
                 a.download = 'Equipos.png';
                 a.click();
                 alert("Navegador no compatible con compartir. Se descargó la imagen.");
             }
+            btnShare.disabled = false;
+            btnShare.innerText = textoOriginal;
         }, 'image/png');
-    });
-}
+    } catch (error) {
+        console.error("Error en html2canvas:", error);
+        radar.style.display = 'flex';
+        btnShare.disabled = false;
+        btnShare.innerText = textoOriginal;
+    }}
 
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
@@ -388,4 +416,5 @@ function attachSounds() {
         }
     }); 
 }
+
 
