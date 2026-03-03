@@ -321,39 +321,48 @@ function actualizarRadar() {
 }
 
 async function compartirEquipos() {
-    const area = document.getElementById('main-teams-layout');
-    const radar = document.getElementById('radar-container');
+    const team1 = document.getElementById('list-team-1');
+    const team2 = document.getElementById('list-team-2');
     const btnShare = document.getElementById('btn-share-teams');
-    
-    if(!area || !radar || btnShare.disabled) return;
-    
+
+    if (!team1 || !team2 || btnShare.disabled) return;
+
     btnShare.disabled = true;
     const textoOriginal = btnShare.innerText;
     btnShare.innerText = "GENERANDO...";
 
-    // Mantenemos el espacio pero lo hacemos invisible para que nada se mueva
-    radar.style.visibility = 'hidden';
+    // 1. Creamos un contenedor fantasma solo para la captura
+    const capturador = document.createElement('div');
+    capturador.style.cssText = `
+        position: absolute; 
+        left: -9999px; 
+        top: 0; 
+        display: flex; 
+        gap: 20px; 
+        padding: 20px; 
+        background-color: #1a1a1a; 
+        width: auto;
+    `;
+
+    // 2. Clonamos solo las tablas de los equipos
+    const t1Clon = team1.closest('.team-box').cloneNode(true);
+    const t2Clon = team2.closest('.team-box').cloneNode(true);
+
+    capturador.appendChild(t1Clon);
+    capturador.appendChild(t2Clon);
+    document.body.appendChild(capturador);
 
     try {
-        // Pequeño delay para que el render se estabilice antes de la captura
-        await new Promise(resolve => setTimeout(resolve, 150));
-
-        const rect = area.getBoundingClientRect();
-
-        const canvas = await html2canvas(area, { 
-            useCORS: true, 
-            backgroundColor: "#1a1a1a", 
-            scale: 3, // Mayor calidad
-            logging: false,
-            width: rect.width,
-            height: rect.height,
-            x: window.scrollX + rect.left,
-            y: window.scrollY + rect.top,
-            scrollX: 0,
-            scrollY: 0
+        // 3. Capturamos el contenedor fantasma
+        const canvas = await html2canvas(capturador, {
+            useCORS: true,
+            backgroundColor: "#1a1a1a",
+            scale: 2,
+            logging: false
         });
 
-        radar.style.visibility = 'visible';
+        // 4. Limpiamos el DOM
+        document.body.removeChild(capturador);
 
         canvas.toBlob(async blob => {
             if (!blob) {
@@ -363,14 +372,13 @@ async function compartirEquipos() {
             }
 
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+
+            if (navigator.share) {
                 try {
-                    await navigator.share({ 
-                        files: [file] 
-                    });
-                } catch (err) { 
-                    console.error("Error al compartir:", err); 
+                    // Compartimos solo el archivo, sin textos extra
+                    await navigator.share({ files: [file] });
+                } catch (err) {
+                    console.error("Error al compartir:", err);
                 }
             } else {
                 const a = document.createElement('a');
@@ -378,14 +386,14 @@ async function compartirEquipos() {
                 a.download = 'Equipos.png';
                 a.click();
             }
-            
+
             btnShare.disabled = false;
             btnShare.innerText = textoOriginal;
         }, 'image/png');
 
     } catch (error) {
-        console.error("Error:", error);
-        radar.style.visibility = 'visible';
+        console.error("Error en la captura:", error);
+        if (document.body.contains(capturador)) document.body.removeChild(capturador);
         btnShare.disabled = false;
         btnShare.innerText = textoOriginal;
     }
@@ -435,6 +443,7 @@ function attachSounds() {
         }
     }); 
 }
+
 
 
 
