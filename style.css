@@ -268,5 +268,30 @@ body.modal-open { overflow: hidden; }
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
 }
 
+.edit-guest-name {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    width: 60%;
+}
 
+.edit-guest-prom {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #d4af37;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    width: 45px;
+    text-align: center;
+    margin-left: auto;
+}
+
+@media screen and (max-width: 768px) {
+    .edit-guest-name, .edit-guest-prom {
+        font-size: 16px; 
+    }
+}
 
