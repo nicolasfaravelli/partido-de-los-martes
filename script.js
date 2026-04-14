@@ -188,16 +188,13 @@ function renderizarListaSeleccion() {
     if(!cont) return;
     let html = invitados.map(i => `
         <div class="player-row selected" onclick="toggleSeleccion(${i.id})">
-            <input type="text" value="${i.nombre}" 
-                class="edit-guest-name"
+            <span contenteditable="true" spellcheck="false"
                 onclick="event.stopPropagation()" 
-                onchange="actualizarInvitado(${i.id}, 'nombre', this.value)"
-                placeholder="Nombre">
-            <input type="number" value="${i.prom}" 
-                class="edit-guest-prom"
+                onblur="actualizarInvitado(${i.id}, 'nombre', this.innerText)">${i.nombre}</span>
+            <span contenteditable="true" 
                 onclick="event.stopPropagation()" 
-                onchange="actualizarInvitado(${i.id}, 'prom', this.value)"
-                min="1" max="99">
+                onblur="actualizarInvitado(${i.id}, 'prom', this.innerText)" 
+                style="margin-left:auto; color:${getColorProm(i.prom)}">${i.prom}</span>
         </div>
     `).join('');
 
