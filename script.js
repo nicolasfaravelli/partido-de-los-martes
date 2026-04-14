@@ -188,12 +188,13 @@ function renderizarListaSeleccion() {
     if(!cont) return;
     let html = invitados.map(i => `
         <div class="player-row selected" onclick="toggleSeleccion(${i.id})">
-            <span contenteditable="true" spellcheck="false"
+            <span contenteditable="true" spellcheck="false" 
+                style="color: white !important;" 
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'nombre', this.innerText)">${i.nombre}</span>
             <span contenteditable="true" 
                 onclick="event.stopPropagation()" 
-                onblur="actualizarInvitado(${i.id}, 'prom', this.innerText)" 
+                onblur="actualizarInvitado(${i.id}, 'prom', this.innerText, this)" 
                 style="margin-left:auto; color:${getColorProm(i.prom)}">${i.prom}</span>
         </div>
     `).join('');
@@ -215,16 +216,18 @@ function renderizarListaSeleccion() {
     actualizarTablerosEquipos();
 }
 
-function actualizarInvitado(id, campo, valor) {
+function actualizarInvitado(id, campo, valor, el) {
     const invitado = invitados.find(i => i.id === id);
     if (!invitado) return;
 
     if (campo === 'prom') {
         const num = parseInt(valor) || 0;
-        // Actualizamos tanto el promedio como los stats base para que el radar no rompa
         invitado.prom = num;
-        invitado.ata = num; invitado.def = num; invitado.tec = num;
-        invitado.vel = num; invitado.res = num; invitado.arq = num;
+        // Sincronizamos stats para el radar
+        invitado.ata = invitado.def = invitado.tec = invitado.vel = invitado.res = invitado.arq = num;
+        
+        // Cambio de color en tiempo real
+        if (el) el.style.color = getColorProm(num);
     } else {
         invitado.nombre = valor;
     }
