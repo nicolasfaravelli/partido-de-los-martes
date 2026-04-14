@@ -186,16 +186,52 @@ function agregarInvitado() {
 function renderizarListaSeleccion() {
     const cont = document.getElementById('players-checklist');
     if(!cont) return;
-    let html = invitados.map(i => `<div class="player-row selected" onclick="toggleSeleccion(${i.id})"><span>${i.nombre}</span> <span style="margin-left:auto;color:${getColorProm(i.prom)}">${i.prom}</span></div>`).join('');
+    let html = invitados.map(i => `
+        <div class="player-row selected" onclick="toggleSeleccion(${i.id})">
+            <input type="text" value="${i.nombre}" 
+                class="edit-guest-name"
+                onclick="event.stopPropagation()" 
+                onchange="actualizarInvitado(${i.id}, 'nombre', this.value)"
+                placeholder="Nombre">
+            <input type="number" value="${i.prom}" 
+                class="edit-guest-prom"
+                onclick="event.stopPropagation()" 
+                onchange="actualizarInvitado(${i.id}, 'prom', this.value)"
+                min="1" max="99">
+        </div>
+    `).join('');
+
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
         const flechaHtml = j.flecha ? `<img src="${j.flecha}" class="list-arrow-img">` : '<div class="list-arrow-spacer"></div>';
         const esLesionado = j.flecha && (j.flecha.includes("/0.") || j.flecha.includes("0.png"));
-        if (esLesionado) {return `<div class="player-row disabled">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:#666">${j.prom}</span></div>`;
-        } else {return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`; }
+        
+        if (esLesionado) {
+            return `<div class="player-row disabled">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:#666">${j.prom}</span></div>`;
+        } else {
+            return `<div class="player-row ${sel?'selected':''}" onclick="toggleSeleccion(${j.id})">${flechaHtml}<span>${j.nombre}</span> <span style="margin-left:auto; color:${getColorProm(j.prom)}">${j.prom}</span></div>`; 
+        }
     }).join('');
+
     cont.innerHTML = html;
     actualizarContadorEquipos(); 
+    actualizarTablerosEquipos();
+}
+
+function actualizarInvitado(id, campo, valor) {
+    const invitado = invitados.find(i => i.id === id);
+    if (!invitado) return;
+
+    if (campo === 'prom') {
+        const num = parseInt(valor) || 0;
+        // Actualizamos tanto el promedio como los stats base para que el radar no rompa
+        invitado.prom = num;
+        invitado.ata = num; invitado.def = num; invitado.tec = num;
+        invitado.vel = num; invitado.res = num; invitado.arq = num;
+    } else {
+        invitado.nombre = valor;
+    }
+    
     actualizarTablerosEquipos();
 }
 
