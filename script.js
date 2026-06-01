@@ -471,5 +471,3 @@ function attachSounds() {
         }
     }); 
 }
-
-```
