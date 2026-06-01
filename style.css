@@ -78,7 +78,7 @@ body.modal-open { overflow: hidden; }
     text-transform: uppercase; 
     letter-spacing: 0.5px;
     border: 1px solid var(--color-bordes);
-    transition: all 0.3s ease; 
+    : all 0.3s ease; 
     outline: none;
     display: inline-flex;
     justify-content: center;
@@ -141,8 +141,7 @@ body.modal-open { overflow: hidden; }
 .grid:has(.card:hover) .card:not(:hover) { 
     opacity: 0.9; 
     filter: saturate(0.5) brightness(0.75);
-    /* MODIFICACIÓN 1: Al "irse" (desactivarse), demora 3s */
-    transition: opacity 2.5s ease 0.5s, filter 2.5s ease 0.5s; 
+    transition: opacity 2.5s ease 1s, filter 2.5s ease 1s; 
 }
 
 .card { 
