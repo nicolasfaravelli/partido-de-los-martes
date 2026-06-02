@@ -376,8 +376,8 @@ async function compartirEquipos() {
     const capturador = document.createElement('div');
     capturador.style.cssText = `
         position: absolute; left: -9999px; top: 0;
-        display: flex; gap: 16px; padding: 16px;
-        background-color: #1a1a1a; width: auto;
+        display: flex; flex-direction: row; gap: 16px; padding: 16px;
+        background-color: #1a1a1a; width: max-content; align-items: flex-start;
     `;
 
     const t1Clon = team1.closest('.team-box').cloneNode(true);
@@ -386,8 +386,11 @@ async function compartirEquipos() {
     capturador.appendChild(t2Clon);
     document.body.appendChild(capturador);
 
-    t1Clon.style.width = (t1Clon.offsetWidth + 6) + 'px';
-    t2Clon.style.width = (t2Clon.offsetWidth + 6) + 'px';
+    /* Se fuerzan anchos fijos y se anula la sombra que genera la mancha */
+    t1Clon.style.width = '300px';
+    t2Clon.style.width = '300px';
+    t1Clon.style.boxShadow = 'none';
+    t2Clon.style.boxShadow = 'none';
 
     try {
         const canvas = await html2canvas(capturador, {
