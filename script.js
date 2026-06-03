@@ -199,7 +199,7 @@ function renderizarListaSeleccion() {
         return `
         <div class="player-row ${sel ? 'selected' : ''}" onclick="toggleSeleccion(${i.id})">
             <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" 
-                style="color: #ff4444; margin-right: 10px; font-weight: bold; font-size: 1.5rem; padding: 0 5px;">×</span>
+                style="color: #ff4444; font-weight: bold; font-size: 1.5rem; display: inline-block; width: 22px; text-align: center;">×</span>
             <span contenteditable="true" spellcheck="false" 
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'nombre', this.innerText)">${i.nombre}</span>
