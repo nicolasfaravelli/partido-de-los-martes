@@ -297,14 +297,20 @@ function actualizarTablerosEquipos() {
 function renderListaEquipo(ulId, ids, avgId) { 
     const ul = document.getElementById(ulId); if(!ul) return;
     ul.innerHTML = ''; let suma = 0; 
-    ids.map(getPlayerData).forEach(p => { 
-        if(!p) return;
-        suma += p.prom; 
+    const ordenPos = { 'POR': 1, 'DFC': 2, 'MCD': 3, 'MO': 4, 'SD': 5, 'DC': 6 };
+    let jugadores = ids.map(getPlayerData).filter(p => p !== undefined && p !== null);
+    jugadores.forEach(p => suma += p.prom);
+    jugadores.sort((a, b) => {
+        const posA = ordenPos[a.pos] || 99;
+        const posB = ordenPos[b.pos] || 99;
+        return posA - posB;
+    });
+    jugadores.forEach(p => { 
         const li = document.createElement('li'); li.className = 'team-player-li'; li.onclick = () => cambiarDeEquipo(p.id);
         const flechaHtml = p.flecha ? `<img src="${p.flecha}" class="list-arrow-img team-list-arrow">` : '';
         li.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">${flechaHtml}<span>${p.nombre}</span></div><span style="color:${getColorProm(p.prom)}">${p.prom}</span>`; 
         ul.appendChild(li); 
-    }); 
+    });
     const avg = document.getElementById(avgId); if(avg) avg.innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
 }
 
