@@ -185,7 +185,7 @@ function cerrarArmador() {
 function agregarInvitado() { 
     if((equipo1.length + equipo2.length) >= 10) return; 
     const id = 9000 + invitados.length + 1; 
-    invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 50, edad: 25, esInvitado: true}); 
+    invitados.push({id, nombre: `Invitado ${invitados.length+1}`, prom: 70, ata: 70, def: 70, tec: 70, vel: 70, res: 70, arq: 70, edad: 30, esInvitado: true}); 
     (equipo1.length <= equipo2.length ? equipo1 : equipo2).push(id); 
     renderizarListaSeleccion();
 }
@@ -365,17 +365,65 @@ function generarAutomatico() {
 function actualizarRadar() {
     const canvas = document.getElementById('radarChart');
     if(!canvas) return;
+    
     const getAvgStats = (ids) => {
         if (!ids.length) return [0,0,0,0,0,0];
-        const ps = ids.map(getPlayerData);
-        const sum = ps.reduce((acc, p) => ({ ata: acc.ata + (p.ata || 0), def: acc.def + (p.def || 0), tec: acc.tec + (p.tec || 0), vel: acc.vel + (p.vel || 0), res: acc.res + (p.res || 0), arq: acc.arq + (p.arq || 0) }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
-        return [sum.ata/ids.length, sum.def/ids.length, sum.tec/ids.length, sum.vel/ids.length, sum.res/ids.length, sum.arq/ids.length];
+        const ps = ids.map(getPlayerData).filter(p => p !== undefined && p !== null);
+        if (!ps.length) return [0,0,0,0,0,0];
+        const sum = ps.reduce((acc, p) => ({ 
+            ata: acc.ata + (p.ata || 0), 
+            def: acc.def + (p.def || 0), 
+            tec: acc.tec + (p.tec || 0), 
+            vel: acc.vel + (p.vel || 0), 
+            res: acc.res + (p.res || 0), 
+            arq: acc.arq + (p.arq || 0) 
+        }), {ata:0, def:0, tec:0, vel:0, res:0, arq:0});
+        
+        return [
+            sum.ata/ps.length, 
+            sum.tec/ps.length, 
+            sum.arq/ps.length, 
+            sum.def/ps.length, 
+            sum.res/ps.length, 
+            sum.vel/ps.length
+        ];
     };
+    
     const data1 = getAvgStats(equipo1), data2 = getAvgStats(equipo2);
+    
     if (!teamRadarChart) {
         const ctx = canvas.getContext('2d');
-        teamRadarChart = new Chart(ctx, { type: 'radar', data: { labels: ['ATA', 'DEF', 'TEC', 'VEL', 'RES', 'ARQ'], datasets: [ { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } ] }, options: { animation: { duration: 250 }, responsive: true, maintainAspectRatio: false, scales: { r: { min: 30, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' }, pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } } }, plugins: { legend: { display: false } } } });
-    } else { teamRadarChart.data.datasets[0].data = data1; teamRadarChart.data.datasets[1].data = data2; teamRadarChart.update(); }
+        teamRadarChart = new Chart(ctx, { 
+            type: 'radar', 
+            data: { 
+                labels: ['ATA', 'TEC', 'ARQ', 'DEF', 'RES', 'VEL'], 
+                datasets: [ 
+                    { label: 'CLARO', data: data1, backgroundColor: 'rgba(255, 255, 255, 0.4)', borderColor: '#ffffff', borderWidth: 3, pointRadius: 0 }, 
+                    { label: 'OSCURO', data: data2, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#000000', borderWidth: 3, pointRadius: 0 } 
+                ] 
+            }, 
+            options: { 
+                animation: { duration: 250 }, 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                scales: { 
+                    r: { 
+                        min: 33, 
+                        max: 99, 
+                        ticks: { display: false }, 
+                        grid: { color: 'rgba(255,255,255,0.15)' }, 
+                        angleLines: { color: 'rgba(255,255,255,0.15)' }, 
+                        pointLabels: { color: '#ffffff', font: { family: 'Bebas Neue', size: 16 } } 
+                    } 
+                }, 
+                plugins: { legend: { display: false } } 
+            } 
+        });
+    } else { 
+        teamRadarChart.data.datasets[0].data = data1; 
+        teamRadarChart.data.datasets[1].data = data2; 
+        teamRadarChart.update(); 
+    }
 }
 
 async function compartirEquipos() {
