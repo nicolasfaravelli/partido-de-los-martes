@@ -110,7 +110,7 @@ body.modal-open { overflow: hidden; }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-gold { background: #d4af37; color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); font-weight: 900; }
+.btn-gold { background: #644B0A; color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); font-weight: 900; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 
 /* UNIFICADO: Efecto HOVER para Botón Invitado */
