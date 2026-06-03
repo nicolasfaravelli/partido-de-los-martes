@@ -198,16 +198,15 @@ function renderizarListaSeleccion() {
         const sel = equipo1.includes(i.id) || equipo2.includes(i.id);
         return `
         <div class="player-row ${sel ? 'selected' : ''}" onclick="toggleSeleccion(${i.id})">
+            <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" 
+                style="color: #ff4444; margin-right: 10px; font-weight: bold; font-size: 1.5rem; padding: 0 5px;">×</span>
             <span contenteditable="true" spellcheck="false" 
-                style="color: white !important;" 
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'nombre', this.innerText)">${i.nombre}</span>
             <span contenteditable="true" 
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'prom', this.innerText, this)" 
                 style="margin-left:auto; color:${getColorProm(i.prom)}">${i.prom}</span>
-            <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" 
-                style="color: #ff4444; margin-left: 10px; font-weight: bold; font-size: 1.2rem; padding: 0 5px;">×</span>
         </div>
         `;
     }).join('');
