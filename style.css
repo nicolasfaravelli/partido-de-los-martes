@@ -25,7 +25,6 @@ body.modal-open { overflow: hidden; }
 
 #version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
 
-/* --- LOADER --- */
 #loader { 
     position: fixed;
     top: 50%;
@@ -67,7 +66,6 @@ body.modal-open { overflow: hidden; }
 .title-img { max-width: 80%; height: auto; max-height: 100px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 .controls-area { max-width: 1100px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; }
 
-/* --- ELEMENTOS INTERACTIVOS UNIFICADOS --- */
 #search-input, #sort-select, .btn, .btn-add-guest { 
     height: var(--altura-base); 
     box-sizing: border-box; 
@@ -94,7 +92,6 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 0 15px var(--color-acento); 
 }
 
-/* UNIFICADO: Efecto FOCUS para Inputs */
 #search-input:focus, #sort-select:focus { 
     border-color: var(--color-acento); 
     background: #222; 
@@ -104,7 +101,6 @@ body.modal-open { overflow: hidden; }
 
 .btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
 
-/* UNIFICADO: Efecto HOVER para Botón Principal */
 .btn:hover:not(:disabled) { 
     background: #8bb7e2 !important; 
     box-shadow: 0 0 20px var(--color-acento) !important; 
@@ -114,8 +110,7 @@ body.modal-open { overflow: hidden; }
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-gold { background: var(--color-acento); color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(117, 170, 219, 0.5); font-weight: 900; }
-
+.btn-gold { background: #d4af37; color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); font-weight: 900; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 
 /* UNIFICADO: Efecto HOVER para Botón Invitado */
