@@ -9,8 +9,8 @@ const CONFIG = {
     SFX_MAP: { 0: 0, 0.05: 0.0375, 0.3: 0.225 }
 };
 
-const COLORES = { 'leyenda': '#644b14', 'legendario': '#372864', 'oro': '#624f21', 'plata': '#434343', 'bronce': '#5e3e21' };
-const STAT_COLORS = { 'legend': '#a855f7', 'gold': '#d4af37', 'silver': '#7a7a7a', 'bronze': '#5e3e21' };
+const COLORES = { 'leyenda': '#6A4A07', 'legendario': '#372864', 'oro': '#6A4E17', 'plata': '#434343', 'bronce': '#6A3C1A' };
+const STAT_COLORS = { 'legend': '#6A4A07', 'gold': '#6A4E17', 'silver': '#7a7a7a', 'bronze': '#6A3C1A' };
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
