@@ -193,8 +193,11 @@ function agregarInvitado() {
 function renderizarListaSeleccion() {
     const cont = document.getElementById('players-checklist');
     if(!cont) return;
-    let html = invitados.map(i => `
-        <div class="player-row selected" onclick="toggleSeleccion(${i.id})">
+    
+    let html = invitados.map(i => {
+        const sel = equipo1.includes(i.id) || equipo2.includes(i.id);
+        return `
+        <div class="player-row ${sel ? 'selected' : ''}" onclick="toggleSeleccion(${i.id})">
             <span contenteditable="true" spellcheck="false" 
                 style="color: white !important;" 
                 onclick="event.stopPropagation()" 
@@ -203,8 +206,11 @@ function renderizarListaSeleccion() {
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'prom', this.innerText, this)" 
                 style="margin-left:auto; color:${getColorProm(i.prom)}">${i.prom}</span>
+            <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" 
+                style="color: #ff4444; margin-left: 10px; font-weight: bold; font-size: 1.2rem; padding: 0 5px;">×</span>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     html += datosOriginales.map(j => {
         const sel = equipo1.includes(j.id) || equipo2.includes(j.id);
@@ -237,6 +243,13 @@ function actualizarInvitado(id, campo, valor, el) {
     }
     
     actualizarTablerosEquipos();
+}
+
+function borrarInvitado(id) {
+    invitados = invitados.filter(i => i.id !== id);
+    equipo1 = equipo1.filter(x => x !== id);
+    equipo2 = equipo2.filter(x => x !== id);
+    renderizarListaSeleccion();
 }
 
 function toggleSeleccion(id) { 
