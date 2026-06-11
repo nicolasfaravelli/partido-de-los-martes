@@ -316,3 +316,14 @@ body.modal-open { overflow: hidden; }
     border-radius: var(--radio-base);
     overflow: hidden;
 }
+
+.modal-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.blend-layer {
+    z-index: 2;
+    mix-blend-mode: color;
+    pointer-events: none;
+}
