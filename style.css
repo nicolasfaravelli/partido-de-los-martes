@@ -81,44 +81,39 @@ body.modal-open { overflow: hidden; }
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    white-space: nowrap;
-}
+    white-space: nowrap; }
 
 #search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; }
 
 /* UNIFICADO: Efecto HOVER para Inputs */
 #search-input:hover, #sort-select:hover {
     border-color: var(--color-acento);
-    box-shadow: 0 0 15px var(--color-acento); 
-}
+    box-shadow: 0 0 15px var(--color-acento); }
 
 #search-input:focus, #sort-select:focus { 
     border-color: var(--color-acento); 
     background: #222; 
     box-shadow: 0 0 20px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); 
-    color: #fff;
-}
+    color: #fff; }
 
 .btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
 
 .btn:hover:not(:disabled) { 
     background: #8bb7e2 !important; 
     box-shadow: 0 0 20px var(--color-acento) !important; 
-    transform: translateY(-1px); 
-}
+    transform: translateY(-1px); }
 
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
-.btn-gold { background: #644B0A; color: #DFC6B4; border: 1px solid #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); font-weight: 900; }
+.btn-gold { background: #644B0A; color: #DFC6B4; border: 1px solid #fff; font-weight: 900; }
+.btn.btn-gold:hover:not(:disabled) { background: #644B0A !important; box-shadow: 0 0 20px rgba(212, 175, 55, 0.8) !important; }
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
 
-/* UNIFICADO: Efecto HOVER para Botón Invitado */
 .btn-add-guest:hover { 
     border-color: var(--color-acento); 
     background: #1a1a1a; 
-    box-shadow: 0 0 15px var(--color-acento); 
-}
+    box-shadow: 0 0 15px var(--color-acento); }
 
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
