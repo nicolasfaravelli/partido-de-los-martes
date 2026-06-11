@@ -18,7 +18,7 @@ let ultimasFechas = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
-    const header = document.getElementById('header-area');F
+    const header = document.getElementById('header-area');
     if(header) header.innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
     document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
     document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
