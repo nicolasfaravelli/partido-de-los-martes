@@ -96,18 +96,33 @@ function abrirModal(id) {
 function renderizarModal(j) { 
     const cardCont = document.getElementById('modal-card-container');
     const btnCont = document.getElementById('modal-buttons');
-    if(cardCont) cardCont.innerHTML = `
-    <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
-        <div class="card-inner">
-            <div class="card-front">
-                ${generarHTMLCarta(j, false)}
+    
+    if(cardCont) {
+        const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+
+        cardCont.innerHTML = `
+            <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="card-front">
+                        ${generarHTMLCarta(j, false)}
+                    </div>
+                    <div class="card-back">
+                        <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
+                            <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        </div>
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.25;" crossorigin="anonymous">` : ''}
+                        <div class="card-bg-wrapper blend-layer">
+                            <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        </div>
+                        <div class="info-layer" style="color:${j.color}">
+                            <div class="name">${j.nombre}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-back">
-                <img src="${j.fondo}" class="card-bg" crossorigin="anonymous">
-            </div>
-        </div>
-    </div>
-`; 
+        `;
+    }
+
     if(btnCont) {
         btnCont.innerHTML = `
             ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
