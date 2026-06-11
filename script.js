@@ -14,6 +14,7 @@ const STAT_COLORS = { 'legend': '#6A4A07', 'gold': '#6A4E17', 'silver': '#7a7a7a
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
+let ultimasFechas = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
@@ -41,7 +42,11 @@ function cargarDatos() {
             const loader = document.getElementById('loader');
             if(loader) loader.style.display = 'none';
             const data = results.data; 
-            if(data && data.length > 0) data.shift(); 
+            
+            if(data && data.length > 0) {
+                ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||"", data[0][20]||""];
+                data.shift(); 
+            }
             datosOriginales = data.map((fila, index) => { 
                 if(!fila || !fila[0] || fila[0].trim() === 'Jugador') return null;
                 return { 
@@ -51,7 +56,8 @@ function cargarDatos() {
                     edad: parseInt(fila[1]) || 25, pos: fila[9] || '?', fondo: fila[11] || '', 
                     foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
                     flecha: fila[14] || '',
-                    color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21' 
+                    color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21',
+                    racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-", fila[20]||"-"]
                 };
             }).filter(i => i !== null);
             aplicarFiltrosYOrden();
@@ -99,6 +105,19 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        
+        const htmlRacha = ultimasFechas.map((fecha, i) => {
+            const res = (j.racha[i] || "-").trim().toUpperCase();
+            let colorRes = j.color; 
+            if(res === 'G') colorRes = '#4CAF50'; 
+            if(res === 'P') colorRes = '#F44336'; 
+            return `
+                <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
+                    <span style="font-family:var(--fuente-impacto); font-size:5cqw; color:${j.color};">${fecha}</span>
+                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${colorRes}; line-height:1;">${res}</span>
+                </div>
+            `;
+        }).join('');
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
@@ -109,19 +128,21 @@ function renderizarModal(j) {
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
                             <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.25;" crossorigin="anonymous">` : ''}
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.15;" crossorigin="anonymous">` : ''}
                         <div class="card-bg-wrapper blend-layer">
                             <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
+                            <div class="stats-container" style="top: 80%; left: 5%; width: 90%; justify-content: space-between;">
+                                ${htmlRacha}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         `;
     }
-
     if(btnCont) {
         btnCont.innerHTML = `
             ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
