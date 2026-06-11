@@ -105,17 +105,16 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-            const res = (j.racha[i] || "-").trim().toUpperCase();
-            let colorRes = j.color; 
-            if(res === 'G') colorRes = '#4CAF50'; 
-            if(res === 'P') colorRes = '#F44336'; 
-            return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color};">${fecha}</span>
-                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${colorRes}; line-height:1;">${res}</span>
-                </div>
+        const res = (j.racha[i] || "-").trim().toUpperCase();
+           let colorRes = j.color; 
+           if(res === 'G') colorRes = '#4CAF50'; 
+           if(res === 'P') colorRes = '#F44336'; 
+           return `
+              <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
+              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; line-height: 1;">${fecha}</span>   
+              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${colorRes}; line-height: 1; margin-top: -1cqw;">${res}</span>
+        </div>
             `;
         }).join('');
         cardCont.innerHTML = `
@@ -134,7 +133,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: 70%; left: 5%; width: 90%; justify-content: space-between;">
+                            <div class="stats-container" style="top: 75%; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
