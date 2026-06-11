@@ -96,7 +96,18 @@ function abrirModal(id) {
 function renderizarModal(j) { 
     const cardCont = document.getElementById('modal-card-container');
     const btnCont = document.getElementById('modal-buttons');
-    if(cardCont) cardCont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; 
+    if(cardCont) cardCont.innerHTML = `
+    <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+            <div class="card-front">
+                ${generarHTMLCarta(j, false)}
+            </div>
+            <div class="card-back">
+                <img src="${j.fondo}" class="card-bg" crossorigin="anonymous">
+            </div>
+        </div>
+    </div>
+`; 
     if(btnCont) {
         btnCont.innerHTML = `
             ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
