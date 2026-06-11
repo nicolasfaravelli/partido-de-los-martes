@@ -99,7 +99,7 @@ function renderizarModal(j) {
     if(cardCont) cardCont.innerHTML = `<div class="card" id="carta-descarga">${generarHTMLCarta(j, false)}</div>`; 
     if(btnCont) {
         btnCont.innerHTML = `
-            ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'btn-ghost':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
+            ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
             <button class="btn" onclick="descargarCarta()">DESCARGAR</button>
             <button class="btn btn-ghost" onclick="cerrarModalCarta()">CERRAR</button>
         `; 
