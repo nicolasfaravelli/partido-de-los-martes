@@ -112,8 +112,8 @@ function renderizarModal(j) {
            if(res === 'P') colorRes = '#F44336'; 
            return `
               <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
-              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; line-height: 1; display: inline-block; transform: scaleX(0.8); transform-origin: center;">${fecha}</span>
-              <span style="font-family:var(--fuente-impacto); font-size:8.5cqw; color:${colorRes}; line-height: 1; margin-top: -0.5cqw;">${res}</span>
+              <span style="font-family:var(--fuente-impacto); font-size:9.5cqw; color:${j.color}; line-height: 1; display: inline-block; transform: scaleX(0.8); transform-origin: center;">${fecha}</span>
+              <span style="font-family:var(--fuente-impacto); font-size:8.5cqw; color:${colorRes}; line-height: 1; margin-top: -0.75cqw;">${res}</span>
                       </div>
             `;
         }).join('');
@@ -133,7 +133,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: 76.5%; left: 5%; width: 90%; justify-content: space-between;">
+                            <div class="stats-container" style="top: 76.25%; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
