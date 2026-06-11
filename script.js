@@ -112,7 +112,7 @@ function renderizarModal(j) {
            if(res === 'P') colorRes = '#F44336'; 
            return `
               <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
-              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; line-height: 1; display: inline-block; transform: scaleX(0.8); transform-origin: center;">${fecha}</span>
+              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; line-height: 1; display: inline-block; transform: scaleX(0.85); transform-origin: center;">${fecha}</span>
               <span style="font-family:var(--fuente-impacto); font-size:8.5cqw; color:${colorRes}; line-height: 1; margin-top: -0.5cqw;">${res}</span>
                       </div>
             `;
