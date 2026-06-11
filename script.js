@@ -113,7 +113,7 @@ function renderizarModal(j) {
             if(res === 'P') colorRes = '#F44336'; 
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:5cqw; color:${j.color};">${fecha}</span>
+                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color};">${fecha}</span>
                     <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${colorRes}; line-height:1;">${res}</span>
                 </div>
             `;
