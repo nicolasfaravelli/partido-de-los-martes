@@ -105,23 +105,17 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-            const res = (j.racha[i] || "-").trim().toUpperCase();
-            
+        const res = (j.racha[i] || "-").trim().toUpperCase();
             let bgColor = 'rgba(0, 0, 0, 0.4)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';
-            
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
-                    
-                    <div style="background-color:${bgColor}; width:55%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
-                        
-                        <span style="font-family:var(--fuente-impacto); font-size:8cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
-                    </div>
-                </div>
+                <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
+                <div style="background-color:${bgColor}; width:55%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                <span style="font-family:var(--fuente-impacto); font-size:8cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
+                </div></div>
             `;
         }).join('');
 
@@ -141,8 +135,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            
-                            <div class="stats-container" style="top: 69%; left: 5%; width: 90%; justify-content: space-between;">
+                            <div class="stats-container" style="top: 75%; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
