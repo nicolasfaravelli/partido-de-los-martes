@@ -112,8 +112,8 @@ function renderizarModal(j) {
             
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:4.5cqw; color:${j.color}; margin-bottom:4px;">${fecha}</span>
-                    <div style="background-color:${bgColor}; width:100%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                    <span style="font-family:var(--fuente-impacto); font-size:8cqw; color:${j.color}; margin-bottom:4px;">${fecha}</span>
+                    <div style="background-color:${bgColor}; width:75%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
                         <span style="font-family:var(--fuente-impacto); font-size:7cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
                     </div>
                 </div>
