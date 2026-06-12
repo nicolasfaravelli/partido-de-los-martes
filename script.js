@@ -115,9 +115,11 @@ function renderizarModal(j) {
             
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:5.5cqw; color:${j.color}; margin-bottom:4px;">${fecha}</span>
-                    <div style="background-color:${bgColor}; width:65%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
-                        <span style="font-family:var(--fuente-impacto); font-size:5cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
+                    <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
+                    
+                    <div style="background-color:${bgColor}; width:55%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                        
+                        <span style="font-family:var(--fuente-impacto); font-size:8cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
                     </div>
                 </div>
             `;
@@ -139,7 +141,8 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: 73%; left: 5%; width: 90%; justify-content: space-between;">
+                            
+                            <div class="stats-container" style="top: 69%; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
@@ -158,8 +161,8 @@ function renderizarModal(j) {
     }
     attachSounds();
 }
-function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
+function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
