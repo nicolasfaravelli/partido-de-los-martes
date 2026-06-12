@@ -209,8 +209,22 @@ function calcularObjetoLeyenda(base) {
 function descargarCarta() { 
     const el = document.getElementById('carta-descarga'); 
     if(!el) return;
-    html2canvas(el, { useCORS: true, scale: 3 }).then(cvs => { 
-        const a = document.createElement('a'); a.download = 'Carta.png'; a.href = cvs.toDataURL(); a.click(); 
+    const isFlipped = el.classList.contains('flipped');
+    const front = el.querySelector('.card-front');
+    const back = el.querySelector('.card-back');
+    if (isFlipped) {
+        front.style.display = 'none';
+    } else {
+        back.style.display = 'none';
+    }
+    html2canvas(el, { useCORS: true, scale: 3, backgroundColor: null }).then(cvs => { 
+        front.style.display = '';
+        back.style.display = '';
+
+        const a = document.createElement('a'); 
+        a.download = 'Carta.png'; 
+        a.href = cvs.toDataURL(); 
+        a.click(); 
     });
 }
 
