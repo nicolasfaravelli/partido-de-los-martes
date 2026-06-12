@@ -99,22 +99,19 @@ function abrirModal(id) {
     if(modal) { modal.style.display = 'flex'; document.body.classList.add('modal-open'); }
 }
 
-function renderizarModal(j) { 
-    const cardCont = document.getElementById('modal-card-container');
-    const btnCont = document.getElementById('modal-buttons');
-    
-    if(cardCont) {
-        const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        const htmlRacha = ultimasFechas.map((fecha, i) => {
-        const res = (j.racha[i] || "-").trim().toUpperCase();
-           let colorRes = j.color; 
-           if(res === 'G') colorRes = '#4CAF50'; 
-           if(res === 'P') colorRes = '#F44336'; 
-           return `
-              <div style="display:flex; flex-direction:column; align-items:center; width:16%;">
-              <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; line-height: 1; display: inline-block; transform: scaleX(0.8); transform-origin: center;">${fecha}</span>
-              <span style="font-family:var(--fuente-impacto); font-size:8.75cqw; color:${colorRes}; line-height: 1; margin-top: -0.25cqw;">${res}</span>
-                      </div>
+const htmlRacha = ultimasFechas.map((fecha, i) => {
+            const res = (j.racha[i] || "-").trim().toUpperCase();
+            let bgColor = 'rgba(0, 0, 0)';
+            if(res === 'G') bgColor = '#2E7D32';
+            if(res === 'P') bgColor = '#C62828';
+            
+            return `
+                <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
+                    <span style="font-family:var(--fuente-impacto); font-size:4.5cqw; color:${j.color}; margin-bottom:4px;">${fecha}</span>
+                    <div style="background-color:${bgColor}; width:100%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                        <span style="font-family:var(--fuente-impacto); font-size:7cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
+                    </div>
+                </div>
             `;
         }).join('');
         cardCont.innerHTML = `
