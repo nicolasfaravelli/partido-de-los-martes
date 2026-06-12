@@ -109,13 +109,13 @@ function renderizarModal(j) {
         const posVBloque = "76%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
          // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.75cqw";    
-        const grosorFecha = "600";          
+        const grosorFecha = "575";          
         const anchoEscalaFecha = "0.9";        
         const espaciadoLetraFecha = "-0.25px";   
         const espacioHaciaCuadrado = "1px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
-        const anchoCuadrado = "60%";         
-        const redondeoCuadrado = "3px";      
+        const anchoCuadrado = "50%";         
+        const redondeoCuadrado = "4px";      
         
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
