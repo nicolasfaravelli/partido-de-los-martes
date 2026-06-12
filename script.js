@@ -109,13 +109,13 @@ function renderizarModal(j) {
         const posVBloque = "76%";            // Posición vertical de toda la racha dentro de la carta
         // 2. LAS FECHAS (Textos superiores)
         const tamFuenteFecha = "8.25cqw";    // Tamaño de la letra de las fechas
-        const grosorFecha = "bold";          // Grosor: 'normal', 'bold', o valores numéricos como '900'
-        const anchoEscalaFecha = "1";        // Estiramiento horizontal (ej: '0.9' comprimido, '1.1' estirado)
-        const espaciadoLetraFecha = "0px";   // Separación entre caracteres de la fecha (ej: '-0.5px' o '1px')
+        const grosorFecha = "600";          // Grosor: 'normal', 'bold', o valores numéricos como '900'
+        const anchoEscalaFecha = "0.9";        // Estiramiento horizontal (ej: '0.9' comprimido, '1.1' estirado)
+        const espaciadoLetraFecha = "-0.25px";   // Separación entre caracteres de la fecha (ej: '-0.5px' o '1px')
         const espacioHaciaCuadrado = "4px";  // Distancia vertical entre la fecha y su cuadrado
         // 3. LOS CUADRADOS
         const anchoCuadrado = "55%";         // Tamaño del cuadrado (porcentaje respecto a su columna)
-        const redondeoCuadrado = "4px";      // Qué tan redondeadas querés las esquinas de los cuadrados
+        const redondeoCuadrado = "3px";      // Qué tan redondeadas querés las esquinas de los cuadrados
         // 4. LAS LETRAS DE RESULTADO (G, P, -)
         const tamLetraRes = "6.5cqw";        // Tamaño de la letra G o P dentro del cuadrado
         const microAjusteLetraV = "0px";     // RECOMIENDO "0px". Usalo SOLO si la fuente viene defectuosa de fábrica y querés centrar la letra dentro del cuadrado (ej: '0.5px' o '-1px')
