@@ -105,15 +105,12 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        
         // --- VARIABLES DE AJUSTE (Modificá estos valores) ---
         const tamFuenteFecha = "8.5cqw";      // 1. Tamaño fuente de las fechas
         const anchoCuadrado = "55%";        // 2. Ancho de los cuadrados
         const tamLetraRes = "7cqw";         // 3. Tamaño letras G, P, -
         const posVLetraRes = "0.75px";         // 4. Posición vertical letras (traslación)
-        const posVBloque = "76%";           // 5. Posición vertical del bloque entero
-        // ----------------------------------------------------
-        
+        const posVBloque = "76%";           // 5. Posición vertical del bloque entero   
         const htmlRacha = ultimasFechas.map((fecha, i) => {
             const res = (j.racha[i] || "-").trim().toUpperCase();
             
