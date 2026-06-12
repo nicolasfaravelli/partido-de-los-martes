@@ -105,12 +105,20 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        // --- VARIABLES DE AJUSTE (Modificá estos valores) ---
-        const tamFuenteFecha = "8.25cqw";    // 1. Tamaño fuente de las fechas
-        const anchoCuadrado = "55%";        // 2. Ancho de los cuadrados
-        const tamLetraRes = "6.5cqw";         // 3. Tamaño letras G, P, -
-        const posVLetraRes = "0.25px";       // 4. Posición vertical letras (traslación)
-        const posVBloque = "76%";           // 5. Posición vertical del bloque entero   
+        // 1. EL BLOQUE ENTERO
+        const posVBloque = "76%";            // Posición vertical de toda la racha dentro de la carta
+        // 2. LAS FECHAS (Textos superiores)
+        const tamFuenteFecha = "8.25cqw";    // Tamaño de la letra de las fechas
+        const grosorFecha = "bold";          // Grosor: 'normal', 'bold', o valores numéricos como '900'
+        const anchoEscalaFecha = "1";        // Estiramiento horizontal (ej: '0.9' comprimido, '1.1' estirado)
+        const espaciadoLetraFecha = "0px";   // Separación entre caracteres de la fecha (ej: '-0.5px' o '1px')
+        const espacioHaciaCuadrado = "4px";  // Distancia vertical entre la fecha y su cuadrado
+        // 3. LOS CUADRADOS
+        const anchoCuadrado = "55%";         // Tamaño del cuadrado (porcentaje respecto a su columna)
+        const redondeoCuadrado = "4px";      // Qué tan redondeadas querés las esquinas de los cuadrados
+        // 4. LAS LETRAS DE RESULTADO (G, P, -)
+        const tamLetraRes = "6.5cqw";        // Tamaño de la letra G o P dentro del cuadrado
+        const microAjusteLetraV = "0px";     // RECOMIENDO "0px". Usalo SOLO si la fuente viene defectuosa de fábrica y querés centrar la letra dentro del cuadrado (ej: '0.5px' o '-1px')
         const htmlRacha = ultimasFechas.map((fecha, i) => {
             const res = (j.racha[i] || "-").trim().toUpperCase();
             
@@ -119,10 +127,39 @@ function renderizarModal(j) {
             if(res === 'P') bgColor = '#C62828';
             
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
-                    <span style="font-family:var(--fuente-impacto); font-size:${tamFuenteFecha}; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
-                    <div style="background-color:${bgColor}; width:${anchoCuadrado}; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
-                        <span style="font-family:var(--fuente-impacto); font-size:${tamLetraRes}; color:#FFF; line-height:1; transform:translateY(${posVLetraRes});">${res}</span>
+                <div style="display:flex; flex-direction:column; align-items:center; width:15%; box-sizing:border-box;">
+                    <span style="
+                        font-family:var(--fuente-impacto); 
+                        font-size:${tamFuenteFecha}; 
+                        font-weight:${grosorFecha};
+                        letter-spacing:${espaciadoLetraFecha};
+                        transform:scaleX(${anchoEscalaFecha});
+                        display:inline-block;
+                        color:${j.color}; 
+                        margin-bottom:${espacioHaciaCuadrado}; 
+                        line-height:1;
+                        text-align:center;
+                    ">${fecha}</span>
+                    
+                    <div style="
+                        background-color:${bgColor}; 
+                        width:${anchoCuadrado}; 
+                        aspect-ratio:1; 
+                        display:flex; 
+                        justify-content:center; 
+                        align-items:center; 
+                        border-radius:${redondeoCuadrado}; 
+                        box-shadow:0 2px 4px rgba(0,0,0,0.5); 
+                        border:1px solid rgba(255,255,255,0.15);
+                        box-sizing:border-box;
+                    ">
+                        <span style="
+                            font-family:var(--fuente-impacto); 
+                            font-size:${tamLetraRes}; 
+                            color:#FFF; 
+                            line-height:1; 
+                            transform:translateY(${microAjusteLetraV});
+                        ">${res}</span>
                     </div>
                 </div>
             `;
