@@ -99,9 +99,14 @@ function abrirModal(id) {
     if(modal) { modal.style.display = 'flex'; document.body.classList.add('modal-open'); }
 }
 
-const htmlRacha = ultimasFechas.map((fecha, i) => {
+function renderizarModal(j) { 
+    const cardCont = document.getElementById('modal-card-container');
+    const btnCont = document.getElementById('modal-buttons');
+    if(cardCont) {
+        const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        const htmlRacha = ultimasFechas.map((fecha, i) => {
             const res = (j.racha[i] || "-").trim().toUpperCase();
-            let bgColor = 'rgba(0, 0, 0)';
+            let bgColor = 'rgba(0, 0, 0, 0.4)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';
             
@@ -139,6 +144,7 @@ const htmlRacha = ultimasFechas.map((fecha, i) => {
             </div>
         `;
     }
+
     if(btnCont) {
         btnCont.innerHTML = `
             ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
