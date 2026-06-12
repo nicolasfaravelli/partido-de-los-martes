@@ -109,7 +109,7 @@ function renderizarModal(j) {
         const posVBloque = "76%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
          // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.25cqw";    
-        const grosorFecha = "600";          
+        const grosorFecha = "500";          
         const anchoEscalaFecha = "0.9";        
         const espaciadoLetraFecha = "-0.25px";   
         const espacioHaciaCuadrado = "4px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
