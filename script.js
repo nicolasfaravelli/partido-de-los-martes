@@ -107,17 +107,17 @@ function renderizarModal(j) {
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "76%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "9.5cqw";    
-        const grosorFecha = "595";          
+        const tamFuenteFecha = "9cqw";    
+        const grosorFecha = "599";          
         const anchoEscalaFecha = "0.9";        
-        const espaciadoLetraFecha = "-0.25px";   
+        const espaciadoLetraFecha = "-0.3px";   
         const espacioHaciaCuadrado = "0px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "60%";         
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
-        const microAjusteLetraV = "1.5px";      
+        const microAjusteLetraV = "1.2px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.4)';
