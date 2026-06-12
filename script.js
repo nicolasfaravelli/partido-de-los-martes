@@ -102,22 +102,27 @@ function abrirModal(id) {
 function renderizarModal(j) { 
     const cardCont = document.getElementById('modal-card-container');
     const btnCont = document.getElementById('modal-buttons');
+    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-            const res = (j.racha[i] || "-").trim().toUpperCase();  
-            let claseRes = 'res-ausente'; 
-            if(res === 'G') claseRes = 'res-ganado';
-            if(res === 'P') claseRes = 'res-perdido';      
+            const res = (j.racha[i] || "-").trim().toUpperCase();
+            
+            let bgColor = 'rgba(0, 0, 0, 0.4)';
+            if(res === 'G') bgColor = '#2E7D32';
+            if(res === 'P') bgColor = '#C62828';
+            
             return `
-                <div class="racha-item">
-                    <span class="racha-fecha" style="color:${j.color};">${fecha}</span>
-                    <div class="racha-cuadro ${claseRes}">
-                        <span class="racha-letra">${res}</span>
+                <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
+                    <span style="font-family:var(--fuente-impacto); font-size:5.5cqw; color:${j.color}; margin-bottom:4px;">${fecha}</span>
+                    <div style="background-color:${bgColor}; width:65%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                        <span style="font-family:var(--fuente-impacto); font-size:5cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
                     </div>
                 </div>
             `;
         }).join('');
+
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
@@ -134,7 +139,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="racha-container">
+                            <div class="stats-container" style="top: 73%; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
@@ -143,6 +148,7 @@ function renderizarModal(j) {
             </div>
         `;
     }
+
     if(btnCont) {
         btnCont.innerHTML = `
             ${j.fotoLeyenda ? `<button class="btn ${esModoLeyenda?'':'btn-gold'}" onclick="toggleLeyenda()">${esModoLeyenda?"ACTUAL":"LEYENDA"}</button>` : ''}
@@ -152,7 +158,6 @@ function renderizarModal(j) {
     }
     attachSounds();
 }
-
 function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 
 function toggleLeyenda() { 
