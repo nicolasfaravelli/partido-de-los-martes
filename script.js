@@ -112,7 +112,7 @@ function renderizarModal(j) {
         const grosorFecha = "500";          
         const anchoEscalaFecha = "0.9";        
         const espaciadoLetraFecha = "-0.25px";   
-        const espacioHaciaCuadrado = "4px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espacioHaciaCuadrado = "3px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "55%";         
         const redondeoCuadrado = "3px";      
