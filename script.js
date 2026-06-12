@@ -105,17 +105,29 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        
+        // --- VARIABLES DE AJUSTE (Modificá estos valores) ---
+        const tamFuenteFecha = "8.5cqw";      // 1. Tamaño fuente de las fechas
+        const anchoCuadrado = "55%";        // 2. Ancho de los cuadrados
+        const tamLetraRes = "7cqw";         // 3. Tamaño letras G, P, -
+        const posVLetraRes = "0.75px";         // 4. Posición vertical letras (traslación)
+        const posVBloque = "76%";           // 5. Posición vertical del bloque entero
+        // ----------------------------------------------------
+        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-        const res = (j.racha[i] || "-").trim().toUpperCase();
+            const res = (j.racha[i] || "-").trim().toUpperCase();
+            
             let bgColor = 'rgba(0, 0, 0, 0.4)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';
+            
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:15%;">
-                <span style="font-family:var(--fuente-impacto); font-size:9cqw; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
-                <div style="background-color:${bgColor}; width:55%; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
-                <span style="font-family:var(--fuente-impacto); font-size:8cqw; color:#FFF; line-height:1; transform:translateY(1px);">${res}</span>
-                </div></div>
+                    <span style="font-family:var(--fuente-impacto); font-size:${tamFuenteFecha}; color:${j.color}; margin-bottom:2px; line-height:1;">${fecha}</span>
+                    <div style="background-color:${bgColor}; width:${anchoCuadrado}; aspect-ratio:1; display:flex; justify-content:center; align-items:center; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15);">
+                        <span style="font-family:var(--fuente-impacto); font-size:${tamLetraRes}; color:#FFF; line-height:1; transform:translateY(${posVLetraRes});">${res}</span>
+                    </div>
+                </div>
             `;
         }).join('');
 
@@ -135,7 +147,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: 75%; left: 5%; width: 90%; justify-content: space-between;">
+                            <div class="stats-container" style="top: ${posVBloque}; left: 5%; width: 90%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
