@@ -284,46 +284,35 @@ body.modal-open { overflow: hidden; }
     }
 }
 
-.modal-card {
-    perspective: 1000px;
-}
+.modal-card { perspective: 1000px;}
 
 .card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
-}
+    transform-style: preserve-3d;}
 
-.modal-card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
+.modal-card.flipped .card-inner { transform: rotateY(180deg);}
 
-.card-front, .card-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
+.card-front, .card-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;}
 
-.card-back {
-    transform: rotateY(180deg);
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
-    border-radius: var(--radio-base);
-    overflow: hidden;
-}
+.card-back { transform: rotateY(180deg); filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
+    border-radius: var(--radio-base); overflow: hidden;}
 
-.modal-card:hover {
-    transform: none;
-    box-shadow: none;
-}
+.modal-card:hover { transform: none; box-shadow: none;}
 
-.blend-layer {
-    z-index: 2;
-    mix-blend-mode: color;
-    pointer-events: none;
-}
+.blend-layer { z-index: 2; mix-blend-mode: color; pointer-events: none;}
+.racha-container { position: absolute; top: 72%; left: 5%; width: 90%; display: flex; justify-content: space-between;}
+.racha-item { display: flex; flex-direction: column; align-items: center; width: 15%;}
+.racha-fecha { font-family: var(--fuente-impacto); font-size: 6cqw; margin-bottom: 4px;}
+
+.racha-cuadro { width: 75%; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);}
+
+.racha-letra { font-family: var(--fuente-impacto); font-size: 6cqw;
+    color: #FFF; line-height: 1; transform: translateY(1px);}
+
+.res-ganado { background-color: #2E7D32; }
+.res-perdido { background-color: #C62828; }
+.res-ausente { background-color: rgba(0, 0, 0, 0.4);}
