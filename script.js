@@ -105,20 +105,24 @@ function renderizarModal(j) {
     
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        // 1. EL BLOQUE ENTERO
-        const posVBloque = "76%";            // Posición vertical de toda la racha dentro de la carta
-        // 2. LAS FECHAS (Textos superiores)
-        const tamFuenteFecha = "8.25cqw";    // Tamaño de la letra de las fechas
-        const grosorFecha = "600";          // Grosor: 'normal', 'bold', o valores numéricos como '900'
-        const anchoEscalaFecha = "0.9";        // Estiramiento horizontal (ej: '0.9' comprimido, '1.1' estirado)
-        const espaciadoLetraFecha = "-0.25px";   // Separación entre caracteres de la fecha (ej: '-0.5px' o '1px')
-        const espacioHaciaCuadrado = "4px";  // Distancia vertical entre la fecha y su cuadrado
-        // 3. LOS CUADRADOS
-        const anchoCuadrado = "55%";         // Tamaño del cuadrado (porcentaje respecto a su columna)
-        const redondeoCuadrado = "3px";      // Qué tan redondeadas querés las esquinas de los cuadrados
-        // 4. LAS LETRAS DE RESULTADO (G, P, -)
-        const tamLetraRes = "6.5cqw";        // Tamaño de la letra G o P dentro del cuadrado
-        const microAjusteLetraV = "0px";     // RECOMIENDO "0px". Usalo SOLO si la fuente viene defectuosa de fábrica y querés centrar la letra dentro del cuadrado (ej: '0.5px' o '-1px')
+         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
+        const posVBloque = "76%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
+         // --- 2. LAS FECHAS ---
+        const tamFuenteFecha = "8.25cqw";    
+        const grosorFecha = "600";          
+        const anchoEscalaFecha = "0.9";        
+        const espaciadoLetraFecha = "-0.25px";   
+        const espacioHaciaCuadrado = "4px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        // --- 3. LOS CUADRADOS ---
+        const anchoCuadrado = "55%";         
+        const redondeoCuadrado = "3px";      
+        
+        // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
+        const tamLetraRes = "6.5cqw";        
+        // ACÁ ESTÁ LA CLAVE: Usá un valor positivo (ej: "1.5px" o "2px") para empujar la letra 
+        // hacia abajo dentro de su cuadrado y corregir el defecto de la fuente.
+        const microAjusteLetraV = "1.5px";      
+        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
             const res = (j.racha[i] || "-").trim().toUpperCase();
             
@@ -158,6 +162,7 @@ function renderizarModal(j) {
                             font-size:${tamLetraRes}; 
                             color:#FFF; 
                             line-height:1; 
+                            display:inline-block; /* NECESARIO para que el transform funcione perfecto */
                             transform:translateY(${microAjusteLetraV});
                         ">${res}</span>
                     </div>
