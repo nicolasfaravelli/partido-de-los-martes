@@ -101,35 +101,28 @@ function abrirModal(id) {
 
 function renderizarModal(j) { 
     const cardCont = document.getElementById('modal-card-container');
-    const btnCont = document.getElementById('modal-buttons');
-    
+    const btnCont = document.getElementById('modal-buttons');    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
+        // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "76%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
-         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "8.75cqw";    
+        // --- 2. LAS FECHAS ---
+        const tamFuenteFecha = "9cqw";    
         const grosorFecha = "595";          
         const anchoEscalaFecha = "0.9";        
         const espaciadoLetraFecha = "-0.25px";   
-        const espacioHaciaCuadrado = "1px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espacioHaciaCuadrado = "0.5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "60%";         
         const redondeoCuadrado = "100px";      
-        
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
-        // ACÁ ESTÁ LA CLAVE: Usá un valor positivo (ej: "1.5px" o "2px") para empujar la letra 
-        // hacia abajo dentro de su cuadrado y corregir el defecto de la fuente.
         const microAjusteLetraV = "1.5px";      
-        
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-            const res = (j.racha[i] || "-").trim().toUpperCase();
-            
+        const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.4)';
             if(res === 'G') bgColor = '#2E7D32';
-            if(res === 'P') bgColor = '#C62828';
-            
+            if(res === 'P') bgColor = '#C62828';            
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:15%; box-sizing:border-box;">
                     <span style="
