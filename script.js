@@ -116,8 +116,8 @@ function renderizarModal(j) {
         const anchoCuadrado = "46%";         
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
-        const tamLetraRes = "6.25cqw";        
-        const microAjusteLetraV = "6px";      
+        const tamLetraRes = "6.5cqw";        
+        const microAjusteLetraV = "0.75px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
