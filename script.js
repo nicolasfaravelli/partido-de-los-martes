@@ -146,7 +146,7 @@ function renderizarModal(j) {
                         justify-content:center; 
                         align-items:center; 
                         border-radius:${redondeoCuadrado}; 
-                        border:0.25px solid rgba(0,0,0,0.25);
+                        border:0.15px solid rgba(0,0,0,0.15);
                         box-sizing:border-box;
                     ">
                         <span style="
@@ -178,7 +178,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: ${posVBloque}; left: 7.5%; width: 85%; justify-content: space-between;">
+                            <div class="stats-container" style="top: ${posVBloque}; left: 6.25%; width: 82.5%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
