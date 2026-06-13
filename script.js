@@ -178,7 +178,7 @@ function renderizarModal(j) {
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: ${posVBloque}; left: 5%; width: 90%; justify-content: space-between;">
+                            <div class="stats-container" style="top: ${posVBloque}; left: 2.5%; width: 85%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
