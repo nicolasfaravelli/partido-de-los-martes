@@ -109,8 +109,8 @@ function renderizarModal(j) {
         // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.55cqw";    
         const grosorFecha = "599.9";          
-        const anchoEscalaFecha = "1";        
-        const espaciadoLetraFecha = "0px";   
+        const anchoEscalaFecha = "0.95";        
+        const espaciadoLetraFecha = "-0.25px";   
         const espacioHaciaCuadrado = "3.5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "46%";         
