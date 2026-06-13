@@ -107,7 +107,7 @@ function renderizarModal(j) {
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "8.6cqw";    
+        const tamFuenteFecha = "8.65cqw";    
         const grosorFecha = "599.9";          
         const anchoEscalaFecha = "0.925";        
         const espaciadoLetraFecha = "-0.5px";   
@@ -146,7 +146,7 @@ function renderizarModal(j) {
                         justify-content:center; 
                         align-items:center; 
                         border-radius:${redondeoCuadrado}; 
-                        border:0.5px solid rgba(255,255,255,0.25);
+                        border:0.25px solid rgba(0,0,0,0.25);
                         box-sizing:border-box;
                     ">
                         <span style="
