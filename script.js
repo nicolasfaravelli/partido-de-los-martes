@@ -146,7 +146,6 @@ function renderizarModal(j) {
                         justify-content:center; 
                         align-items:center; 
                         border-radius:${redondeoCuadrado}; 
-                        box-shadow:0 2px 4px rgba(0,0,0,0.5); 
                         border:1px solid rgba(255,255,255,0.15);
                         box-sizing:border-box;
                     ">
