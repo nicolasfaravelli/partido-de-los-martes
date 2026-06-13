@@ -117,14 +117,14 @@ function renderizarModal(j) {
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
-        const microAjusteLetraV = "0.75px";      
+        const microAjusteLetraV = "0.9px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:30%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:32.5%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
@@ -146,7 +146,7 @@ function renderizarModal(j) {
                         justify-content:center; 
                         align-items:center; 
                         border-radius:${redondeoCuadrado}; 
-                        border:5px solid rgba(255,255,255,0.15);
+                        border:0.5px solid rgba(255,255,255,0.25);
                         box-sizing:border-box;
                     ">
                         <span style="
@@ -154,7 +154,7 @@ function renderizarModal(j) {
                             font-size:${tamLetraRes}; 
                             color:#FFF; 
                             line-height:1; 
-                            display:inline-block; /* NECESARIO para que el transform funcione perfecto */
+                            display:inline-block;
                             transform:translateY(${microAjusteLetraV});
                         ">${res}</span>
                     </div>
