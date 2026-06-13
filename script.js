@@ -9,8 +9,8 @@ const CONFIG = {
     SFX_MAP: { 0: 0, 0.05: 0.0375, 0.3: 0.225 }
 };
 
-const COLORES = { 'leyenda': '#6A4A07', 'legendario': '#372864', 'oro': '#6A4E17', 'plata': '#434343', 'bronce': '#6A3C1A' };
-const STAT_COLORS = { 'legend': '#6A4A07', 'gold': '#6A4E17', 'silver': '#7a7a7a', 'bronze': '#6A3C1A' };
+const COLORES = { 'leyenda': '#675022', 'legendario': '#372864', 'oro': '#6e5a27', 'plata': '#4c4c4c', 'bronce': '#5e3e21' };
+const STAT_COLORS = { 'legend': '#372864', 'gold': '#6e5a27', 'silver': '#4c4c4c', 'bronze': '#5e3e21' };
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
@@ -54,7 +54,7 @@ function cargarDatos() {
                     ata: parseInt(fila[2]) || 0, def: parseInt(fila[3]) || 0, tec: parseInt(fila[4]) || 0, 
                     vel: parseInt(fila[5]) || 0, res: parseInt(fila[6]) || 0, arq: parseInt(fila[7]) || 0, 
                     edad: parseInt(fila[1]) || 25, pos: fila[9] || '?', fondo: fila[11] || '', 
-                    foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
+                    foto: fila[12] || '', foto: fila[13] ? fila[13].trim() : "" , 
                     flecha: fila[14] || '',
                     color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21',
                     racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-", fila[20]||"-"]
