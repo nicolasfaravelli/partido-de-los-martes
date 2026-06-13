@@ -79,7 +79,10 @@ function aplicarFiltrosYOrden() {
         }
         return o === 'asc' ? a.prom - b.prom : b.prom - a.prom;
     });
-    grid.innerHTML = lista.map(j => `<div class="card" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`).join('');
+    grid.innerHTML = lista.map(j => {
+    const claseOnFire = (j.flecha && j.flecha.includes("5.png")) ? " estado-on-fire" : "";
+    return `<div class="card${claseOnFire}" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`;
+    }).join('');
     attachSounds();
 }
 
@@ -162,9 +165,9 @@ function renderizarModal(j) {
                 </div>
             `;
         }).join('');
-
+        const claseOnFire = (j.flecha && j.flecha.includes("5.png")) ? " estado-on-fire" : "";
         cardCont.innerHTML = `
-            <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
+            <div class="card modal-card${claseOnFire}" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
                     <div class="card-front">
                         ${generarHTMLCarta(j, false)}
