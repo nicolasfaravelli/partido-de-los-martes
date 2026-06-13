@@ -107,10 +107,10 @@ function renderizarModal(j) {
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "8.57cqw";    
+        const tamFuenteFecha = "8.58cqw";    
         const grosorFecha = "599.9";          
-        const anchoEscalaFecha = "0.92.5";        
-        const espaciadoLetraFecha = "-0.5px";   
+        const anchoEscalaFecha = "0.9";        
+        const espaciadoLetraFecha = "-0.75px";   
         const espacioHaciaCuadrado = "3.5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "46%";         
@@ -124,7 +124,7 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:32.5%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:35%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
