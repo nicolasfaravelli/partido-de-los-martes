@@ -105,9 +105,9 @@ function renderizarModal(j) {
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
-        const posVBloque = "74.59%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
+        const posVBloque = "74.6%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "8.55cqw";    
+        const tamFuenteFecha = "8.56cqw";    
         const grosorFecha = "599.9";          
         const anchoEscalaFecha = "0.95";        
         const espaciadoLetraFecha = "-0.25px";   
@@ -124,7 +124,7 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:27.5%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:30%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
@@ -146,7 +146,7 @@ function renderizarModal(j) {
                         justify-content:center; 
                         align-items:center; 
                         border-radius:${redondeoCuadrado}; 
-                        border:1px solid rgba(255,255,255,0.15);
+                        border:5px solid rgba(255,255,255,0.15);
                         box-sizing:border-box;
                     ">
                         <span style="
