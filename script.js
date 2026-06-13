@@ -44,7 +44,7 @@ function cargarDatos() {
             const data = results.data; 
             
             if(data && data.length > 0) {
-                ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||"";
+                ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||""];
                 data.shift(); 
             }
             datosOriginales = data.map((fila, index) => { 
