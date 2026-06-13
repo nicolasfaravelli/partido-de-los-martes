@@ -44,7 +44,7 @@ function cargarDatos() {
             const data = results.data; 
             
             if(data && data.length > 0) {
-                ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||"", data[0][20]||""];
+                ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||"";
                 data.shift(); 
             }
             datosOriginales = data.map((fila, index) => { 
@@ -57,7 +57,7 @@ function cargarDatos() {
                     foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
                     flecha: fila[14] || '',
                     color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21',
-                    racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-", fila[20]||"-"]
+                    racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-"]
                 };
             }).filter(i => i !== null);
             aplicarFiltrosYOrden();
@@ -124,7 +124,7 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:15%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:18%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
