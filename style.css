@@ -311,3 +311,32 @@ body.modal-open { overflow: hidden; }
 
 .blend-layer { z-index: 2; mix-blend-mode: color; pointer-events: none;
 }
+
+/* Se aplica al contenedor principal de la carta */
+.estado-on-fire::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: var(--radio-base);
+    /* Color celeste eléctrico, podés cambiar los valores RGB si preferís algo dorado */
+    box-shadow: inset 0 0 10px rgba(117, 170, 219, 0.6), 
+                0 0 15px rgba(117, 170, 219, 0.4);
+    z-index: 6; /* Para que quede por encima de la foto pero debajo de los brillos fuertes */
+    pointer-events: none;
+    mix-blend-mode: screen; 
+    animation: chispa-ssj2 2.5s infinite;
+}
+
+/* Animación errática para simular la electricidad */
+@keyframes chispa-ssj2 {
+    0%   { opacity: 0.3; transform: scale(1); }
+    10%  { opacity: 0.9; transform: scale(1.02); box-shadow: inset 0 0 20px #fff, 0 0 30px rgba(117, 170, 219, 0.8); }
+    15%  { opacity: 0.2; transform: scale(1); }
+    30%  { opacity: 0.4; box-shadow: inset 0 0 10px rgba(117, 170, 219, 0.5), 0 0 15px rgba(117, 170, 219, 0.3); }
+    35%  { opacity: 0.8; transform: scale(1.01); box-shadow: inset 0 0 15px #fff, 0 0 20px rgba(117, 170, 219, 0.6); }
+    50%  { opacity: 0.3; transform: scale(1); }
+    80%  { opacity: 0.4; }
+    85%  { opacity: 0.7; box-shadow: inset 0 0 12px rgba(117, 170, 219, 0.7), 0 0 18px rgba(117, 170, 219, 0.5); }
+    100% { opacity: 0.3; transform: scale(1); }
+}
