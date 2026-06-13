@@ -249,7 +249,7 @@ function calcularObjetoLeyenda(base) {
     }); 
     const promedioRealLeyenda = sumaRealLeyenda / 6;
     const promFinal = Math.min(98.4, Math.round(promedioRealLeyenda * F));
-    return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/LEYENDA.png", color: '#644b14', ...nuevosStats, prom: promFinal };
+    return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Cartas/LEYENDA.png", color: '#644b14', ...nuevosStats, prom: promFinal };
 }
 
 function descargarCarta() { 
