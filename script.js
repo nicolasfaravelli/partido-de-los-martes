@@ -110,11 +110,11 @@ function renderizarModal(j) {
         const tamFuenteFecha = "8.5cqw";    
         const grosorFecha = "550";          
         const anchoEscalaFecha = "0.9";        
-        const espaciadoLetraFecha = "-0.75px";   
-        const espacioHaciaCuadrado = "-1px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espaciadoLetraFecha = "0px";   
+        const espacioHaciaCuadrado = "0px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "55%";         
-        const redondeoCuadrado = "5px";      
+        const redondeoCuadrado = "10px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "5cqw";        
         const microAjusteLetraV = "1.2px";      
