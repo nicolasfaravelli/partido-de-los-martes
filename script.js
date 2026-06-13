@@ -111,16 +111,16 @@ function renderizarModal(j) {
         const grosorFecha = "575";          
         const anchoEscalaFecha = "0.85";        
         const espaciadoLetraFecha = "0px";   
-        const espacioHaciaCuadrado = "5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espacioHaciaCuadrado = "4px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
-        const anchoCuadrado = "50%";         
-        const redondeoCuadrado = "7.5px";      
+        const anchoCuadrado = "55%";         
+        const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6cqw";        
         const microAjusteLetraV = "1px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
-            let bgColor = 'rgba(0, 0, 0, 0.5)';
+            let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
