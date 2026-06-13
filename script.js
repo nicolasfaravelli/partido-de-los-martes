@@ -105,11 +105,11 @@ function renderizarModal(j) {
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
-        const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
+        const posVBloque = "74%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.75cqw";    
         const grosorFecha = "575";          
-        const anchoEscalaFecha = "0.9";        
+        const anchoEscalaFecha = "0.85";        
         const espaciadoLetraFecha = "0px";   
         const espacioHaciaCuadrado = "0px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
