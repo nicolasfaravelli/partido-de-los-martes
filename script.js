@@ -170,15 +170,15 @@ function renderizarModal(j) {
                     </div>
                     <div class="card-back">
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
-                            <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
                         ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.15;" crossorigin="anonymous">` : ''}
                         <div class="card-bg-wrapper blend-layer">
-                            <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             <div class="name">${j.nombre}</div>
-                            <div class="stats-container" style="top: ${posVBloque}; left: 2.5%; width: 85%; justify-content: space-between;">
+                            <div class="stats-container" style="top: ${posVBloque}; left: 7.5%; width: 85%; justify-content: space-between;">
                                 ${htmlRacha}
                             </div>
                         </div>
