@@ -117,14 +117,14 @@ function renderizarModal(j) {
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.25cqw";        
-        const microAjusteLetraV = "1px";      
+        const microAjusteLetraV = "6px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:25%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:27.5%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
