@@ -111,9 +111,9 @@ function renderizarModal(j) {
         const grosorFecha = "599";          
         const anchoEscalaFecha = "0.95";        
         const espaciadoLetraFecha = "0px";   
-        const espacioHaciaCuadrado = "3px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espacioHaciaCuadrado = "3.5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
-        const anchoCuadrado = "45%";         
+        const anchoCuadrado = "47.5%";         
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6cqw";        
@@ -124,7 +124,7 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:18%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
