@@ -124,7 +124,7 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:35%; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">
                     <span style="
                         font-family:var(--fuente-impacto); 
                         font-size:${tamFuenteFecha}; 
@@ -153,7 +153,7 @@ function renderizarModal(j) {
                             font-family:var(--fuente-impacto); 
                             font-size:${tamLetraRes}; 
                             color:#FFF; 
-                            line-height:1; 
+                            line-height:0; 
                             display:inline-block;
                             transform:translateY(${microAjusteLetraV});
                         ">${res}</span>
