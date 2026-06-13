@@ -105,7 +105,7 @@ function renderizarModal(j) {
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
-        const posVBloque = "74.5%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
+        const posVBloque = "74.55%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.75cqw";    
         const grosorFecha = "575";          
@@ -113,14 +113,14 @@ function renderizarModal(j) {
         const espaciadoLetraFecha = "0px";   
         const espacioHaciaCuadrado = "0px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
-        const anchoCuadrado = "60%";         
+        const anchoCuadrado = "55%";         
         const redondeoCuadrado = "5px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
-        const tamLetraRes = "5.75cqw";        
+        const tamLetraRes = "6cqw";        
         const microAjusteLetraV = "1px";      
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
-            let bgColor = 'rgba(0, 0, 0, 0.25)';
+            let bgColor = 'rgba(0, 0, 0, 0.5)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
