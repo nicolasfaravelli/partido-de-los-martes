@@ -80,8 +80,13 @@ function aplicarFiltrosYOrden() {
         return o === 'asc' ? a.prom - b.prom : b.prom - a.prom;
     });
     grid.innerHTML = lista.map(j => {
-    const claseOnFire = (j.flecha && j.flecha.includes("5.png")) ? " estado-on-fire" : "";
-    return `<div class="card${claseOnFire}" onclick="abrirModal(${j.id})">${generarHTMLCarta(j, true)}</div>`;
+        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
+        // Reemplazá 'URL_DE_TU_GIF.gif' por el link real a tu archivo de electricidad
+        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
+        return `<div class="card" onclick="abrirModal(${j.id})">
+        ${generarHTMLCarta(j, true)}
+        ${capaRayos}
+        </div>`;
     }).join('');
     attachSounds();
 }
@@ -165,12 +170,14 @@ function renderizarModal(j) {
                 </div>
             `;
         }).join('');
-        const claseOnFire = (j.flecha && j.flecha.includes("5.png")) ? " estado-on-fire" : "";
+        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
+        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
         cardCont.innerHTML = `
-            <div class="card modal-card${claseOnFire}" id="carta-descarga" onclick="this.classList.toggle('flipped')">
+            <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
                     <div class="card-front">
                         ${generarHTMLCarta(j, false)}
+                        ${capaRayos}
                     </div>
                     <div class="card-back">
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
