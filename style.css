@@ -168,7 +168,7 @@ body.modal-open { overflow: hidden; }
     box-shadow: inset 0 0 2.5px rgba(0,0,0,0.25); background-color: rgb(var(--color-rgb));
 }
 
-.name { font-family: var(--fuente-impacto); position: absolute; top: 62.65%; left: 5%; width: 88%; text-align: center; font-size: 14.2cqw; text-transform: uppercase; }
+.name { font-family: var(--fuente-impacto); position: absolute; top: 62.65%; left: 5.25%; width: 88%; text-align: center; font-size: 14.2cqw; text-transform: uppercase; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 80%; left: 7.75%; width: 84.75%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
