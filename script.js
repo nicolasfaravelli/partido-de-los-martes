@@ -107,11 +107,11 @@ function renderizarModal(j) {
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
-        const tamFuenteFecha = "8.58cqw";    
+        const tamFuenteFecha = "8.6cqw";    
         const grosorFecha = "599.9";          
-        const anchoEscalaFecha = "0.9";        
-        const espaciadoLetraFecha = "-0.75px";   
-        const espacioHaciaCuadrado = "3.5px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const anchoEscalaFecha = "0.925";        
+        const espaciadoLetraFecha = "-0.5px";   
+        const espacioHaciaCuadrado = "3.25px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "46%";         
         const redondeoCuadrado = "100px";      
