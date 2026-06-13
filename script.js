@@ -54,7 +54,7 @@ function cargarDatos() {
                     ata: parseInt(fila[2]) || 0, def: parseInt(fila[3]) || 0, tec: parseInt(fila[4]) || 0, 
                     vel: parseInt(fila[5]) || 0, res: parseInt(fila[6]) || 0, arq: parseInt(fila[7]) || 0, 
                     edad: parseInt(fila[1]) || 25, pos: fila[9] || '?', fondo: fila[11] || '', 
-                    foto: fila[12] || '', foto: fila[13] ? fila[13].trim() : "" , 
+                    foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
                     flecha: fila[14] || '',
                     color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21',
                     racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-", fila[20]||"-"]
