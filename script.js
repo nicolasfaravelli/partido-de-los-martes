@@ -142,9 +142,7 @@ function renderizarModal(j) {
                         background-color:${bgColor}; 
                         width:${anchoCuadrado}; 
                         aspect-ratio:1; 
-                        display:flex; 
-                        justify-content:center; 
-                        align-items:center; 
+                        position:relative; 
                         border-radius:${redondeoCuadrado}; 
                         border:0.15px solid rgba(0,0,0,0.15);
                         box-sizing:border-box;
@@ -153,9 +151,12 @@ function renderizarModal(j) {
                             font-family:var(--fuente-impacto); 
                             font-size:${tamLetraRes}; 
                             color:#FFF; 
-                            line-height:0; 
-                            display:inline-block;
-                            transform:translateY(${microAjusteLetraV});
+                            line-height:1; 
+                            position:absolute;
+                            top:50%;
+                            left:50%;
+                            transform:translate(-50%, calc(-50% + ${microAjusteLetraV}));
+                            margin:0;
                         ">${res}</span>
                     </div>
                 </div>
