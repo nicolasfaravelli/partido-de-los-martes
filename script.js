@@ -123,12 +123,19 @@ function renderizarModal(j) {
         
         // --- CÁLCULOS Y GRADIENTES ---
         const efecNum = parseInt(j.efec) || 0;
-        const hueEfec = Math.max(0, Math.min(120, (efecNum / 100) * 120));
-        const colorEfec = `hsl(${hueEfec}, 100%, 50%)`;
-        
         const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
-        const hueAsis = Math.max(0, Math.min(120, (asisPorcentaje / 100) * 120));
-        const colorAsis = `hsl(${hueAsis}, 100%, 50%)`;
+
+        // Fórmula para gradiente exacto: Rojo (#C62828) -> Amarillo homogéneo -> Verde (#2E7D32)
+        const getColorRango = (val) => {
+            const v = Math.max(0, Math.min(100, val));
+            const h = (v / 100) * 123;       // Tono: de 0 (Rojo) a 123 (Verde)
+            const s = 66 - ((v / 100) * 20); // Saturación: de 66% a 46%
+            const l = 47 - ((v / 100) * 13); // Luminosidad: de 47% a 34%
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        };
+
+        const colorEfec = getColorRango(efecNum);
+        const colorAsis = getColorRango(asisPorcentaje);
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
         const tam2026 = "10cqw";               
@@ -141,22 +148,17 @@ function renderizarModal(j) {
         const tamSocioIcono = "5cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "5%";     // Posición de todo el conjunto entero desde arriba
-        
-        const esp_Bajo_2026 = "5px";          // Empuja el bloque de Asistencia hacia abajo
-        
-        const esp_Bajo_PalabraAsis = "2.5px";   // Separa la palabra "ASISTENCIA" de sus números
-        const esp_Bajo_NumAsis = "5x";      // Empuja el bloque de Rendimiento (Ganados/Efectividad) hacia abajo
-        
-        const esp_Bajo_PalabrasRend = "2.5px";  // Separa las palabras (GANADOS/EFEC/PERDIDOS) de sus números
-        const esp_Bajo_BloqueRend = "5px";   // Empuja el bloque de Socios hacia abajo
-        
-        const esp_Entre_Socios = "2.5px";       // Separa la línea de "Mejor socio" de "Mala química"
+        const posVBloquePrincipal = "10%";     
+        const esp_Bajo_2026 = "10px";          
+        const esp_Bajo_PalabraAsis = "5px";   
+        const esp_Bajo_NumAsis = "10px";      
+        const esp_Bajo_PalabrasRend = "5px";  
+        const esp_Bajo_BloqueRend = "10px";   
+        const esp_Entre_Socios = "5px";       
         
         // --- IMÁGENES ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
         const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
-
         const htmlStatsTop = `
             <div style="position:absolute; top:${posVBloquePrincipal}; left:5%; width:90%; display:flex; flex-direction:column; z-index:10; text-align:center;">
                 
@@ -174,7 +176,7 @@ function renderizarModal(j) {
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
-                        <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#4CAF50; line-height:1;">${j.pg}</span>
+                        <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#2E7D32; line-height:1;">${j.pg}</span>
                     </div>
                     <div style="display:flex; flex-direction:column; align-items:center; width:40%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">EFECTIVIDAD</span>
@@ -182,7 +184,7 @@ function renderizarModal(j) {
                     </div>
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">PERDIDOS</span>
-                        <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#F44336; line-height:1;">${j.pp}</span>
+                        <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#C62828; line-height:1;">${j.pp}</span>
                     </div>
                 </div>
 
@@ -190,12 +192,12 @@ function renderizarModal(j) {
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-datos); font-size:${tamSocioTexto}; font-weight:800; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <img src="${urlSocioIdeal}" alt="Icono" style="width:${tamSocioIcono}; height:${tamSocioIcono}; object-fit:contain;">
-                            <span style="color:${j.color};">MEJOR SOCIO:</span> <span style="color:#4CAF50;">${j.mejorComp}</span>
+                            <span style="color:${j.color};">MEJOR SOCIO:</span> <span style="color:#2E7D32;">${j.mejorComp}</span>
                         </div>` : ''}
                     ${j.peorComp ? `
                         <div style="font-family:var(--fuente-datos); font-size:${tamSocioTexto}; font-weight:800; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <img src="${urlMalaQuimica}" alt="Icono" style="width:${tamSocioIcono}; height:${tamSocioIcono}; object-fit:contain;">
-                            <span style="color:${j.color};">MALA QUÍMICA:</span> <span style="color:#F44336;">${j.peorComp}</span>
+                            <span style="color:${j.color};">MALA QUÍMICA:</span> <span style="color:#C62828;">${j.peorComp}</span>
                         </div>` : ''}
                 </div>
 
