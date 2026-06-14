@@ -124,14 +124,37 @@ function renderizarModal(j) {
         const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
         const colorEfec = `hsl(${hue}, 80%, 50%)`;
         const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
+        const efecNum = parseInt(j.efec) || 0;
+        const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
+        const colorEfec = `hsl(${hue}, 80%, 50%)`;
+        const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
+
         const htmlStatsTop = `
-            <div style="position:absolute; top:8%; left:5%; width:90%; display:flex; flex-direction:column; gap:6px; z-index:10;">
-                <div style="display:flex; justify-content:space-evenly; background:rgba(0,0,0,0.6); padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
-                    <div style="text-align:center; font-family:var(--fuente-impacto); font-size:3.5cqw; color:#ccc;">ASISTENCIA<br><span style="font-size:6.5cqw; color:#fff;">${asisPorcentaje}%</span></div>
-                    <div style="text-align:center; font-family:var(--fuente-impacto); font-size:3.5cqw; color:#ccc;">EFECTIVIDAD<br><span style="font-size:6.5cqw; color:${colorEfec};">${j.efec}</span></div>
+            <div style="position:absolute; top:6%; left:5%; width:90%; display:flex; flex-direction:column; gap:8px; z-index:10;">
+            <div style="background:rgba(0,0,0,0.7); border-radius:8px; border:1px solid rgba(255,255,255,0.2); padding:8px; display:flex; flex-direction:column; gap:6px; box-shadow:0 4px 6px rgba(0,0,0,0.5);">
+                        <div style="display:flex; justify-content:space-around; align-items:center; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                        <div style="text-align:center;">
+                            <div style="font-family:var(--fuente-impacto); font-size:3.5cqw; color:#aaa; margin-bottom:2px;">ASISTENCIA</div>
+                            <div style="font-family:var(--fuente-impacto); font-size:6cqw; color:#fff; line-height:1;">
+                                ${j.pj}<span style="font-size:4cqw; color:#888;">/${totalPartidosAnio}</span> 
+                                <span style="font-size:4cqw; color:var(--color-acento); margin-left:2px;">(${asisPorcentaje}%)</span>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-family:var(--fuente-impacto); font-size:3.5cqw; color:#aaa; margin-bottom:2px;">EFECTIVIDAD</div>
+                            <div style="font-family:var(--fuente-impacto); font-size:6.5cqw; color:${colorEfec}; line-height:1;">${j.efec}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-evenly; align-items:center;">
+                        <div style="font-family:var(--fuente-datos); font-weight:800; font-size:2.6cqw; color:#4CAF50; letter-spacing:0.5px;">GANADOS: <span style="color:#fff">${j.pg}</span></div>
+                        <div style="width:1px; height:10px; background:rgba(255,255,255,0.2);"></div>
+                        <div style="font-family:var(--fuente-datos); font-weight:800; font-size:2.6cqw; color:#F44336; letter-spacing:0.5px;">PERDIDOS: <span style="color:#fff">${j.pp}</span></div>
+                    </div>
                 </div>
-                ${j.mejorComp ? `<div style="background:rgba(46,125,50,0.6); padding:4px; text-align:center; border-radius:4px; font-family:var(--fuente-datos); font-size:2.5cqw; font-weight:700; text-transform:uppercase; border:1px solid rgba(46,125,50,0.8);">Socio Ideal: ${j.mejorComp}</div>` : ''}
-                ${j.peorComp ? `<div style="background:rgba(198,40,40,0.6); padding:4px; text-align:center; border-radius:4px; font-family:var(--fuente-datos); font-size:2.5cqw; font-weight:700; text-transform:uppercase; border:1px solid rgba(198,40,40,0.8);">Mala Química: ${j.peorComp}</div>` : ''}
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    ${j.mejorComp ? `<div style="background:linear-gradient(90deg, rgba(46,125,50,0.85) 0%, rgba(46,125,50,0.1) 100%); padding:4px 8px; border-radius:4px; font-family:var(--fuente-datos); font-size:2.6cqw; font-weight:800; border-left:3px solid #4CAF50; text-transform:uppercase; text-shadow: 1px 1px 2px #000;">🤝 SOCIO IDEAL: <span style="color:#fff; font-weight:600;">${j.mejorComp}</span></div>` : ''}
+                    ${j.peorComp ? `<div style="background:linear-gradient(90deg, rgba(198,40,40,0.85) 0%, rgba(198,40,40,0.1) 100%); padding:4px 8px; border-radius:4px; font-family:var(--fuente-datos); font-size:2.6cqw; font-weight:800; border-left:3px solid #F44336; text-transform:uppercase; text-shadow: 1px 1px 2px #000;">⚠️ MALA QUÍMICA: <span style="color:#fff; font-weight:600;">${j.peorComp}</span></div>` : ''}
+                </div>
             </div>
         `;
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
@@ -205,7 +228,7 @@ function renderizarModal(j) {
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.15;" crossorigin="anonymous">` : ''}
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.333;" crossorigin="anonymous">` : ''}
                         <div class="card-bg-wrapper blend-layer">
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
