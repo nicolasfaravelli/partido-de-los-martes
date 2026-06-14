@@ -138,14 +138,14 @@ function renderizarModal(j) {
         const colorAsis = getColorRango(asisPorcentaje);
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
-        const tam2026 = "7.5cqw";               
-        const tamLblAsistencia = "5cqw";    
-        const tamValAsistencia = "10cqw";      
-        const tamValAsisFraccion = "7.5cqw";  
-        const tamLblRend = "5cqw";          
-        const tamValRend = "10cqw";            
-        const tamSocioTexto = "5cqw";       
-        const tamSocioIcono = "5cqw";       
+        const tam2026 = "10cqw";               
+        const tamLblAsistencia = "8cqw";    
+        const tamValAsistencia = "12cqw";      
+        const tamValAsisFraccion = "10cqw";  
+        const tamLblRend = "8cqw";          
+        const tamValRend = "12cqw";            
+        const tamSocioTexto = "8cqw";       
+        const tamSocioIcono = "8cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
         const posVBloquePrincipal = "5%";     
