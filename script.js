@@ -131,56 +131,62 @@ function renderizarModal(j) {
         const colorAsis = `hsl(${hueAsis}, 100%, 50%)`;
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
-        const tam2026 = "10cqw";               // Tamaño del año 2026
-        const tamLblAsistencia = "7.5cqw";    // Tamaño de la palabra "ASISTENCIA"
-        const tamValAsistencia = "10cqw";      // Tamaño del porcentaje de asistencia (Ej: 85%)
-        const tamValAsisFraccion = "7.5cqw";  // Tamaño del (16/22)
-        const tamLblRend = "7.5cqw";          // Tamaño de "GANADOS", "EFECTIVIDAD", "PERDIDOS"
-        const tamValRend = "10cqw";            // Tamaño de los números de ganados, efectividad y perdidos
-        const tamSocioTexto = "5cqw";       // Tamaño de las letras en mejor/peor socio
-        const tamSocioIcono = "5cqw";       // Tamaño de los iconos (cuando pongas los PNG)
+        const tam2026 = "10cqw";               
+        const tamLblAsistencia = "7.5cqw";    
+        const tamValAsistencia = "10cqw";      
+        const tamValAsisFraccion = "7.5cqw";  
+        const tamLblRend = "7.5cqw";          
+        const tamValRend = "10cqw";            
+        const tamSocioTexto = "5cqw";       
+        const tamSocioIcono = "5cqw";       
 
-        // --- VARIABLES EDITABLES: POSICIÓN Y SEPARACIONES ---
-        const posVStatsTop = "4%";            // Posición desde arriba de todo el bloque
-        const sep2026 = "0px";                // Espacio debajo del 2026
-        const sepAsistenciaBloque = "8px";    // Espacio grande debajo de la asistencia
-        const sepRendimientoBloque = "10px";  // Espacio grande debajo de Ganados/Efectividad/Perdidos
-        const sepEntreSocios = "4px";         // Espacio entre la línea de mejor socio y mala química
+        // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
+        const posVBloquePrincipal = "5%";     // Posición de todo el conjunto entero desde arriba
+        
+        const esp_Bajo_2026 = "5px";          // Empuja el bloque de Asistencia hacia abajo
+        
+        const esp_Bajo_PalabraAsis = "2.5px";   // Separa la palabra "ASISTENCIA" de sus números
+        const esp_Bajo_NumAsis = "5x";      // Empuja el bloque de Rendimiento (Ganados/Efectividad) hacia abajo
+        
+        const esp_Bajo_PalabrasRend = "2.5px";  // Separa las palabras (GANADOS/EFEC/PERDIDOS) de sus números
+        const esp_Bajo_BloqueRend = "5px";   // Empuja el bloque de Socios hacia abajo
+        
+        const esp_Entre_Socios = "2.5px";       // Separa la línea de "Mejor socio" de "Mala química"
         
         // --- IMÁGENES ---
-        const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+"; // Reemplazar por tu PNG
-        const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-"; // Reemplazar por tu PNG
+        const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
+        const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
 
         const htmlStatsTop = `
-            <div style="position:absolute; top:${posVStatsTop}; left:5%; width:90%; display:flex; flex-direction:column; z-index:10; text-align:center;">
+            <div style="position:absolute; top:${posVBloquePrincipal}; left:5%; width:90%; display:flex; flex-direction:column; z-index:10; text-align:center;">
                 
-                <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${sep2026};">
+                <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_2026};">
                     2026
                 </div>
 
-                <div style="font-family:var(--fuente-impacto); font-size:${tamLblAsistencia}; color:${j.color}; line-height:1;">
+                <div style="font-family:var(--fuente-impacto); font-size:${tamLblAsistencia}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_PalabraAsis};">
                     ASISTENCIA
                 </div>
-                <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${sepAsistenciaBloque};">
+                <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${esp_Bajo_NumAsis};">
                     ${asisPorcentaje}% <span style="font-size:${tamValAsisFraccion}; color:#fff;">(${j.pj}/${totalPartidosAnio})</span>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${sepRendimientoBloque};">
-                    <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:2px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
+                    <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
                         <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#4CAF50; line-height:1;">${j.pg}</span>
                     </div>
-                    <div style="display:flex; flex-direction:column; align-items:center; width:40%; gap:2px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; width:40%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">EFECTIVIDAD</span>
                         <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:${colorEfec}; line-height:1;">${j.efec}</span>
                     </div>
-                    <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:2px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">PERDIDOS</span>
                         <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#F44336; line-height:1;">${j.pp}</span>
                     </div>
                 </div>
 
-                <div style="display:flex; flex-direction:column; gap:${sepEntreSocios};">
+                <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-datos); font-size:${tamSocioTexto}; font-weight:800; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <img src="${urlSocioIdeal}" alt="Icono" style="width:${tamSocioIcono}; height:${tamSocioIcono}; object-fit:contain;">
