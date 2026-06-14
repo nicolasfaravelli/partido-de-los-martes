@@ -138,23 +138,23 @@ function renderizarModal(j) {
         const colorAsis = getColorRango(asisPorcentaje);
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
-        const tam2026 = "10cqw";               
-        const tamLblAsistencia = "8cqw";    
-        const tamValAsistencia = "12cqw";      
-        const tamValAsisFraccion = "10cqw";  
-        const tamLblRend = "8cqw";          
-        const tamValRend = "12cqw";            
-        const tamSocioTexto = "8cqw";       
-        const tamSocioIcono = "8cqw";       
+        const tam2026 = "9cqw";               
+        const tamLblAsistencia = "7cqw";    
+        const tamValAsistencia = "11cqw";      
+        const tamValAsisFraccion = "9cqw";  
+        const tamLblRend = "7cqw";          
+        const tamValRend = "11cqw";            
+        const tamSocioTexto = "7cqw";       
+        const tamSocioIcono = "7cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "5%";     
-        const esp_Bajo_2026 = "17.5px";          
-        const esp_Bajo_PalabraAsis = "5px";   
-        const esp_Bajo_NumAsis = "17.5px";      
-        const esp_Bajo_PalabrasRend = "5px";  
-        const esp_Bajo_BloqueRend = "17.5px";   
-        const esp_Entre_Socios = "5px";       
+        const posVBloquePrincipal = "6%";     
+        const esp_Bajo_2026 = "16px";          
+        const esp_Bajo_PalabraAsis = "4px";   
+        const esp_Bajo_NumAsis = "16px";      
+        const esp_Bajo_PalabrasRend = "4px";  
+        const esp_Bajo_BloqueRend = "16px";   
+        const esp_Entre_Socios = "4px";       
         
         // --- IMÁGENES ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
@@ -191,12 +191,12 @@ function renderizarModal(j) {
                 <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <img src="${urlSocioIdeal}" alt="Icono" style="width:${tamSocioIcono}; height:${tamSocioIcono}; object-fit:contain;">
+                            <span style="font-size:${tamSocioIcono}; line-height:1;">🤝</span>
                             <span style="color:${j.color};">MEJOR SOCIO:</span> <span style="color:#2E7D32;">${j.mejorComp}</span>
                         </div>` : ''}
                     ${j.peorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <img src="${urlMalaQuimica}" alt="Icono" style="width:${tamSocioIcono}; height:${tamSocioIcono}; object-fit:contain;">
+                            <span style="font-size:${tamSocioIcono}; line-height:1;">⚠️</span>
                             <span style="color:${j.color};">MALA QUÍMICA:</span> <span style="color:#C62828;">${j.peorComp}</span>
                         </div>` : ''}
                 </div>
