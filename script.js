@@ -480,7 +480,6 @@ function generarAutomatico() {
 function actualizarRadar() {
     const canvas = document.getElementById('radarChart');
     if(!canvas) return;
-    
     const getAvgStats = (ids) => {
         if (!ids.length) return [0,0,0,0,0,0];
         const ps = ids.map(getPlayerData).filter(p => p !== undefined && p !== null);
@@ -560,19 +559,15 @@ async function compartirEquipos() {
 
     const t1Clon = team1.closest('.team-box').cloneNode(true);
     const t2Clon = team2.closest('.team-box').cloneNode(true);
-    
     t1Clon.style.boxShadow = 'none';
     t2Clon.style.boxShadow = 'none';
-
     capturador.appendChild(t1Clon);
     capturador.appendChild(t2Clon);
     document.body.appendChild(capturador);
-
     const w1 = team1.closest('.team-box').offsetWidth;
     const w2 = team2.closest('.team-box').offsetWidth;
     t1Clon.style.width = (w1 > 0 ? w1 + 6 : 300) + 'px';
     t2Clon.style.width = (w2 > 0 ? w2 + 6 : 300) + 'px';
-
     try {
         const canvas = await html2canvas(capturador, {
             useCORS: true, 
@@ -591,9 +586,9 @@ async function compartirEquipos() {
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
             if (navigator.share) {
                 try { 
-                    await navigator.share({ files: [file] }); 
+                await navigator.share({ files: [file] }); 
                 } catch (err) { 
-                    console.error(err); 
+                console.error(err); 
                 }
             } else {
                 const a = document.createElement('a');
