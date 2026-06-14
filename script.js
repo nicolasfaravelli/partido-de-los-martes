@@ -145,10 +145,10 @@ function renderizarModal(j) {
         const tamLblRend = "7cqw";          
         const tamValRend = "11cqw";            
         const tamSocioTexto = "7cqw";       
-        const tamSocioIcono = "7cqw";       
+        const tamSocioIcono = "5.5cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "6%";     
+        const posVBloquePrincipal = "5%";     
         const esp_Bajo_2026 = "16px";          
         const esp_Bajo_PalabraAsis = "4px";   
         const esp_Bajo_NumAsis = "16px";      
