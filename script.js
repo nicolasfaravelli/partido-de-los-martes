@@ -121,45 +121,65 @@ function renderizarModal(j) {
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
         
-        // CÁLCULOS ESTADÍSTICOS (Sin duplicar)
-        const efecNum = parseInt(j.efec) || 0;
-        const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
-        const colorEfec = `hsl(${hue}, 80%, 50%)`;
-        const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
+        // --- CÁLCULOS Y GRADIENTE DE EFECTIVIDAD ---
+const efecNum = parseInt(j.efec) || 0;
+// Fórmula HSL: 0% = Rojo (0), 50% = Amarillo (60), 100% = Verde (120)
+const hueEfec = (efecNum / 100) * 120;
+const colorEfec = `hsl(${hueEfec}, 100%, 50%)`;
+const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
 
-        // NUEVO BLOQUE DE ESTADÍSTICAS SUPERIORES (Estilo Carta Libre sin cajas)
-        const htmlStatsTop = `
-            <div style="position:absolute; top:7%; left:5%; width:90%; display:flex; flex-direction:column; gap:10px; z-index:10; text-align:center;">
-                
-                <div>
-                    <div style="font-family:var(--fuente-impacto); font-size:4cqw; color:#ccc; letter-spacing:1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); margin-bottom: 2px;">ASISTENCIA</div>
-                    <div style="font-family:var(--fuente-impacto); font-size:9.5cqw; color:#fff; line-height:0.9; text-shadow: 2px 2px 4px rgba(0,0,0,0.9);">
-                        ${asisPorcentaje}% <span style="font-size:4.5cqw; color:#aaa; text-shadow: 1px 1px 2px #000;">(${j.pj}/${totalPartidosAnio})</span>
-                    </div>
-                </div>
+// --- VARIABLES EDITABLES PARA EL BLOQUE SUPERIOR ---
+const posVStatsTop = "4%";        // Posición vertical de todo el bloque superior
+const gapVertical = "8px";        // Separación vertical entre Asistencia, Rendimiento y Socios
+const tamTitulo = "4.5cqw";       // Tamaño de los textos "2026", "ASISTENCIA", "GANADOS"
+const tamDatoGrande = "9cqw";     // Tamaño de los números principales (Ej: 85%)
+const tamDatoChico = "4cqw";      // Tamaño de los números secundarios (Ej: 16/22)
+const tamSocio = "3cqw";          // Tamaño del texto de los socios
+const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+"; // Reemplazar por tu PNG
+const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-"; // Reemplazar por tu PNG
+// --------------------------------------------------
 
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding: 0 10px;">
-                    <div style="display:flex; flex-direction:column; align-items:center; width:30%;">
-                        <span style="font-family:var(--fuente-impacto); font-size:3.8cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">GANADOS</span>
-                        <span style="font-family:var(--fuente-impacto); font-size:7.5cqw; color:#4CAF50; line-height:1; text-shadow: 1px 1px 3px #000;">${j.pg}</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:center; width:40%;">
-                        <span style="font-family:var(--fuente-impacto); font-size:4cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">EFECTIVIDAD</span>
-                        <span style="font-family:var(--fuente-impacto); font-size:8.5cqw; color:${colorEfec}; line-height:1; text-shadow: 1px 1px 3px #000;">${j.efec}</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:center; width:30%;">
-                        <span style="font-family:var(--fuente-impacto); font-size:3.8cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">PERDIDOS</span>
-                        <span style="font-family:var(--fuente-impacto); font-size:7.5cqw; color:#F44336; line-height:1; text-shadow: 1px 1px 3px #000;">${j.pp}</span>
-                    </div>
-                </div>
+const htmlStatsTop = `
+<div style="position:absolute; top:${posVStatsTop}; left:5%; width:90%; display:flex; flex-direction:column; gap:${gapVertical}; z-index:10; text-align:center;">
 
-                <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
-                    ${j.mejorComp ? `<div style="font-family:var(--fuente-datos); font-size:2.8cqw; font-weight:800; color:#fff; text-shadow: 1px 1px 3px #000, 0 0 5px rgba(0,0,0,0.5); text-transform:uppercase;">🤝 SOCIO IDEAL: <span style="color:#4CAF50;">${j.mejorComp}</span></div>` : ''}
-                    ${j.peorComp ? `<div style="font-family:var(--fuente-datos); font-size:2.8cqw; font-weight:800; color:#fff; text-shadow: 1px 1px 3px #000, 0 0 5px rgba(0,0,0,0.5); text-transform:uppercase;">⚠️ MALA QUÍMICA: <span style="color:#F44336;">${j.peorComp}</span></div>` : ''}
-                </div>
+<div style="display:flex; flex-direction:column; gap:2px;">
+<div style="font-family:var(--fuente-impacto); font-size:${tamTitulo}; color:${j.color}; letter-spacing:1px; line-height:1;">
+2026
+</div>
+<div style="font-family:var(--fuente-impacto); font-size:${tamTitulo}; color:#ccc; line-height:1;">
+ASISTENCIA
+</div>
+<div style="font-family:var(--fuente-impacto); font-size:${tamDatoGrande}; color:#fff; line-height:1;">
+${asisPorcentaje}% <span style="font-size:${tamDatoChico}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
+</div></div>
 
-            </div>
-        `;
+<div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-top:4px;">
+<div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:2px;">
+<span style="font-family:var(--fuente-impacto); font-size:${tamTitulo}; color:#ccc; line-height:1;">GANADOS</span>
+<span style="font-family:var(--fuente-impacto); font-size:${tamDatoGrande}; color:#4CAF50; line-height:1;">${j.pg}</span>
+</div>
+<div style="display:flex; flex-direction:column; align-items:center; width:40%; gap:2px;">
+<span style="font-family:var(--fuente-impacto); font-size:${tamTitulo}; color:#ccc; line-height:1;">EFECTIVIDAD</span>
+<span style="font-family:var(--fuente-impacto); font-size:${tamDatoGrande}; color:${colorEfec}; line-height:1;">${j.efec}</span>
+</div>
+<div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:2px;">
+<span style="font-family:var(--fuente-impacto); font-size:${tamTitulo}; color:#ccc; line-height:1;">PERDIDOS</span>
+<span style="font-family:var(--fuente-impacto); font-size:${tamDatoGrande}; color:#F44336; line-height:1;">${j.pp}</span>
+</div></div>
+
+<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+${j.mejorComp ? `
+<div style="font-family:var(--fuente-datos); font-size:${tamSocio}; font-weight:800; color:#fff; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
+<img src="${urlSocioIdeal}" alt="Icono" style="width:3.5cqw; height:3.5cqw; object-fit:contain;">
+<span style="color:#ccc;">MEJOR SOCIO:</span> <span style="color:${j.color};">${j.mejorComp}</span>
+</div>` : ''}
+${j.peorComp ? `
+<div style="font-family:var(--fuente-datos); font-size:${tamSocio}; font-weight:800; color:#fff; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
+<img src="${urlMalaQuimica}" alt="Icono" style="width:3.5cqw; height:3.5cqw; object-fit:contain;">
+<span style="color:#ccc;">MALA QUÍMICA:</span> <span style="color:${j.color};">${j.peorComp}</span>
+</div>` : ''}
+</div></div>
+`;
 
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO DE RACHAS (ABAJO) ---
         const posVBloque = "75%";            
