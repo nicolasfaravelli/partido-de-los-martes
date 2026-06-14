@@ -120,57 +120,62 @@ function renderizarModal(j) {
     const btnCont = document.getElementById('modal-buttons');    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
-        const efecNum = parseInt(j.efec) || 0;
-        const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
-        const colorEfec = `hsl(${hue}, 80%, 50%)`;
-        const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
+        
+        // CÁLCULOS ESTADÍSTICOS (Sin duplicar)
         const efecNum = parseInt(j.efec) || 0;
         const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
         const colorEfec = `hsl(${hue}, 80%, 50%)`;
         const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
 
+        // NUEVO BLOQUE DE ESTADÍSTICAS SUPERIORES (Estilo Carta Libre sin cajas)
         const htmlStatsTop = `
-            <div style="position:absolute; top:6%; left:5%; width:90%; display:flex; flex-direction:column; gap:8px; z-index:10;">
-            <div style="background:rgba(0,0,0,0.7); border-radius:8px; border:1px solid rgba(255,255,255,0.2); padding:8px; display:flex; flex-direction:column; gap:6px; box-shadow:0 4px 6px rgba(0,0,0,0.5);">
-                        <div style="display:flex; justify-content:space-around; align-items:center; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
-                        <div style="text-align:center;">
-                            <div style="font-family:var(--fuente-impacto); font-size:3.5cqw; color:#aaa; margin-bottom:2px;">ASISTENCIA</div>
-                            <div style="font-family:var(--fuente-impacto); font-size:6cqw; color:#fff; line-height:1;">
-                                ${j.pj}<span style="font-size:4cqw; color:#888;">/${totalPartidosAnio}</span> 
-                                <span style="font-size:4cqw; color:var(--color-acento); margin-left:2px;">(${asisPorcentaje}%)</span>
-                            </div>
-                        </div>
-                        <div style="text-align:center;">
-                            <div style="font-family:var(--fuente-impacto); font-size:3.5cqw; color:#aaa; margin-bottom:2px;">EFECTIVIDAD</div>
-                            <div style="font-family:var(--fuente-impacto); font-size:6.5cqw; color:${colorEfec}; line-height:1;">${j.efec}</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; justify-content:space-evenly; align-items:center;">
-                        <div style="font-family:var(--fuente-datos); font-weight:800; font-size:2.6cqw; color:#4CAF50; letter-spacing:0.5px;">GANADOS: <span style="color:#fff">${j.pg}</span></div>
-                        <div style="width:1px; height:10px; background:rgba(255,255,255,0.2);"></div>
-                        <div style="font-family:var(--fuente-datos); font-weight:800; font-size:2.6cqw; color:#F44336; letter-spacing:0.5px;">PERDIDOS: <span style="color:#fff">${j.pp}</span></div>
+            <div style="position:absolute; top:7%; left:5%; width:90%; display:flex; flex-direction:column; gap:10px; z-index:10; text-align:center;">
+                
+                <div>
+                    <div style="font-family:var(--fuente-impacto); font-size:4cqw; color:#ccc; letter-spacing:1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); margin-bottom: 2px;">ASISTENCIA</div>
+                    <div style="font-family:var(--fuente-impacto); font-size:9.5cqw; color:#fff; line-height:0.9; text-shadow: 2px 2px 4px rgba(0,0,0,0.9);">
+                        ${asisPorcentaje}% <span style="font-size:4.5cqw; color:#aaa; text-shadow: 1px 1px 2px #000;">(${j.pj}/${totalPartidosAnio})</span>
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    ${j.mejorComp ? `<div style="background:linear-gradient(90deg, rgba(46,125,50,0.85) 0%, rgba(46,125,50,0.1) 100%); padding:4px 8px; border-radius:4px; font-family:var(--fuente-datos); font-size:2.6cqw; font-weight:800; border-left:3px solid #4CAF50; text-transform:uppercase; text-shadow: 1px 1px 2px #000;">🤝 SOCIO IDEAL: <span style="color:#fff; font-weight:600;">${j.mejorComp}</span></div>` : ''}
-                    ${j.peorComp ? `<div style="background:linear-gradient(90deg, rgba(198,40,40,0.85) 0%, rgba(198,40,40,0.1) 100%); padding:4px 8px; border-radius:4px; font-family:var(--fuente-datos); font-size:2.6cqw; font-weight:800; border-left:3px solid #F44336; text-transform:uppercase; text-shadow: 1px 1px 2px #000;">⚠️ MALA QUÍMICA: <span style="color:#fff; font-weight:600;">${j.peorComp}</span></div>` : ''}
+
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding: 0 10px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; width:30%;">
+                        <span style="font-family:var(--fuente-impacto); font-size:3.8cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">GANADOS</span>
+                        <span style="font-family:var(--fuente-impacto); font-size:7.5cqw; color:#4CAF50; line-height:1; text-shadow: 1px 1px 3px #000;">${j.pg}</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:40%;">
+                        <span style="font-family:var(--fuente-impacto); font-size:4cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">EFECTIVIDAD</span>
+                        <span style="font-family:var(--fuente-impacto); font-size:8.5cqw; color:${colorEfec}; line-height:1; text-shadow: 1px 1px 3px #000;">${j.efec}</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:30%;">
+                        <span style="font-family:var(--fuente-impacto); font-size:3.8cqw; color:#ccc; text-shadow: 1px 1px 2px #000;">PERDIDOS</span>
+                        <span style="font-family:var(--fuente-impacto); font-size:7.5cqw; color:#F44336; line-height:1; text-shadow: 1px 1px 3px #000;">${j.pp}</span>
+                    </div>
                 </div>
+
+                <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+                    ${j.mejorComp ? `<div style="font-family:var(--fuente-datos); font-size:2.8cqw; font-weight:800; color:#fff; text-shadow: 1px 1px 3px #000, 0 0 5px rgba(0,0,0,0.5); text-transform:uppercase;">🤝 SOCIO IDEAL: <span style="color:#4CAF50;">${j.mejorComp}</span></div>` : ''}
+                    ${j.peorComp ? `<div style="font-family:var(--fuente-datos); font-size:2.8cqw; font-weight:800; color:#fff; text-shadow: 1px 1px 3px #000, 0 0 5px rgba(0,0,0,0.5); text-transform:uppercase;">⚠️ MALA QUÍMICA: <span style="color:#F44336;">${j.peorComp}</span></div>` : ''}
+                </div>
+
             </div>
         `;
-        // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
-        const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
+
+        // --- 1. POSICIÓN DEL BLOQUE COMPLETO DE RACHAS (ABAJO) ---
+        const posVBloque = "75%";            
         // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.65cqw";    
         const grosorFecha = "599.9";          
         const anchoEscalaFecha = "0.925";        
         const espaciadoLetraFecha = "-0.5px";   
-        const espacioHaciaCuadrado = "3.25px";  // El espacio vacío EXACTO entre las fechas y los cuadrados
+        const espacioHaciaCuadrado = "3.25px";  
         // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "46%";         
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
         const microAjusteLetraV = "1px";      
+
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
@@ -215,8 +220,10 @@ function renderizarModal(j) {
                 </div>
             `;
         }).join('');
+
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
+
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
@@ -228,7 +235,9 @@ function renderizarModal(j) {
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.333;" crossorigin="anonymous">` : ''}
+                        
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.35;" crossorigin="anonymous">` : ''}
+                        
                         <div class="card-bg-wrapper blend-layer">
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
