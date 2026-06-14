@@ -149,11 +149,11 @@ function renderizarModal(j) {
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
         const posVBloquePrincipal = "5%";     
-        const esp_Bajo_2026 = "10px";          
+        const esp_Bajo_2026 = "15px";          
         const esp_Bajo_PalabraAsis = "5px";   
-        const esp_Bajo_NumAsis = "10px";      
+        const esp_Bajo_NumAsis = "15px";      
         const esp_Bajo_PalabrasRend = "5px";  
-        const esp_Bajo_BloqueRend = "10px";   
+        const esp_Bajo_BloqueRend = "15px";   
         const esp_Entre_Socios = "5px";       
         
         // --- IMÁGENES ---
