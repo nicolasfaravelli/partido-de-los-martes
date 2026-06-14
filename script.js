@@ -15,6 +15,7 @@ const ICON_SERIES = ["🔈", "🔉", "🔊"];
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 let ultimasFechas = [];
+let totalPartidosAnio = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
@@ -45,6 +46,7 @@ function cargarDatos() {
             
             if(data && data.length > 0) {
                 ultimasFechas = [data[0][15]||"", data[0][16]||"", data[0][17]||"", data[0][18]||"", data[0][19]||""];
+                totalPartidosAnio = parseInt(data[0][20]) || 0;
                 data.shift(); 
             }
             datosOriginales = data.map((fila, index) => { 
@@ -57,7 +59,13 @@ function cargarDatos() {
                     foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
                     flecha: fila[14] || '',
                     color: COLORES[fila[10]?.trim().toLowerCase()] || '#624f21',
-                    racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-"]
+                    racha: [fila[15]||"-", fila[16]||"-", fila[17]||"-", fila[18]||"-", fila[19]||"-"],
+                    pj: fila[20] || '0',
+                    pg: fila[21] || '0',
+                    pp: fila[22] || '0',
+                    efec: fila[23] || '0%',
+                    mejorComp: fila[24] ? fila[24].trim() : '',
+                    peorComp: fila[25] ? fila[25].trim() : ''
                 };
             }).filter(i => i !== null);
             aplicarFiltrosYOrden();
@@ -112,6 +120,20 @@ function renderizarModal(j) {
     const btnCont = document.getElementById('modal-buttons');    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        const efecNum = parseInt(j.efec) || 0;
+        const hue = Math.max(0, Math.min(120, (efecNum * 1.2)));
+        const colorEfec = `hsl(${hue}, 80%, 50%)`;
+        const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
+        const htmlStatsTop = `
+            <div style="position:absolute; top:8%; left:5%; width:90%; display:flex; flex-direction:column; gap:6px; z-index:10;">
+                <div style="display:flex; justify-content:space-evenly; background:rgba(0,0,0,0.6); padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+                    <div style="text-align:center; font-family:var(--fuente-impacto); font-size:3.5cqw; color:#ccc;">ASISTENCIA<br><span style="font-size:6.5cqw; color:#fff;">${asisPorcentaje}%</span></div>
+                    <div style="text-align:center; font-family:var(--fuente-impacto); font-size:3.5cqw; color:#ccc;">EFECTIVIDAD<br><span style="font-size:6.5cqw; color:${colorEfec};">${j.efec}</span></div>
+                </div>
+                ${j.mejorComp ? `<div style="background:rgba(46,125,50,0.6); padding:4px; text-align:center; border-radius:4px; font-family:var(--fuente-datos); font-size:2.5cqw; font-weight:700; text-transform:uppercase; border:1px solid rgba(46,125,50,0.8);">Socio Ideal: ${j.mejorComp}</div>` : ''}
+                ${j.peorComp ? `<div style="background:rgba(198,40,40,0.6); padding:4px; text-align:center; border-radius:4px; font-family:var(--fuente-datos); font-size:2.5cqw; font-weight:700; text-transform:uppercase; border:1px solid rgba(198,40,40,0.8);">Mala Química: ${j.peorComp}</div>` : ''}
+            </div>
+        `;
         // --- 1. POSICIÓN DEL BLOQUE COMPLETO ---
         const posVBloque = "75%";            // Bajalo o subilo para alejarlo/acercarlo a la línea del nombre
         // --- 2. LAS FECHAS ---
@@ -188,6 +210,7 @@ function renderizarModal(j) {
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
                         <div class="info-layer" style="color:${j.color}">
+                            ${htmlStatsTop}
                             <div class="name">${j.nombre}</div>
                             <div class="stats-container" style="top: ${posVBloque}; left: 6.25%; width: 87.5%; justify-content: space-between;">
                                 ${htmlRacha}
