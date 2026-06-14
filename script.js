@@ -148,7 +148,7 @@ function renderizarModal(j) {
         const tamSocioIcono = "5cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "10%";     
+        const posVBloquePrincipal = "5%";     
         const esp_Bajo_2026 = "10px";          
         const esp_Bajo_PalabraAsis = "5px";   
         const esp_Bajo_NumAsis = "10px";      
