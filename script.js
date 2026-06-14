@@ -131,14 +131,14 @@ function renderizarModal(j) {
         const colorAsis = `hsl(${hueAsis}, 100%, 50%)`;
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
-        const tam2026 = "6cqw";               // Tamaño del año 2026
-        const tamLblAsistencia = "4cqw";    // Tamaño de la palabra "ASISTENCIA"
-        const tamValAsistencia = "8cqw";      // Tamaño del porcentaje de asistencia (Ej: 85%)
-        const tamValAsisFraccion = "6cqw";  // Tamaño del (16/22)
-        const tamLblRend = "4cqw";          // Tamaño de "GANADOS", "EFECTIVIDAD", "PERDIDOS"
-        const tamValRend = "8cqw";            // Tamaño de los números de ganados, efectividad y perdidos
-        const tamSocioTexto = "4cqw";       // Tamaño de las letras en mejor/peor socio
-        const tamSocioIcono = "4cqw";       // Tamaño de los iconos (cuando pongas los PNG)
+        const tam2026 = "10cqw";               // Tamaño del año 2026
+        const tamLblAsistencia = "7.5cqw";    // Tamaño de la palabra "ASISTENCIA"
+        const tamValAsistencia = "10cqw";      // Tamaño del porcentaje de asistencia (Ej: 85%)
+        const tamValAsisFraccion = "7.5cqw";  // Tamaño del (16/22)
+        const tamLblRend = "7.5cqw";          // Tamaño de "GANADOS", "EFECTIVIDAD", "PERDIDOS"
+        const tamValRend = "10cqw";            // Tamaño de los números de ganados, efectividad y perdidos
+        const tamSocioTexto = "5cqw";       // Tamaño de las letras en mejor/peor socio
+        const tamSocioIcono = "5cqw";       // Tamaño de los iconos (cuando pongas los PNG)
 
         // --- VARIABLES EDITABLES: POSICIÓN Y SEPARACIONES ---
         const posVStatsTop = "4%";            // Posición desde arriba de todo el bloque
