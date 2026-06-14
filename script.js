@@ -131,10 +131,10 @@ const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / tota
 // --- VARIABLES EDITABLES PARA EL BLOQUE SUPERIOR ---
 const posVStatsTop = "4%";        // Posición vertical de todo el bloque superior
 const gapVertical = "8px";        // Separación vertical entre Asistencia, Rendimiento y Socios
-const tamTitulo = "4.5cqw";       // Tamaño de los textos "2026", "ASISTENCIA", "GANADOS"
+const tamTitulo = "11cqw";       // Tamaño de los textos "2026", "ASISTENCIA", "GANADOS"
 const tamDatoGrande = "9cqw";     // Tamaño de los números principales (Ej: 85%)
-const tamDatoChico = "4cqw";      // Tamaño de los números secundarios (Ej: 16/22)
-const tamSocio = "3cqw";          // Tamaño del texto de los socios
+const tamDatoChico = "9cqw";      // Tamaño de los números secundarios (Ej: 16/22)
+const tamSocio = "9cqw";          // Tamaño del texto de los socios
 const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+"; // Reemplazar por tu PNG
 const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-"; // Reemplazar por tu PNG
 // --------------------------------------------------
