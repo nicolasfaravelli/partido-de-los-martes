@@ -89,8 +89,19 @@ function aplicarFiltrosYOrden() {
     });
     grid.innerHTML = lista.map(j => {
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
-        // Reemplazá 'URL_DE_TU_GIF.gif' por el link real a tu archivo de electricidad
-        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
+        const capaRayos = esSSJ2 ? `
+        <div class="efecto-rayos" style="
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
+            background-size: cover;
+            background-position: center;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: 5;
+            transform: translate(calc(-50% + 0px), calc(-50% + 0px)) scale(1.15);
+        "></div>` : "";
         return `<div class="card" onclick="abrirModal(${j.id})">
         ${generarHTMLCarta(j, true)}
         ${capaRayos}
@@ -265,8 +276,24 @@ function renderizarModal(j) {
             `;
         }).join('');
 
-        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
-        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif"; -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";        cardCont.innerHTML = `
+        const esSSJ2 = j.flecha && j.flecha.includes("5.png");        
+        // --- EDICIÓN DEL RESPLANDOR ---
+        const escalaGif = "1.15"; // 1 es el tamaño de la carta. 1.15 es 15% más grande por fuera
+        const posXGif = "0px";    // Positivos mueven a la derecha, negativos a la izq
+        const posYGif = "0px";    // Positivos mueven abajo, negativos arriba        
+        const capaRayos = esSSJ2 ? `
+        <div class="efecto-rayos" style="
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
+            background-size: cover;
+            background-position: center;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: 5;
+            transform: translate(calc(-50% + ${posXGif}), calc(-50% + ${posYGif})) scale(${escalaGif});
+        "></div>` : "";        cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
                     <div class="card-front">
