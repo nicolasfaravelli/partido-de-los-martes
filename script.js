@@ -219,19 +219,19 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">
-                    <span style="
-                        font-family:var(--fuente-impacto); 
-                        font-size:${tamFuenteFecha}; 
-                        font-weight:${grosorFecha};
-                        letter-spacing:${espaciadoLetraFecha};
-                        transform:scaleX(${anchoEscalaFecha});
-                        display:inline-block;
-                        color:${j.color}; 
-                        margin-bottom:${espacioHaciaCuadrado}; 
-                        line-height:1;
-                        text-align:center;
-                    ">${fecha}</span>                    
+                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">                    
+                    <div style="transform:scaleX(${anchoEscalaFecha}); transform-origin:center bottom; margin-bottom:${espacioHaciaCuadrado};">
+                        <span style="
+                            font-family:var(--fuente-impacto); 
+                            font-size:${tamFuenteFecha}; 
+                            font-weight:${grosorFecha};
+                            letter-spacing:${espaciadoLetraFecha};
+                            color:${j.color}; 
+                            line-height:1;
+                            display:block;
+                            text-align:center;
+                        ">${fecha}</span>
+                    </div>                    
                     <div style="
                         background-color:${bgColor}; 
                         width:${anchoCuadrado}; 
@@ -249,7 +249,8 @@ function renderizarModal(j) {
                             color:#FFF; 
                             line-height:1; 
                             margin:0;
-                            margin-top:${microAjusteLetraV};
+                            padding-top:${microAjusteLetraV};
+                            display:block;
                         ">${res}</span>
                     </div>
                 </div>
@@ -266,17 +267,17 @@ function renderizarModal(j) {
                         ${capaRayos}
                     </div>
                     <div class="card-back">
-                        <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
+                        <div class="card-bg-wrapper" style="--card-glow-color:${j.color}; z-index: 1;">
                             <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>                        
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1;" crossorigin="anonymous">` : ''}                        
-                        <div class="card-bg-wrapper" style="z-index: 2; mix-blend-mode: color;">
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1; z-index: 2;" crossorigin="anonymous">` : ''}
+                        <div class="card-bg-wrapper" style="z-index: 3; mix-blend-mode: color;">
                             <img src="${fondoDorso2}" class="card-bg" style="opacity: 1;" crossorigin="anonymous">
                         </div>
-                        <div class="card-bg-wrapper" style="z-index: 2;">
+                        <div class="card-bg-wrapper" style="z-index: 4;">
                             <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
-                        </div>                        
-                        <div class="info-layer" style="color:${j.color}; z-index: 3;">
+                        </div>
+                        <div class="info-layer" style="color:${j.color}; z-index: 5;">
                             <div class="rating" style="opacity: 0.25;">${j.prom}</div>
                             ${htmlStatsTop}
                             <div class="name">${j.nombre}</div>
