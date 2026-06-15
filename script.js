@@ -105,7 +105,7 @@ function aplicarFiltrosYOrden() {
             mix-blend-mode: screen;
             pointer-events: none;
             z-index: 5;
-            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA});
+            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});
         "></div>` : "";
         return `<div class="card" onclick="abrirModal(${j.id})">
         ${generarHTMLCarta(j, true)}
@@ -282,6 +282,7 @@ function renderizarModal(j) {
         }).join('');
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
+        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
         <div class="efecto-rayos" style="
             position: absolute;
@@ -294,7 +295,7 @@ function renderizarModal(j) {
             mix-blend-mode: screen;
             pointer-events: none;
             z-index: 5;
-            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA});
+            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});
         "></div>` : "";
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
