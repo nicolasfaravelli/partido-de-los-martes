@@ -141,21 +141,21 @@ function renderizarModal(j) {
         // --- VARIABLES EDITABLES: TAMAÑOS ---
         const tam2026 = "10cqw";               
         const tamLblAsistencia = "8cqw";    
-        const tamValAsistencia = "12cqw";      
+        const tamValAsistencia = "10cqw";      
         const tamValAsisFraccion = "10cqw";  
         const tamLblRend = "8cqw";          
-        const tamValRend = "12cqw";            
+        const tamValRend = "10cqw";            
         const tamSocioTexto = "8cqw";       
         const tamSocioIcono = "6cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
         const posVBloquePrincipal = "5%";     
-        const esp_Bajo_2026 = "16px";          
-        const esp_Bajo_PalabraAsis = "4px";   
-        const esp_Bajo_NumAsis = "16px";      
-        const esp_Bajo_PalabrasRend = "4px";  
-        const esp_Bajo_BloqueRend = "16px";   
-        const esp_Entre_Socios = "4px";       
+        const esp_Bajo_2026 = "5px";          
+        const esp_Bajo_PalabraAsis = "0px";   
+        const esp_Bajo_NumAsis = "15px";      
+        const esp_Bajo_PalabrasRend = "0px";  
+        const esp_Bajo_BloqueRend = "14px";   
+        const esp_Entre_Socios = "0px";       
         
         // --- IMÁGENES ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
