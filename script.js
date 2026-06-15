@@ -134,7 +134,6 @@ function renderizarModal(j) {
             const l = 47 - ((v / 100) * 13); // Luminosidad: de 47% a 34%
             return `hsl(${h}, ${s}%, ${l}%)`;
         };
-
         const colorEfec = getColorRango(efecNum);
         const colorAsis = getColorRango(asisPorcentaje);
 
@@ -152,28 +151,25 @@ function renderizarModal(j) {
         const posVBloquePrincipal = "5%";     
         const esp_Bajo_2026 = "5px";          
         const esp_Bajo_PalabraAsis = "0px";   
-        const esp_Bajo_NumAsis = "15px";      
+        const esp_Bajo_NumAsis = "20px";      
         const esp_Bajo_PalabrasRend = "0px";  
-        const esp_Bajo_BloqueRend = "14px";   
+        const esp_Bajo_BloqueRend = "20px";   
         const esp_Entre_Socios = "0px";       
         
         // --- IMÁGENES ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
         const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
         const htmlStatsTop = `
-            <div style="position:absolute; top:${posVBloquePrincipal}; left:0%; width:100%; display:flex; flex-direction:column; z-index:10; text-align:center;">
-                
+            <div style="position:absolute; top:${posVBloquePrincipal}; left:0%; width:100%; display:flex; flex-direction:column; z-index:10; text-align:center;">                
                 <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_2026};">
                     2026
                 </div>
-
                 <div style="font-family:var(--fuente-impacto); font-size:${tamLblAsistencia}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_PalabraAsis};">
                     ASISTENCIA
                 </div>
                 <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${esp_Bajo_NumAsis};">
                     ${asisPorcentaje}% <span style="font-size:${tamValAsisFraccion}; color:#fff;">(${j.pj}/${totalPartidosAnio})</span>
                 </div>
-
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
