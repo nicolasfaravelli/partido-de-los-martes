@@ -276,15 +276,17 @@ function renderizarModal(j) {
                     </div>
                     <div class="card-back">
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}">
-                        <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                            <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        </div>                        
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1;" crossorigin="anonymous">` : ''}                        
+                        <div class="card-bg-wrapper" style="z-index: 2; mix-blend-mode: color;">
+                            <img src="${fondoDorso2}" class="card-bg" style="opacity: 1;" crossorigin="anonymous">
                         </div>
-                        
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1;" crossorigin="anonymous">` : ''}
-                        
                         <div class="card-bg-wrapper" style="z-index: 2;">
-                        <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
-                        </div>
-                        <div class="info-layer" style="color:${j.color}">
+                            <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
+                        </div>                        
+                        <div class="info-layer" style="color:${j.color}; z-index: 3;">
+                            <div class="rating" style="opacity: 0.25;">${j.prom}</div>
                             ${htmlStatsTop}
                             <div class="name">${j.nombre}</div>
                             <div class="stats-container" style="top: ${posVBloque}; left: 6.25%; width: 87.5%; justify-content: space-between;">
