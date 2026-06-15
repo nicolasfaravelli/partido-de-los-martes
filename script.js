@@ -139,14 +139,14 @@ function renderizarModal(j) {
         const colorAsis = getColorRango(asisPorcentaje);
 
         // --- VARIABLES EDITABLES: TAMAÑOS ---
-        const tam2026 = "9cqw";               
-        const tamLblAsistencia = "7cqw";    
-        const tamValAsistencia = "11cqw";      
-        const tamValAsisFraccion = "9cqw";  
-        const tamLblRend = "7cqw";          
-        const tamValRend = "11cqw";            
-        const tamSocioTexto = "7cqw";       
-        const tamSocioIcono = "5.5cqw";       
+        const tam2026 = "10cqw";               
+        const tamLblAsistencia = "8cqw";    
+        const tamValAsistencia = "12cqw";      
+        const tamValAsisFraccion = "10cqw";  
+        const tamLblRend = "8cqw";          
+        const tamValRend = "12cqw";            
+        const tamSocioTexto = "8cqw";       
+        const tamSocioIcono = "6cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
         const posVBloquePrincipal = "5%";     
@@ -161,7 +161,7 @@ function renderizarModal(j) {
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
         const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
         const htmlStatsTop = `
-            <div style="position:absolute; top:${posVBloquePrincipal}; left:5%; width:90%; display:flex; flex-direction:column; z-index:10; text-align:center;">
+            <div style="position:absolute; top:${posVBloquePrincipal}; left:0%; width:100%; display:flex; flex-direction:column; z-index:10; text-align:center;">
                 
                 <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_2026};">
                     2026
