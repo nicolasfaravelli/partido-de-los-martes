@@ -148,12 +148,12 @@ function renderizarModal(j) {
         const tamSocioIcono = "6cqw";       
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "5%";     
-        const esp_Bajo_2026 = "5px";          
+        const posVBloquePrincipal = "5.4%";     
+        const esp_Bajo_2026 = "0px";          
         const esp_Bajo_PalabraAsis = "0px";   
-        const esp_Bajo_NumAsis = "20px";      
+        const esp_Bajo_NumAsis = "22px";      
         const esp_Bajo_PalabrasRend = "0px";  
-        const esp_Bajo_BloqueRend = "20px";   
+        const esp_Bajo_BloqueRend = "21px";   
         const esp_Entre_Socios = "0px";       
         
         // --- IMÁGENES ---
@@ -168,7 +168,7 @@ function renderizarModal(j) {
                     ASISTENCIA
                 </div>
                 <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${esp_Bajo_NumAsis};">
-                    ${asisPorcentaje}% <span style="font-size:${tamValAsisFraccion}; color:#fff;">(${j.pj}/${totalPartidosAnio})</span>
+                    ${asisPorcentaje}% <span style="font-size:${tamValAsisFraccion}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
@@ -184,7 +184,6 @@ function renderizarModal(j) {
                         <span style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#C62828; line-height:1;">${j.pp}</span>
                     </div>
                 </div>
-
                 <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -197,7 +196,6 @@ function renderizarModal(j) {
                             <span style="color:${j.color};">MALA QUÍMICA:</span> <span style="color:#C62828;">${j.peorComp}</span>
                         </div>` : ''}
                 </div>
-
             </div>
         `;
         
@@ -214,8 +212,7 @@ function renderizarModal(j) {
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
-        const microAjusteLetraV = "1px";      
-
+        const microAjusteLetraV = "1px";
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
@@ -234,8 +231,7 @@ function renderizarModal(j) {
                         margin-bottom:${espacioHaciaCuadrado}; 
                         line-height:1;
                         text-align:center;
-                    ">${fecha}</span>
-                    
+                    ">${fecha}</span>                    
                     <div style="
                         background-color:${bgColor}; 
                         width:${anchoCuadrado}; 
@@ -262,7 +258,6 @@ function renderizarModal(j) {
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
-
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
