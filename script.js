@@ -278,13 +278,17 @@ function renderizarModal(j) {
                         <div class="card-bg-wrapper" style="--card-glow-color:${j.color}; z-index: 1;">
                             <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>                        
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1; z-index: 2;" crossorigin="anonymous">` : ''}
-                        <div class="card-bg-wrapper" style="z-index: 3; mix-blend-mode: color;">
+                        
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1; z-index: 2;" crossorigin="anonymous">` : ''}                        
+                        
+                        <div class="card-bg-wrapper capa-color-dorso" style="z-index: 3; mix-blend-mode: color;">
                             <img src="${fondoDorso2}" class="card-bg" style="opacity: 1;" crossorigin="anonymous">
                         </div>
+                        
                         <div class="card-bg-wrapper" style="z-index: 4;">
                             <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
-                        </div>
+                        </div>                       
+                        
                         <div class="info-layer" style="color:${j.color}; z-index: 5;">
                             <div class="rating" style="opacity: 0.25;">${j.prom}</div>
                             ${htmlStatsTop}
