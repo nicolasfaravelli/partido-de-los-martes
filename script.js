@@ -266,8 +266,7 @@ function renderizarModal(j) {
         }).join('');
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
-        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: url('URL_DE_TU_GIF.gif'); -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";
-        cardCont.innerHTML = `
+        const capaRayos = esSSJ2 ? `<div class="efecto-rayos" style="background-image: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif"; -webkit-mask-image: url('${j.fondo}'); mask-image: url('${j.fondo}');"></div>` : "";        cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
                     <div class="card-front">
