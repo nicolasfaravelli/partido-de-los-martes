@@ -12,8 +12,8 @@ const CONFIG = {
 const COLORES = { 'leyenda': '#675022', 'legendario': '#372864', 'oro': '#6e5a27', 'plata': '#4c4c4c', 'bronce': '#5e3e21' };
 const STAT_COLORS = { 'legend': '#372864', 'gold': '#6e5a27', 'silver': '#4c4c4c', 'bronze': '#5e3e21' };
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
-const GIF_ESCALA_X = "1.15";
-const GIF_ESCALA_Y = "1.05";
+const GIF_ESCALA_X = "1.175";
+const GIF_ESCALA_Y = "1.075";
 const GIF_POS_X = "0px";   // Mover horizontalmente
 const GIF_POS_Y = "0px";   // Mover verticalmente
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
