@@ -213,28 +213,33 @@ function renderizarModal(j) {
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
         const microAjusteLetraV = "4px";
-       const htmlRacha = ultimasFechas.map((fecha, i) => {
+        const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">                    
-                    <div style="display:flex; justify-content:center; align-items:flex-end; margin-bottom:${espacioHaciaCuadrado};">
+                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">
+                    
+                    <div style="position:relative; width:100%; height:calc(${tamFuenteFecha} * 1.1); margin-bottom:${espacioHaciaCuadrado}; overflow:visible;">
                         <span style="
+                            position:absolute;
+                            bottom:0;
+                            left:50%;
+                            transform:translateX(-50%) scaleX(${anchoEscalaFecha});
+                            transform-origin:center bottom;
                             font-family:var(--fuente-impacto); 
                             font-size:${tamFuenteFecha}; 
                             font-weight:${grosorFecha};
                             letter-spacing:${espaciadoLetraFecha};
-                            transform:scaleX(${anchoEscalaFecha});
-                            transform-origin:center;
                             color:${j.color}; 
                             line-height:1;
-                            margin:0;
+                            white-space:nowrap;
                             display:block;
                             text-align:center;
                         ">${fecha}</span>
-                    </div>                    
+                    </div>
+                    
                     <div style="
                         background-color:${bgColor}; 
                         width:${anchoCuadrado}; 
