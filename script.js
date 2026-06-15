@@ -278,7 +278,7 @@ function renderizarModal(j) {
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");        
         // --- EDICIÓN DEL RESPLANDOR ---
-        const escalaGif = "1"; // 1 es el tamaño de la carta. 1.15 es 15% más grande por fuera
+        const escalaGif = "0.8";
         const posXGif = "0px";    // Positivos mueven a la derecha, negativos a la izq
         const posYGif = "0px";    // Positivos mueven abajo, negativos arriba        
         const capaRayos = esSSJ2 ? `
