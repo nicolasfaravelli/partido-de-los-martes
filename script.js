@@ -282,7 +282,6 @@ function renderizarModal(j) {
         }).join('');
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
-        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
         <div class="efecto-rayos" style="
             position: absolute;
