@@ -281,7 +281,7 @@ function renderizarModal(j) {
                         
                         ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1;" crossorigin="anonymous">` : ''}
                         
-                        <div class="card-bg-wrapper">
+                        <div class="card-bg-wrapper" style="z-index: 2;">
                         <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
                         </div>
                         <div class="info-layer" style="color:${j.color}">
