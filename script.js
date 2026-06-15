@@ -120,6 +120,7 @@ function renderizarModal(j) {
     const btnCont = document.getElementById('modal-buttons');    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
+        const fondoDorso2 = j.fondo.replace(/\.png/i, '_DORSO2.png');
         
         // --- CÁLCULOS Y GRADIENTES ---
         const efecNum = parseInt(j.efec) || 0;
@@ -278,10 +279,10 @@ function renderizarModal(j) {
                         <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
                         </div>
                         
-                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 0.35;" crossorigin="anonymous">` : ''}
+                        ${j.foto ? `<img src="${j.foto}" class="card-face" style="opacity: 1;" crossorigin="anonymous">` : ''}
                         
-                        <div class="card-bg-wrapper blend-layer">
-                        <img src="${fondoDorso}" class="card-bg" crossorigin="anonymous">
+                        <div class="card-bg-wrapper">
+                        <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
                         </div>
                         <div class="info-layer" style="color:${j.color}">
                             ${htmlStatsTop}
