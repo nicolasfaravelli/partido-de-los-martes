@@ -12,6 +12,9 @@ const CONFIG = {
 const COLORES = { 'leyenda': '#675022', 'legendario': '#372864', 'oro': '#6e5a27', 'plata': '#4c4c4c', 'bronce': '#5e3e21' };
 const STAT_COLORS = { 'legend': '#372864', 'gold': '#6e5a27', 'silver': '#4c4c4c', 'bronze': '#5e3e21' };
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
+const GIF_ESCALA = "1"; // Resplandor
+const GIF_POS_X = "0px";   // Mover horizontalmente
+const GIF_POS_Y = "0px";   // Mover verticalmente
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 let ultimasFechas = [];
@@ -95,12 +98,13 @@ function aplicarFiltrosYOrden() {
             top: 50%; left: 50%;
             width: 100%; height: 100%;
             background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
-            background-size: cover;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
             background-position: center;
             mix-blend-mode: screen;
             pointer-events: none;
             z-index: 5;
-            transform: translate(calc(-50% + 0px), calc(-50% + 0px)) scale(1.15);
+            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA});
         "></div>` : "";
         return `<div class="card" onclick="abrirModal(${j.id})">
         ${generarHTMLCarta(j, true)}
@@ -276,24 +280,22 @@ function renderizarModal(j) {
             `;
         }).join('');
 
-        const esSSJ2 = j.flecha && j.flecha.includes("5.png");        
-        // --- EDICIÓN DEL RESPLANDOR ---
-        const escalaGif = "0.8";
-        const posXGif = "0px";    // Positivos mueven a la derecha, negativos a la izq
-        const posYGif = "0px";    // Positivos mueven abajo, negativos arriba        
+        const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
         <div class="efecto-rayos" style="
             position: absolute;
             top: 50%; left: 50%;
             width: 100%; height: 100%;
             background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
-            background-size: cover;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
             background-position: center;
             mix-blend-mode: screen;
             pointer-events: none;
             z-index: 5;
-            transform: translate(calc(-50% + ${posXGif}), calc(-50% + ${posYGif})) scale(${escalaGif});
-        "></div>` : "";        cardCont.innerHTML = `
+            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA});
+        "></div>` : "";
+        cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
                     <div class="card-front">
