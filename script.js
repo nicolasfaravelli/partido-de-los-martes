@@ -141,7 +141,7 @@ function renderizarModal(j) {
         const tam2026 = "10cqw";               
         const tamLblAsistencia = "8cqw";    
         const tamValAsistencia = "10cqw";      
-        const tamValAsisFraccion = "10cqw";  
+        const tamValAsisFraccion = "9cqw";  
         const tamLblRend = "8cqw";          
         const tamValRend = "10cqw";            
         const tamSocioTexto = "8cqw";       
