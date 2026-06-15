@@ -243,21 +243,20 @@ function renderizarModal(j) {
                         background-color:${bgColor}; 
                         width:${anchoCuadrado}; 
                         aspect-ratio:1; 
-                        position:relative; 
                         border-radius:${redondeoCuadrado}; 
                         border:0.15px solid rgba(0,0,0,0.15);
                         box-sizing:border-box;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
                     ">
                         <span style="
                             font-family:var(--fuente-impacto); 
                             font-size:${tamLetraRes}; 
                             color:#FFF; 
                             line-height:1; 
-                            position:absolute;
-                            top:50%;
-                            left:50%;
-                            transform:translate(-50%, calc(-50% + ${microAjusteLetraV}));
                             margin:0;
+                            margin-top:${microAjusteLetraV};
                         ">${res}</span>
                     </div>
                 </div>
