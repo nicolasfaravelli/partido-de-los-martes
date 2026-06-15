@@ -212,7 +212,7 @@ function renderizarModal(j) {
         const redondeoCuadrado = "100px";      
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
-        const microAjusteLetraV = "1px";
+        const microAjusteLetraV = "3px";
         const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
