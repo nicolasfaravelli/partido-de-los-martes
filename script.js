@@ -213,21 +213,24 @@ function renderizarModal(j) {
         // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
         const microAjusteLetraV = "3px";
-        const htmlRacha = ultimasFechas.map((fecha, i) => {
+       const htmlRacha = ultimasFechas.map((fecha, i) => {
         const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
                 <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">                    
-                    <div style="transform:scaleX(${anchoEscalaFecha}); transform-origin:center bottom; margin-bottom:${espacioHaciaCuadrado};">
+                    <div style="display:flex; justify-content:center; align-items:flex-end; margin-bottom:${espacioHaciaCuadrado};">
                         <span style="
                             font-family:var(--fuente-impacto); 
                             font-size:${tamFuenteFecha}; 
                             font-weight:${grosorFecha};
                             letter-spacing:${espaciadoLetraFecha};
+                            transform:scaleX(${anchoEscalaFecha});
+                            transform-origin:center;
                             color:${j.color}; 
                             line-height:1;
+                            margin:0;
                             display:block;
                             text-align:center;
                         ">${fecha}</span>
