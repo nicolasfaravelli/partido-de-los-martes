@@ -290,7 +290,7 @@ function renderizarModal(j) {
                         </div>                       
                         
                         <div class="info-layer" style="color:${j.color}; z-index: 5;">
-                            <div class="rating" style="opacity: 0.25;">${j.prom}</div>
+                            <div class="rating" style="opacity: 0.15;">${j.prom}</div>
                             ${htmlStatsTop}
                             <div class="name">${j.nombre}</div>
                             <div class="stats-container" style="top: ${posVBloque}; left: 6.25%; width: 87.5%; justify-content: space-between;">
