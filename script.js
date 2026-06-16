@@ -1,3 +1,6 @@
+// ==========================================
+// 1. CONFIGURACIÓN Y VARIABLES GLOBALES
+// ==========================================
 const CONFIG = {
     URL_CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHOyW-OmPwPBpIwBw30sBjYdcLn1_8xFjkXfG9_tLFeB960jfYnnouTDieGPeKSK49FYM1tSGng_mg/pub?gid=1826229647&single=true&output=csv",
     URL_FONDO: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo.png",
@@ -14,30 +17,38 @@ const STAT_COLORS = { 'legend': '#372864', 'gold': '#6e5a27', 'silver': '#4c4c4c
 const ICON_SERIES = ["🔈", "🔉", "🔊"];
 const GIF_ESCALA_X = "1.175";
 const GIF_ESCALA_Y = "1.075";
-const GIF_POS_X = "0px";   // Mover horizontalmente
-const GIF_POS_Y = "0px";   // Mover verticalmente
+const GIF_POS_X = "0px";   
+const GIF_POS_Y = "0px";   
+
 let datosOriginales = [], invitados = [], equipo1 = [], equipo2 = [];
 let jugadorActualEnModal = null, esModoLeyenda = false, volIndex = 0, teamRadarChart = null;
 let ultimasFechas = [];
 let totalPartidosAnio = 0;
 
+
+// ==========================================
+// 2. INICIALIZACIÓN
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     if(CONFIG.URL_FONDO) document.documentElement.style.setProperty('--fondo-url', `url('${CONFIG.URL_FONDO}')`);
+    
     const header = document.getElementById('header-area');
     if(header) header.innerHTML = `<img src="${CONFIG.URL_TITULO}" class="title-img">`;
+    
     document.getElementById('search-input').addEventListener('input', aplicarFiltrosYOrden);
     document.getElementById('sort-select').addEventListener('change', aplicarFiltrosYOrden);
+    
     window.addEventListener('click', initAudio, {once:true});
     window.addEventListener('touchstart', initAudio, {once:true});
+    
     cargarDatos();
     new MutationObserver(attachSounds).observe(document.body, { childList: true, subtree: true });
 });
 
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0,0,0";
-}
 
+// ==========================================
+// 3. CARGA Y PROCESAMIENTO DE DATOS
+// ==========================================
 function cargarDatos() {
     Papa.parse(CONFIG.URL_CSV, { 
         download: true, 
@@ -53,6 +64,7 @@ function cargarDatos() {
                 totalPartidosAnio = parseInt(data[0][20]) || 0;
                 data.shift(); 
             }
+            
             datosOriginales = data.map((fila, index) => { 
                 if(!fila || !fila[0] || fila[0].trim() === 'Jugador') return null;
                 return { 
@@ -72,17 +84,25 @@ function cargarDatos() {
                     peorComp: fila[25] ? fila[25].trim() : ''
                 };
             }).filter(i => i !== null);
+            
             aplicarFiltrosYOrden();
         }
     }); 
 }
 
+
+// ==========================================
+// 4. GRILLA PRINCIPAL Y CARTAS
+// ==========================================
 function aplicarFiltrosYOrden() {
     const grid = document.getElementById('grid-container');
     if(!grid) return;
+    
     const t = document.getElementById('search-input').value.toLowerCase();
     const [c, o] = document.getElementById('sort-select').value.split('-');
+    
     let lista = datosOriginales.filter(j => j.nombre.toLowerCase().includes(t));
+    
     lista.sort((a, b) => {
         if (c === 'nombre') {
             const apellidoA = a.nombre.trim().split(' ').pop();
@@ -91,6 +111,7 @@ function aplicarFiltrosYOrden() {
         }
         return o === 'asc' ? a.prom - b.prom : b.prom - a.prom;
     });
+    
     grid.innerHTML = lista.map(j => {
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
@@ -100,6 +121,7 @@ function aplicarFiltrosYOrden() {
         ${capaRayos}
         </div>`;
     }).join('');
+    
     attachSounds();
 }
 
@@ -109,6 +131,10 @@ function generarHTMLCarta(j, lazy) {
     return `<div class="card-bg-wrapper" style="--card-glow-color:${j.color}"><img src="${j.fondo}" class="card-bg" ${lazy?'loading="lazy"':''} crossorigin="anonymous"></div><div class="shine-layer" style="mask-image:url('${j.fondo}'); -webkit-mask-image:url('${j.fondo}');"></div>${j.foto ? `<img src="${j.foto}" class="card-face" crossorigin="anonymous">` : ''}<div class="info-layer" style="color:${j.color}"><div class="rating">${j.prom}</div><div class="position">${j.pos}</div>${flechaImg}<div class="name">${j.nombre}</div><div class="stats-container"><span class="stat-val">${j.ata}</span><span class="stat-val">${j.def}</span><span class="stat-val">${j.tec}</span><span class="stat-val">${j.vel}</span><span class="stat-val">${j.res}</span><span class="stat-val">${j.arq}</span></div></div>`;
 }
 
+
+// ==========================================
+// 5. MODAL DE JUGADOR Y MODO LEYENDA
+// ==========================================
 function abrirModal(id) { 
     const j = datosOriginales.find(x => x.id === parseInt(id)); 
     if(!j) return;
@@ -119,9 +145,15 @@ function abrirModal(id) {
     if(modal) { modal.style.display = 'flex'; document.body.classList.add('modal-open'); }
 }
 
+function cerrarModalCarta() { 
+    document.getElementById('modal').style.display='none'; 
+    document.body.classList.remove('modal-open'); 
+}
+
 function renderizarModal(j) { 
     const cardCont = document.getElementById('modal-card-container');
     const btnCont = document.getElementById('modal-buttons');    
+    
     if(cardCont) {
         const fondoDorso = j.fondo.replace(/\.png/i, '_DORSO.png');
         const fondoDorso2 = j.fondo.replace(/\.png/i, '_DORSO2.png');
@@ -130,12 +162,11 @@ function renderizarModal(j) {
         const efecNum = parseInt(j.efec) || 0;
         const asisPorcentaje = totalPartidosAnio > 0 ? Math.round((parseInt(j.pj) / totalPartidosAnio) * 100) : 0;
 
-        // Fórmula para gradiente exacto: Rojo (#C62828) -> Amarillo homogéneo -> Verde (#2E7D32)
         const getColorRango = (val) => {
             const v = Math.max(0, Math.min(100, val));
-            const h = (v / 100) * 123;       // Tono: de 0 (Rojo) a 123 (Verde)
-            const s = 66 - ((v / 100) * 20); // Saturación: de 66% a 46%
-            const l = 47 - ((v / 100) * 13); // Luminosidad: de 47% a 34%
+            const h = (v / 100) * 123;       
+            const s = 66 - ((v / 100) * 20); 
+            const l = 47 - ((v / 100) * 13); 
             return `hsl(${h}, ${s}%, ${l}%)`;
         };
         const colorEfec = getColorRango(efecNum);
@@ -144,23 +175,23 @@ function renderizarModal(j) {
         // --- VARIABLES EDITABLES: TAMAÑOS ---
         const tam2026 = "10cqw";               
         const tamLblAsistencia = "8cqw";    
-        const tamValAsistencia = "10cqw";      
+        const tamValAsistencia = "10cqw";       
         const tamValAsisFraccion = "9cqw";  
         const tamLblRend = "8cqw";          
-        const tamValRend = "10cqw";            
-        const tamSocioTexto = "8cqw";       
-        const tamSocioIcono = "6cqw";       
+        const tamValRend = "10cqw";             
+        const tamSocioTexto = "8cqw";        
+        const tamSocioIcono = "6cqw";        
 
         // --- VARIABLES EDITABLES: ESPACIOS VERTICALES ---
-        const posVBloquePrincipal = "5.4%";     
+        const posVBloquePrincipal = "5.4%";      
         const esp_Bajo_2026 = "0px";          
         const esp_Bajo_PalabraAsis = "0px";   
         const esp_Bajo_NumAsis = "22px";      
         const esp_Bajo_PalabrasRend = "0px";  
         const esp_Bajo_BloqueRend = "21px";   
-        const esp_Entre_Socios = "0px";       
+        const esp_Entre_Socios = "0px";        
         
-        // --- IMÁGENES ---
+        // --- IMÁGENES Y STATS ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
         const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
         const htmlStatsTop = `
@@ -203,22 +234,20 @@ function renderizarModal(j) {
             </div>
         `;
         
-        // --- 1. POSICIÓN DEL BLOQUE COMPLETO DE RACHAS (ABAJO) ---
+        // --- RACHAS ---
         const posVBloque = "75%";            
-        // --- 2. LAS FECHAS ---
         const tamFuenteFecha = "8.65cqw";    
         const grosorFecha = "599.9";          
         const anchoEscalaFecha = "0.925";        
         const espaciadoLetraFecha = "-0.5px";   
         const espacioHaciaCuadrado = "3.25px";  
-        // --- 3. LOS CUADRADOS ---
         const anchoCuadrado = "46%";         
         const redondeoCuadrado = "100px";      
-        // --- 4. LAS LETRAS DE RESULTADO (EL DESFASE VISUAL) ---
         const tamLetraRes = "6.5cqw";        
         const microAjusteLetraV = "4px";
+
         const htmlRacha = ultimasFechas.map((fecha, i) => {
-        const res = (j.racha[i] || "-").trim().toUpperCase();            
+            const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
@@ -249,6 +278,7 @@ function renderizarModal(j) {
             z-index: 5;
             transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});
         "></div>` : "";
+        
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
                 <div class="card-inner">
@@ -269,7 +299,7 @@ function renderizarModal(j) {
                         
                         <div class="card-bg-wrapper" style="z-index: 4;">
                             <img src="${fondoDorso2}" class="card-bg" style="opacity: 0.75;" crossorigin="anonymous">
-                        </div>                       
+                        </div>                        
                         
                         <div class="info-layer" style="color:${j.color}; z-index: 5;">
                             <div class="rating" style="opacity: 0.15;">${j.prom}</div>
@@ -295,7 +325,6 @@ function renderizarModal(j) {
     attachSounds();
 }
 
-function cerrarModalCarta() { document.getElementById('modal').style.display='none'; document.body.classList.remove('modal-open'); }
 function toggleLeyenda() { 
     const cont = document.getElementById('modal-card-container');
     if(!cont) return;
@@ -335,6 +364,7 @@ function calcularObjetoLeyenda(base) {
     const sorted = keys.map(k => ({k, v: base[k]})).sort((a,b) => b.v - a.v); 
     const escala = [1.086, 1.076, 1.076, 1.066, 1.066, 1.056];
     const plusEdad = Math.max(0, (base.edad - 33) * 0.004);
+    
     let nuevosStats = {}, sumaRealLeyenda = 0; 
     sorted.forEach((s, i) => { 
         let m = escala[i] + plusEdad; 
@@ -343,8 +373,10 @@ function calcularObjetoLeyenda(base) {
         nuevosStats[s.k] = Math.min(98.4, Math.round(base[s.k] * m)); 
         sumaRealLeyenda += nuevosStats[s.k]; 
     }); 
+    
     const promedioRealLeyenda = sumaRealLeyenda / 6;
     const promFinal = Math.min(98.4, Math.round(promedioRealLeyenda * F));
+    
     return { ...base, foto: base.fotoLeyenda, flecha: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Estado/6.png", fondo: "https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Cartas/LEYENDA.png", color: '#644b14', ...nuevosStats, prom: promFinal };
 }
 
@@ -354,11 +386,10 @@ function descargarCarta() {
     const isFlipped = el.classList.contains('flipped');
     const front = el.querySelector('.card-front');
     const back = el.querySelector('.card-back');
-    if (isFlipped) {
-        front.style.display = 'none';
-    } else {
-        back.style.display = 'none';
-    }
+    
+    if (isFlipped) front.style.display = 'none';
+    else back.style.display = 'none';
+    
     html2canvas(el, { useCORS: true, scale: 3, backgroundColor: null }).then(cvs => { 
         front.style.display = '';
         back.style.display = '';
@@ -370,6 +401,10 @@ function descargarCarta() {
     });
 }
 
+
+// ==========================================
+// 6. ARMADOR DE EQUIPOS
+// ==========================================
 function abrirArmador() { 
     const m = document.getElementById('team-modal');
     if(m) m.style.display = 'flex'; 
@@ -440,7 +475,6 @@ function actualizarInvitado(id, campo, valor, el) {
     } else {
         invitado.nombre = valor;
     }
-    
     actualizarTablerosEquipos();
 }
 
@@ -480,13 +514,12 @@ function actualizarContadorEquipos() {
     }
     const btnAddGuest = document.querySelector('.btn-add-guest');
     if(btnAddGuest) btnAddGuest.disabled = ok;
+    
     const btnGen = document.getElementById('btn-generate');
     if(btnGen) btnGen.style.display = ok ? 'inline-flex' : 'none';
     const btnShare = document.getElementById('btn-share-teams');
     if(btnShare) btnShare.style.display = ok ? 'inline-flex' : 'none';
 }
-
-function getPlayerData(id) { return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); }
 
 function actualizarTablerosEquipos() { 
     renderListaEquipo('list-team-1', equipo1, 'avg-team-1'); 
@@ -499,12 +532,14 @@ function renderListaEquipo(ulId, ids, avgId) {
     ul.innerHTML = ''; let suma = 0; 
     const ordenPos = { 'POR': 1, 'DFC': 2, 'MCD': 3, 'MO': 4, 'SD': 5, 'DC': 6 };
     let jugadores = ids.map(getPlayerData).filter(p => p !== undefined && p !== null);
+    
     jugadores.forEach(p => suma += p.prom);
     jugadores.sort((a, b) => {
         const posA = ordenPos[a.pos] || 99;
         const posB = ordenPos[b.pos] || 99;
         return posA - posB;
     });
+    
     jugadores.forEach(p => { 
         const li = document.createElement('li'); li.className = 'team-player-li'; li.onclick = () => cambiarDeEquipo(p.id);
         const flechaHtml = p.flecha ? `<img src="${p.flecha}" class="list-arrow-img team-list-arrow">` : '';
@@ -514,57 +549,121 @@ function renderListaEquipo(ulId, ids, avgId) {
     const avg = document.getElementById(avgId); if(avg) avg.innerText = `PROM: ${ids.length ? (suma/ids.length).toFixed(1) : 0}`;
 }
 
-function getColorProm(v) { return v>=90?STAT_COLORS.legend:v>=80?STAT_COLORS.gold:v>=70?STAT_COLORS.silver:STAT_COLORS.bronze; }
-
-function highlightTeam(idx) {
-    if(!teamRadarChart) return;
-    document.querySelectorAll('.team-box').forEach((el, i) => { 
-        if(i === idx) el.classList.add('highlight'); else el.classList.remove('highlight'); 
-    });
-    if (idx !== -1) {
-        teamRadarChart.data.datasets[0].order = (idx === 0) ? 0 : 1;
-        teamRadarChart.data.datasets[1].order = (idx === 1) ? 0 : 1;
-    }
-    teamRadarChart.update('none');
-}
-
 function generarAutomatico() {
     let pool = [...equipo1, ...equipo2].map(getPlayerData);
     if (pool.length !== 10) return;
     const currentT1 = new Set(equipo1);
     const currentT2 = new Set(equipo2);
+    
     const topArq = [...pool].sort((a, b) => b.arq - a.arq).slice(0, 2).map(p => p.id);
     const topAta = [...pool].sort((a, b) => b.ata - a.ata).slice(0, 2).map(p => p.id);
     const topDef = [...pool].sort((a, b) => b.def - a.def).slice(0, 2).map(p => p.id);
     const topRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(0, 2).map(p => p.id);
     const botRunners = [...pool].sort((a, b) => (b.vel + b.res) - (a.vel + a.res)).slice(8, 10).map(p => p.id);
     const granerosPool = pool.filter(p => p.nombre.toUpperCase().includes("GRANEROS")).map(p => p.id);
+    
     let mejorE1 = [], mejorFealdad = Infinity;
+    
     for (let i = 0; i < 5000; i++) {
         let t = [...pool].sort(() => Math.random() - 0.5);
         let t1 = t.slice(0, 5), t2 = t.slice(5);
         let ids1 = t1.map(p => p.id);
         let s1 = t1.reduce((a, b) => a + b.prom, 0), s2 = t2.reduce((a, b) => a + b.prom, 0);
         let f = Math.abs(s1 - s2) * 100;
+        
         if (granerosPool.length === 2 && ids1.includes(granerosPool[0]) !== ids1.includes(granerosPool[1])) f += 1000000;
+        
         const matchesT1 = ids1.every(id => currentT1.has(id));
         const matchesT2 = ids1.every(id => currentT2.has(id));
         if (matchesT1 || matchesT2) f += 10000000;
+        
         if (ids1.filter(id => topArq.includes(id)).length !== 1) f += 15000;
         if (ids1.filter(id => topAta.includes(id)).length !== 1) f += 10000;
         if (ids1.filter(id => topDef.includes(id)).length !== 1) f += 10000;
         if (ids1.filter(id => topRunners.includes(id)).length !== 1) f += 5000;
         if (ids1.filter(id => botRunners.includes(id)).length !== 1) f += 5000;
+        
         if (f < mejorFealdad) { mejorFealdad = f; mejorE1 = ids1; }
     }
+    
     equipo1 = mejorE1;
     equipo2 = pool.map(p => p.id).filter(id => !equipo1.includes(id));
     actualizarTablerosEquipos();
 }
 
+async function compartirEquipos() {
+    const team1 = document.getElementById('list-team-1');
+    const team2 = document.getElementById('list-team-2');
+    const btnShare = document.getElementById('btn-share-teams');
+    if (!team1 || !team2 || btnShare.disabled) return;
+
+    btnShare.disabled = true;
+    const textoOriginal = btnShare.innerText;
+    btnShare.innerText = "GENERANDO...";
+
+    const capturador = document.createElement('div');
+    capturador.classList.add('team-capture-container');
+
+    const t1Clon = team1.closest('.team-box').cloneNode(true);
+    const t2Clon = team2.closest('.team-box').cloneNode(true);
+    t1Clon.style.boxShadow = 'none';
+    t2Clon.style.boxShadow = 'none';
+    
+    capturador.appendChild(t1Clon);
+    capturador.appendChild(t2Clon);
+    document.body.appendChild(capturador);
+    
+    const w1 = team1.closest('.team-box').offsetWidth;
+    const w2 = team2.closest('.team-box').offsetWidth;
+    t1Clon.style.width = (w1 > 0 ? w1 + 6 : 300) + 'px';
+    t2Clon.style.width = (w2 > 0 ? w2 + 6 : 300) + 'px';
+    
+    try {
+        const canvas = await html2canvas(capturador, {
+            useCORS: true, 
+            backgroundColor: "#1a1a1a",
+            scale: 3, 
+            logging: false
+        });
+        document.body.removeChild(capturador);
+
+        canvas.toBlob(async blob => {
+            if (!blob) {
+                btnShare.disabled = false;
+                btnShare.innerText = textoOriginal;
+                return;
+            }
+            const file = new File([blob], 'Equipos.png', { type: 'image/png' });
+            if (navigator.share) {
+                try { 
+                await navigator.share({ files: [file] }); 
+                } catch (err) { 
+                console.error(err); 
+                }
+            } else {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'Equipos.png';
+                a.click();
+            }
+            btnShare.disabled = false;
+            btnShare.innerText = textoOriginal;
+        }, 'image/png');
+    } catch (error) {
+        if (document.body.contains(capturador)) document.body.removeChild(capturador);
+        btnShare.disabled = false;
+        btnShare.innerText = textoOriginal;
+    }
+}
+
+
+// ==========================================
+// 7. GRÁFICOS (RADAR)
+// ==========================================
 function actualizarRadar() {
     const canvas = document.getElementById('radarChart');
     if(!canvas) return;
+    
     const getAvgStats = (ids) => {
         if (!ids.length) return [0,0,0,0,0,0];
         const ps = ids.map(getPlayerData).filter(p => p !== undefined && p !== null);
@@ -625,68 +724,22 @@ function actualizarRadar() {
     }
 }
 
-async function compartirEquipos() {
-    const team1 = document.getElementById('list-team-1');
-    const team2 = document.getElementById('list-team-2');
-    const btnShare = document.getElementById('btn-share-teams');
-    if (!team1 || !team2 || btnShare.disabled) return;
-
-    btnShare.disabled = true;
-    const textoOriginal = btnShare.innerText;
-    btnShare.innerText = "GENERANDO...";
-
-    const capturador = document.createElement('div');
-    capturador.classList.add('team-capture-container');
-
-    const t1Clon = team1.closest('.team-box').cloneNode(true);
-    const t2Clon = team2.closest('.team-box').cloneNode(true);
-    t1Clon.style.boxShadow = 'none';
-    t2Clon.style.boxShadow = 'none';
-    capturador.appendChild(t1Clon);
-    capturador.appendChild(t2Clon);
-    document.body.appendChild(capturador);
-    const w1 = team1.closest('.team-box').offsetWidth;
-    const w2 = team2.closest('.team-box').offsetWidth;
-    t1Clon.style.width = (w1 > 0 ? w1 + 6 : 300) + 'px';
-    t2Clon.style.width = (w2 > 0 ? w2 + 6 : 300) + 'px';
-    try {
-        const canvas = await html2canvas(capturador, {
-            useCORS: true, 
-            backgroundColor: "#1a1a1a",
-            scale: 3, 
-            logging: false
-        });
-        document.body.removeChild(capturador);
-
-        canvas.toBlob(async blob => {
-            if (!blob) {
-                btnShare.disabled = false;
-                btnShare.innerText = textoOriginal;
-                return;
-            }
-            const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-            if (navigator.share) {
-                try { 
-                await navigator.share({ files: [file] }); 
-                } catch (err) { 
-                console.error(err); 
-                }
-            } else {
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = 'Equipos.png';
-                a.click();
-            }
-            btnShare.disabled = false;
-            btnShare.innerText = textoOriginal;
-        }, 'image/png');
-    } catch (error) {
-        if (document.body.contains(capturador)) document.body.removeChild(capturador);
-        btnShare.disabled = false;
-        btnShare.innerText = textoOriginal;
+function highlightTeam(idx) {
+    if(!teamRadarChart) return;
+    document.querySelectorAll('.team-box').forEach((el, i) => { 
+        if(i === idx) el.classList.add('highlight'); else el.classList.remove('highlight'); 
+    });
+    if (idx !== -1) {
+        teamRadarChart.data.datasets[0].order = (idx === 0) ? 0 : 1;
+        teamRadarChart.data.datasets[1].order = (idx === 1) ? 0 : 1;
     }
+    teamRadarChart.update('none');
 }
 
+
+// ==========================================
+// 8. AUDIO Y EFECTOS SONOROS
+// ==========================================
 function initAudio() { 
     const p = document.getElementById('audio-player'); 
     if(p && !p.src) { 
@@ -730,4 +783,21 @@ function attachSounds() {
             el.dataset.soundAttached = "true";
         }
     }); 
+}
+
+
+// ==========================================
+// 9. FUNCIONES AUXILIARES
+// ==========================================
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0,0,0";
+}
+
+function getColorProm(v) { 
+    return v>=90 ? STAT_COLORS.legend : v>=80 ? STAT_COLORS.gold : v>=70 ? STAT_COLORS.silver : STAT_COLORS.bronze; 
+}
+
+function getPlayerData(id) { 
+    return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); 
 }
