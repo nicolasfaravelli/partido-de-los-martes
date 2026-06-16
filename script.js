@@ -94,19 +94,7 @@ function aplicarFiltrosYOrden() {
     grid.innerHTML = lista.map(j => {
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
-        <div class="efecto-rayos" style="
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 100%; height: 100%;
-            background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            mix-blend-mode: screen;
-            pointer-events: none;
-            z-index: 5;
-            transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});
-        "></div>` : "";
+        <div class="efecto-rayos" style="transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});"></div>` : "";
         return `<div class="card" onclick="abrirModal(${j.id})">
         ${generarHTMLCarta(j, true)}
         ${capaRayos}
@@ -235,47 +223,12 @@ function renderizarModal(j) {
             if(res === 'G') bgColor = '#2E7D32';
             if(res === 'P') bgColor = '#C62828';            
             return `
-                <div style="display:flex; flex-direction:column; align-items:center; width:20%; box-sizing:border-box;">
-                    
-                    <div style="position:relative; width:100%; height:calc(${tamFuenteFecha} * 1.1); margin-bottom:${espacioHaciaCuadrado}; overflow:visible;">
-                        <span style="
-                            position:absolute;
-                            bottom:0;
-                            left:50%;
-                            transform:translateX(-50%) scaleX(${anchoEscalaFecha});
-                            transform-origin:center bottom;
-                            font-family:var(--fuente-impacto); 
-                            font-size:${tamFuenteFecha}; 
-                            font-weight:${grosorFecha};
-                            letter-spacing:${espaciadoLetraFecha};
-                            color:${j.color}; 
-                            line-height:1;
-                            white-space:nowrap;
-                            display:block;
-                            text-align:center;
-                        ">${fecha}</span>
+                <div class="racha-contenedor">
+                    <div class="racha-fecha-wrapper" style="height:calc(${tamFuenteFecha} * 1.1); margin-bottom:${espacioHaciaCuadrado};">
+                        <span class="racha-fecha-texto" style="transform:translateX(-50%) scaleX(${anchoEscalaFecha}); font-size:${tamFuenteFecha}; font-weight:${grosorFecha}; letter-spacing:${espaciadoLetraFecha}; color:${j.color};">${fecha}</span>
                     </div>
-                    
-                    <div style="
-                        background-color:${bgColor}; 
-                        width:${anchoCuadrado}; 
-                        aspect-ratio:1; 
-                        border-radius:${redondeoCuadrado}; 
-                        border:0.15px solid rgba(0,0,0,0.15);
-                        box-sizing:border-box;
-                        display:flex;
-                        justify-content:center;
-                        align-items:center;
-                    ">
-                        <span style="
-                            font-family:var(--fuente-impacto); 
-                            font-size:${tamLetraRes}; 
-                            color:#FFF; 
-                            line-height:1; 
-                            margin:0;
-                            padding-top:${microAjusteLetraV};
-                            display:block;
-                        ">${res}</span>
+                    <div class="racha-cuadrado" style="background-color:${bgColor}; width:${anchoCuadrado}; border-radius:${redondeoCuadrado};">
+                        <span class="racha-letra" style="font-size:${tamLetraRes}; padding-top:${microAjusteLetraV};">${res}</span>
                     </div>
                 </div>
             `;
@@ -446,8 +399,7 @@ function renderizarListaSeleccion() {
         const sel = equipo1.includes(i.id) || equipo2.includes(i.id);
         return `
         <div class="player-row ${sel ? 'selected' : ''}" onclick="toggleSeleccion(${i.id})">
-            <span onclick="event.stopPropagation(); borrarInvitado(${i.id})" 
-                style="color: #ff4444; font-weight: bold; font-size: 1.5rem; display: inline-block; width: 22px; text-align: center;">×</span>
+            <span class="btn-borrar-invitado" onclick="event.stopPropagation(); borrarInvitado(${i.id})">×</span>
             <span contenteditable="true" spellcheck="false" 
                 onclick="event.stopPropagation()" 
                 onblur="actualizarInvitado(${i.id}, 'nombre', this.innerText)">${i.nombre}</span>
@@ -684,11 +636,7 @@ async function compartirEquipos() {
     btnShare.innerText = "GENERANDO...";
 
     const capturador = document.createElement('div');
-    capturador.style.cssText = `
-        position: absolute; left: -9999px; top: 0;
-        display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; padding: 16px;
-        background-color: #1a1a1a; width: max-content; align-items: stretch;
-    `;
+    capturador.classList.add('team-capture-container');
 
     const t1Clon = team1.closest('.team-box').cloneNode(true);
     const t2Clon = team2.closest('.team-box').cloneNode(true);
