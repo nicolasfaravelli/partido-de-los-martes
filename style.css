@@ -1,3 +1,6 @@
+/* =========================================
+   1. VARIABLES GLOBALES
+========================================= */
 :root {
     --color-acento: #75AADB; 
     --color-bordes: #333333;
@@ -7,6 +10,9 @@
     --altura-base: 40px;
 }
 
+/* =========================================
+   2. ESTILOS BASE Y GENERALES
+========================================= */
 body { 
     background-color: #0f0f0f; 
     color: #fff; 
@@ -23,8 +29,19 @@ body {
 
 body.modal-open { overflow: hidden; }
 
-#version-tag { position: fixed; bottom: 10px; left: 15px; font-size: 0.7rem; color: #444; z-index: 5000; font-weight: bold; }
+#version-tag { 
+    position: fixed; 
+    bottom: 10px; 
+    left: 15px; 
+    font-size: 0.7rem; 
+    color: #444; 
+    z-index: 5000; 
+    font-weight: bold; 
+}
 
+/* =========================================
+   3. PANTALLA DE CARGA (LOADER)
+========================================= */
 #loader { 
     position: fixed;
     top: 50%;
@@ -45,10 +62,13 @@ body.modal-open { overflow: hidden; }
 .soccer-ball { width: 30px; height: 30px; object-fit: contain; animation: spin-ball 2s linear infinite; }
 .loading-text { font-size: 1rem; text-transform: uppercase; margin: 0; }
 .loading-text::after { content: ""; display: inline-block; width: 24px; text-align: left; animation: dots-cycle 1.5s steps(4, end) infinite; }
+
 @keyframes spin-ball { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dots-cycle { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
-/* --- HEADER MEJORADO --- */
+/* =========================================
+   4. HEADER Y CONTROLES
+========================================= */
 .main-sticky-header {
     position: sticky;
     top: 0;
@@ -81,43 +101,37 @@ body.modal-open { overflow: hidden; }
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    white-space: nowrap; }
+    white-space: nowrap; 
+}
 
 #search-input, #sort-select { padding: 0 15px; background: rgba(30, 30, 30, 0.9); color: white; min-width: 150px; flex: 1; }
-
-/* UNIFICADO: Efecto HOVER para Inputs */
-#search-input:hover, #sort-select:hover {
-    border-color: var(--color-acento);
-    box-shadow: 0 0 15px var(--color-acento); }
-
+#search-input:hover, #sort-select:hover { border-color: var(--color-acento); box-shadow: 0 0 15px var(--color-acento); }
 #search-input:focus, #sort-select:focus { 
     border-color: var(--color-acento); 
     background: #222; 
     box-shadow: 0 0 20px var(--color-acento), inset 0 0 5px rgba(117, 170, 219, 0.2); 
-    color: #fff; }
+    color: #fff; 
+}
 
 .btn { padding: 0 25px; background: var(--color-acento); color: #fff; cursor: pointer; border: none; width: auto; }
-
 .btn:hover:not(:disabled) { 
     background: #8bb7e2 !important; 
     box-shadow: 0 0 20px var(--color-acento) !important; 
-    transform: translateY(-1px); }
-
+    transform: translateY(-1px); 
+}
 .btn:disabled { background-color: #444 !important; color: #888 !important; cursor: not-allowed !important; opacity: 0.6; box-shadow: none !important; }
 
 .btn-ghost { background: rgba(42, 42, 42, 0.9); color: #fff; border: 1px solid #444; }
 .btn-gold { background: #644B0A; color: #DFC6B4; border: 1px solid #fff; font-weight: 900; }
 .btn.btn-gold:hover:not(:disabled) { background: #644B0A !important; box-shadow: 0 0 20px rgba(212, 175, 55, 0.8) !important; }
+
 .btn-add-guest { background: #111; color: #eee; padding: 0 15px; cursor: pointer; }
-
-.btn-add-guest:hover { 
-    border-color: var(--color-acento); 
-    background: #1a1a1a; 
-    box-shadow: 0 0 15px var(--color-acento); }
-
+.btn-add-guest:hover { border-color: var(--color-acento); background: #1a1a1a; box-shadow: 0 0 15px var(--color-acento); }
 .btn-add-guest:disabled { opacity: 0.3; color: #666; cursor: not-allowed; border-color: #333; }
 
-/* --- CARTAS GRID Y EFECTO FOCO CORREGIDO --- */
+/* =========================================
+   5. GRILLA PRINCIPAL DE CARTAS
+========================================= */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
@@ -127,40 +141,38 @@ body.modal-open { overflow: hidden; }
     padding-bottom: 50px; 
 }
 
-/* LÓGICA DE FOCO SEGURA: Solo aplica si hay una carta con hover activo */
 .grid:has(.card:hover) .card:not(:hover) { 
     opacity: 0.9; 
     filter: saturate(0.5) brightness(0.75);
     transition: opacity 2.2s ease 0.4s, filter 2.2s ease 0.4s; 
 }
 
+/* =========================================
+   6. DISEÑO DE LAS CARTAS (ESTRUCTURA Y CAPAS)
+========================================= */
 .card { 
     position: relative; 
     width: 100%; 
     aspect-ratio: 2 / 3; 
     cursor: pointer; 
     transition: transform 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                opacity 0.75s ease, 
-                filter 0.75s ease, 
-                box-shadow 0.75s ease; 
+                opacity 0.75s ease, filter 0.75s ease, box-shadow 0.75s ease; 
     container-type: size; 
     outline: none; 
     -webkit-tap-highlight-color: transparent; 
 }
 
-.card:hover { 
-    transform: scale(1.1); 
-    z-index: 10; 
-    box-shadow: 0 0 45px var(--card-glow-color);
-}
+.card:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 0 45px var(--card-glow-color); }
 
 .card-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); }
 .card-bg { width: 100%; height: 100%; object-fit: contain; }
 .card-face { position: absolute; z-index: 2; top: 8.25%; left: 5.5%; width: 95%; object-fit: contain; }
 .info-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.blend-layer { z-index: 2; mix-blend-mode: color; pointer-events: none; }
 
 .rating { font-family: var(--fuente-impacto); position: absolute; top: 13.5%; left: 6%; font-size: 18cqw; text-align: center; width: 25%; line-height: 0.8; }
 .position { font-family: var(--fuente-impacto); position: absolute; top: 24%; left: 6%; font-size: 10cqw; text-align: center; width: 25%; }
+.name { font-family: var(--fuente-impacto); position: absolute; top: 62.7%; left: 6%; width: 88%; text-align: center; font-size: 14.2cqw; text-transform: uppercase; }
 
 .card-arrow { 
     position: absolute; top: 40.5%; left: 12.5%; width: 12%; z-index: 5; object-fit: contain;
@@ -168,7 +180,6 @@ body.modal-open { overflow: hidden; }
     box-shadow: inset 0 0 2.5px rgba(0,0,0,0.25); background-color: rgb(var(--color-rgb));
 }
 
-.name { font-family: var(--fuente-impacto); position: absolute; top: 62.7%; left: 6%; width: 88%; text-align: center; font-size: 14.2cqw; text-transform: uppercase; }
 .stats-container { display: flex; justify-content: space-between; position: absolute; top: 80%; left: 7.75%; width: 85%; }
 .stat-val { font-family: var(--fuente-impacto); font-size: 8.5cqw; display: block; text-align: center; width: 16%; }
 
@@ -181,32 +192,86 @@ body.modal-open { overflow: hidden; }
 .card:hover .shine-layer::after { animation: brillo-diagonal-ida 1s ease-in-out forwards; }
 @keyframes brillo-diagonal-ida { 0% { transform: translate(-100%, -100%); opacity: 1; } 100% { transform: translate(100%, 100%); opacity: 1; } }
 
-/* --- MODALES Y ARMADOR --- */
+.efecto-rayos {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+}
+
+/* =========================================
+   7. BLOQUE DE RACHAS DE PARTIDOS
+========================================= */
+.racha-contenedor { display: flex; flex-direction: column; align-items: center; width: 20%; box-sizing: border-box; }
+.racha-fecha-wrapper { position: relative; width: 100%; overflow: visible; }
+.racha-fecha-texto { position: absolute; bottom: 0; left: 50%; transform-origin: center bottom; font-family: var(--fuente-impacto); line-height: 1; white-space: nowrap; display: block; text-align: center; }
+.racha-cuadrado { aspect-ratio: 1; border: 0.15px solid rgba(0,0,0,0.15); box-sizing: border-box; display: flex; justify-content: center; align-items: center; }
+.racha-letra { font-family: var(--fuente-impacto); color: #FFF; line-height: 1; margin: 0; display: block; }
+
+/* =========================================
+   8. MODAL DE CARTA (DETALLES Y DORSO)
+========================================= */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.875); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(12.5px); }
 #modal-card-container { position: relative; width: 340px; aspect-ratio: 2 / 3; margin-bottom: 20px; display: flex; justify-content: center; }
-#team-modal-content { background: #1a1a1a; background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png'); background-size: cover; background-position: center; padding: 20px; border-radius: var(--radio-base); border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); }
 
+.modal-card { perspective: 1000px; }
+.modal-card:hover { transform: none; box-shadow: none; }
+.modal-card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+.card-front, .card-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.card-back { transform: rotateY(180deg); filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); border-radius: var(--radio-base); overflow: hidden; }
+
+#white-flash-overlay {
+    position: fixed; z-index: 9999; pointer-events: none; background-color: transparent;
+    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/BLANCA.png');
+    background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
+    opacity: 0; transition: opacity 0.15s ease-in-out; 
+}
+#white-flash-overlay.active { opacity: 0.5; filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)); }
+
+#modal-buttons { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; width: 100%; }
+.btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
+.modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+
+/* =========================================
+   9. MODAL DEL ARMADOR DE EQUIPOS
+========================================= */
+#team-modal-content { background: #1a1a1a; background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Fondo%20armador.png'); background-size: cover; background-position: center; padding: 20px; border-radius: var(--radio-base); border: 1px solid var(--color-bordes); width: 95%; max-width: 950px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(24, 60, 93, 0.4); }
 .armador-layout { overflow-y: auto; overflow-x: hidden; flex: 1; padding: 0 10px; }
+
+/* LISTA DE JUGADORES */
 .players-list-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
 .player-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: #252525; border-radius: var(--radio-base); cursor: pointer; font-family: var(--fuente-datos); font-weight: bold; border: 1px solid transparent; box-sizing: border-box; transition: opacity 0.3s ease; }
 .player-row.selected { border-color: var(--color-acento); color: var(--color-acento); opacity: 1 !important; }
-/* ESTADO INHABILITADO (Ya sea por límite de 10 O por estar lesionado/disabled) */
-.players-list-scroll.limit-reached .player-row:not(.selected),
-.player-row.disabled { 
-    opacity: 0.75; 
-    color: #666; 
-    pointer-events: none;}
-.players-list-scroll.limit-reached .player-row:not(.selected) .list-arrow-img,
-.player-row.disabled .list-arrow-img { 
-    filter: grayscale(1); 
-    opacity: 0.75;}
-
-/* CONTADOR CON DESTELLO */
-#team-counter.completado { color: var(--color-acento) !important; animation: counter-flash 0.5s ease-out; }
-@keyframes counter-flash { 0% { color: #fff; text-shadow: 0 0 15px #fff; } 100% { color: var(--color-acento); text-shadow: none; } }
-
+.players-list-scroll.limit-reached .player-row:not(.selected), .player-row.disabled { opacity: 0.75; color: #666; pointer-events: none;}
+.players-list-scroll.limit-reached .player-row:not(.selected) .list-arrow-img, .player-row.disabled .list-arrow-img { filter: grayscale(1); opacity: 0.75;}
 .list-arrow-img { width: 18px; height: 18px; object-fit: contain; background: #000; padding: 2px; border-radius: 2px; transition: filter 0.3s ease; }
 .list-arrow-spacer { width: 18px; height: 18px; }
+
+/* INVITADOS */
+.edit-guest-name { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.2); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; width: 60%; }
+.edit-guest-prom { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #d4af37; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; width: 45px; text-align: center; margin-left: auto; }
+.btn-borrar-invitado { color: #ff4444; font-weight: bold; font-size: 1.5rem; display: inline-block; width: 22px; text-align: center; cursor: pointer; }
+
+/* ESTADO DE LOS EQUIPOS */
+#team-counter.completado { color: var(--color-acento) !important; animation: counter-flash 0.5s ease-out; }
+@keyframes counter-flash { 0% { color: #fff; text-shadow: 0 0 15px #fff; } 100% { color: var(--color-acento); text-shadow: none; } }
 
 .teams-container { display: grid; grid-template-columns: 1fr 300px 1fr; gap: 15px; margin-top: 10px; min-height: 250px; width: 100%; padding: 15px 0; align-items: start; }
 .team-box { padding: 10px; border-radius: var(--radio-base); border: 2px solid #333; display: flex; flex-direction: column; transition: all 0.2s ease; height: 100%; box-sizing: border-box; cursor: pointer; position: relative; }
@@ -222,183 +287,22 @@ body.modal-open { overflow: hidden; }
 
 #radar-container { background: var(--color-acento); border-radius: var(--radio-base); padding: 10px; display: flex; align-items: center; justify-content: center; height: 280px; position: relative; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-/* --- CORRECCIÓN BOTONES MODAL --- */
-#modal-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-}
+/* UTILIDAD DE CAPTURA */
+.team-capture-container { position: absolute; left: -9999px; top: 0; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; padding: 16px; background-color: #1a1a1a; width: max-content; align-items: stretch; }
 
-.btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
-.modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
+/* =========================================
+   10. CONTROLES GLOBALES SECUNDARIOS
+========================================= */
 #music-control { position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; z-index:4000; width:45px; display: flex; align-items: center; }
 
-@media (max-width: 900px) { .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } }
-
-/* --- CARTA BLANCA DE TRANSICIÓN --- */
-#white-flash-overlay {
-    position: fixed;
-    z-index: 9999; 
-    pointer-events: none;
-    background-color: transparent;
-    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/BLANCA.png');
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0; 
-    transition: opacity 0.15s ease-in-out; 
-}
-#white-flash-overlay.active {
-    opacity: 0.5; 
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
-}
-
-.edit-guest-name {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    width: 60%;
-}
-
-.edit-guest-prom {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #d4af37;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    width: 45px;
-    text-align: center;
-    margin-left: auto;
+/* =========================================
+   11. MEDIA QUERIES (DISEÑO ADAPTABLE)
+========================================= */
+@media (max-width: 900px) { 
+    .teams-container { grid-template-columns: 1fr 1fr; gap: 8px; } 
+    #radar-container { grid-column: span 2; order: 3; height: 240px; margin-top: 10px; } 
 }
 
 @media screen and (max-width: 768px) {
-    .edit-guest-name, .edit-guest-prom {
-        font-size: 16px; 
-    }
-}
-
-.modal-card { perspective: 1000px;
-}
-
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
-}
-
-.modal-card.flipped .card-inner { transform: rotateY(180deg);
-}
-
-.card-front,
-.card-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
-}
-
-.card-back { transform: rotateY(180deg); filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
-    border-radius: var(--radio-base); overflow: hidden;
-}
-
-.modal-card:hover { transform: none; box-shadow: none;
-}
-
-.blend-layer { z-index: 2; mix-blend-mode: color; pointer-events: none;
-}
-
-.efecto-rayos {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 8; /* Para que pase por encima del jugador y los stats */
-    pointer-events: none;
-    mix-blend-mode: screen; /* Borra el fondo negro del GIF y deja solo la luz */
-    opacity: 0.6; /* Ajustá esto para que sea más sutil o más fuerte */
-    mask-size: contain;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-}
-
-.efecto-rayos {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 100%; height: 100%;
-    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    mix-blend-mode: screen;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.btn-borrar-invitado {
-    color: #ff4444;
-    font-weight: bold;
-    font-size: 1.5rem;
-    display: inline-block;
-    width: 22px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.team-capture-container {
-    position: absolute;
-    left: -9999px; top: 0;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 16px;
-    padding: 16px;
-    background-color: #1a1a1a;
-    width: max-content;
-    align-items: stretch;
-}
-
-.racha-contenedor {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20%;
-    box-sizing: border-box;
-}
-.racha-fecha-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: visible;
-}
-.racha-fecha-texto {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform-origin: center bottom;
-    font-family: var(--fuente-impacto);
-    line-height: 1;
-    white-space: nowrap;
-    display: block;
-    text-align: center;
-}
-.racha-cuadrado {
-    aspect-ratio: 1;
-    border: 0.15px solid rgba(0,0,0,0.15);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.racha-letra {
-    font-family: var(--fuente-impacto);
-    color: #FFF;
-    line-height: 1;
-    margin: 0;
-    display: block;
+    .edit-guest-name, .edit-guest-prom { font-size: 16px; }
 }
