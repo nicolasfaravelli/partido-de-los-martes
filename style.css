@@ -320,11 +320,85 @@ body.modal-open { overflow: hidden; }
     pointer-events: none;
     mix-blend-mode: screen; /* Borra el fondo negro del GIF y deja solo la luz */
     opacity: 0.6; /* Ajustá esto para que sea más sutil o más fuerte */
-    /* Esto recorta el GIF exactamente con la forma de la carta */
     mask-size: contain;
     mask-position: center;
     mask-repeat: no-repeat;
     -webkit-mask-size: contain;
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
+}
+
+.efecto-rayos {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
+    background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.btn-borrar-invitado {
+    color: #ff4444;
+    font-weight: bold;
+    font-size: 1.5rem;
+    display: inline-block;
+    width: 22px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.team-capture-container {
+    position: absolute;
+    left: -9999px; top: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 16px;
+    padding: 16px;
+    background-color: #1a1a1a;
+    width: max-content;
+    align-items: stretch;
+}
+
+.racha-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    box-sizing: border-box;
+}
+.racha-fecha-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+}
+.racha-fecha-texto {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform-origin: center bottom;
+    font-family: var(--fuente-impacto);
+    line-height: 1;
+    white-space: nowrap;
+    display: block;
+    text-align: center;
+}
+.racha-cuadrado {
+    aspect-ratio: 1;
+    border: 0.15px solid rgba(0,0,0,0.15);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.racha-letra {
+    font-family: var(--fuente-impacto);
+    color: #FFF;
+    line-height: 1;
+    margin: 0;
+    display: block;
 }
