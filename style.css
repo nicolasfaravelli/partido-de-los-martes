@@ -202,14 +202,13 @@ body.modal-open { overflow: hidden; }
     z-index: 5;
     pointer-events: none;
     mix-blend-mode: screen;
-    opacity: 0.6;
+    opacity: 1;
     mask-size: contain;
     mask-position: center;
     mask-repeat: no-repeat;
     -webkit-mask-size: contain;
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
-    filter: contrast(1.25) brightness(0.75);
 }
 
 /* =========================================
