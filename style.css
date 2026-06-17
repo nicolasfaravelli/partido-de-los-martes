@@ -203,12 +203,8 @@ body.modal-open { overflow: hidden; }
     pointer-events: none;
     mix-blend-mode: screen;
     opacity: 1;
-    mask-size: contain;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-image: radial-gradient(squad, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+    mask-image: radial-gradient(squad, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
 }
 
 /* =========================================
