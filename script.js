@@ -69,7 +69,8 @@ function cargarDatos() {
                 if(!fila || !fila[0] || fila[0].trim() === 'Jugador') return null;
                 return { 
                     id: index, nombre: fila[0], prom: parseInt(fila[8]) || 60, 
-                    ata: parseInt(fila[2]) || 0, def: parseInt(fila[3]) || 0, tec: parseInt(fila[4]) || 0, 
+                    tipo: (fila[10]?.trim() || 'BRONCE').toUpperCase(),
+                    ata: parseInt(fila[2]) || 0, def: parseInt(fila[3]) || 0, tec: parseInt(fila[4]) || 0,
                     vel: parseInt(fila[5]) || 0, res: parseInt(fila[6]) || 0, arq: parseInt(fila[7]) || 0, 
                     edad: parseInt(fila[1]) || 25, pos: fila[9] || '?', fondo: fila[11] || '', 
                     foto: fila[12] || '', fotoLeyenda: fila[13] ? fila[13].trim() : "" , 
@@ -115,7 +116,9 @@ function aplicarFiltrosYOrden() {
     grid.innerHTML = lista.map(j => {
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
-        <div class="efecto-rayos" style="transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});"></div>` : "";
+        <video class="efecto-rayos" autoplay loop muted playsinline crossorigin="anonymous" style="transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});">
+            <source src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor/${j.tipo}.webm" type="video/webm">
+        </video>` : "";
         return `<div class="card" onclick="abrirModal(${j.id})">
         ${generarHTMLCarta(j, true)}
         ${capaRayos}
@@ -265,19 +268,18 @@ function renderizarModal(j) {
 
         const esSSJ2 = j.flecha && j.flecha.includes("5.png");
         const capaRayos = esSSJ2 ? `
-        <div class="efecto-rayos" style="
+        <video class="efecto-rayos" autoplay loop muted playsinline crossorigin="anonymous" style="
             position: absolute;
             top: 50%; left: 50%;
             width: 100%; height: 100%;
-            background-image: url('https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor.gif');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
+            object-fit: fill;
             mix-blend-mode: screen;
             pointer-events: none;
             z-index: 5;
             transform: translate(calc(-50% + ${GIF_POS_X}), calc(-50% + ${GIF_POS_Y})) scale(${GIF_ESCALA_X}, ${GIF_ESCALA_Y});
-        "></div>` : "";
+        ">
+            <source src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Resplandor/${j.tipo}.webm" type="video/webm">
+        </video>` : "";
         
         cardCont.innerHTML = `
             <div class="card modal-card" id="carta-descarga" onclick="this.classList.toggle('flipped')">
