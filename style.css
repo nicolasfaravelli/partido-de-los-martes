@@ -209,6 +209,7 @@ body.modal-open { overflow: hidden; }
     -webkit-mask-size: contain;
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
+    filter: contrast(1.25) brightness(0.75);
 }
 
 /* =========================================
