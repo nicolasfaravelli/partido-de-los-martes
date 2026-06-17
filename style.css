@@ -201,11 +201,7 @@ body.modal-open { overflow: hidden; }
     object-fit: fill;
     z-index: 5;
     pointer-events: none;
-    mix-blend-mode: screen;
     opacity: 1;
-    -webkit-mask-image: radial-gradient(squad, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
-    mask-image: radial-gradient(squad, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
-}
 
 /* =========================================
    7. BLOQUE DE RACHAS DE PARTIDOS
