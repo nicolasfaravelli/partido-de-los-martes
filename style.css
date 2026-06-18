@@ -246,6 +246,12 @@ body.modal-open { overflow: hidden; }
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.33);
     paint-order: stroke fill;
 }
+
+.borde-texto-fino {
+    -webkit-text-stroke: 0;
+    paint-order: normal;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 0.0);
+}
 /* =========================================
    9. MODAL DEL ARMADOR DE EQUIPOS
 ========================================= */
