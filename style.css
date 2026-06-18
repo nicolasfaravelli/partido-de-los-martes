@@ -248,10 +248,11 @@ body.modal-open { overflow: hidden; }
 }
 
 .borde-texto-fino {
-    -webkit-text-stroke: 0.33px rgba(0, 0, 0, 1);
+    -webkit-text-stroke: 0.20px rgba(0, 0, 0, 1);
     paint-order: normal;
-    text-shadow: 0 0 7.5px rgba(0, 0, 0, 0.33), 0 0 8px rgba(0, 0, 0, 0.0);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.40), 0 0 8px rgba(0, 0, 0, 0.0);
 }
+
 /* =========================================
    9. MODAL DEL ARMADOR DE EQUIPOS
 ========================================= */
