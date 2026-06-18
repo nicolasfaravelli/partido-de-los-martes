@@ -242,6 +242,9 @@ body.modal-open { overflow: hidden; }
 .btn-group { display: flex; flex-direction: row; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap; margin-top: 10px; }
 .modal-footer { display: flex; flex-direction: row; justify-content: flex-end; gap: 15px; padding-top: 15px; width: 100%; }
 
+.borde-texto-fino {
+    -webkit-text-stroke: 1px #000000;
+}
 /* =========================================
    9. MODAL DEL ARMADOR DE EQUIPOS
 ========================================= */
