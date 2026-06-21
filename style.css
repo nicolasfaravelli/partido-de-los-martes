@@ -226,9 +226,37 @@ body.modal-open { overflow: hidden; }
 .modal-card:hover { transform: none; box-shadow: none; }
 .modal-card.flipped .card-inner { transform: rotateY(180deg); }
 
-.card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
-.card-front, .card-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-.card-back { transform: rotateY(180deg); filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); border-radius: var(--radio-base); overflow: hidden; }
+.card-inner {
+    position: relative; 
+    width: 100%; 
+    height: 100%; 
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d; 
+}
+
+.card-front, .card-back { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    -webkit-backface-visibility: hidden; 
+    backface-visibility: hidden; 
+}
+
+.card-front {
+    -webkit-transform: rotateY(0deg) translateZ(1px);
+    transform: rotateY(0deg) translateZ(1px);
+}
+
+.card-back { 
+    -webkit-transform: rotateY(180deg) translateZ(1px);
+    transform: rotateY(180deg) translateZ(1px); 
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7)); 
+    border-radius: var(--radio-base); 
+    overflow: hidden; 
+}
 
 #white-flash-overlay {
     position: fixed; z-index: 9999; pointer-events: none; background-color: transparent;
