@@ -225,12 +225,12 @@ function renderizarModal(j) {
                 <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <span style="font-size:${tamSocioIcono}; line-height:1;">🤝</span>
+                            <img src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Bien.png" style="height:${tamSocioIcono}; width:auto; object-fit:contain;" alt="Mejor Socio">
                             <span style="color:${j.color};">MEJOR SOCIO:</span> <span class="borde-texto-fino" style="color:#2E7D32;">${j.mejorComp}</span>
                         </div>` : ''}
                     ${j.peorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <span style="font-size:${tamSocioIcono}; line-height:1;">⚠️</span>
+                            <img src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Mal.png" style="height:${tamSocioIcono}; width:auto; object-fit:contain;" alt="Mala Química">
                             <span style="color:${j.color};">MALA QUÍMICA:</span> <span class="borde-texto-fino" style="color:#C62828;">${j.peorComp}</span>
                         </div>` : ''}
                 </div>
