@@ -206,7 +206,7 @@ function renderizarModal(j) {
                     ASISTENCIA
                 </div>
                 <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${esp_Bajo_NumAsis};">
-                    <span class="borde-texto-fino">${asisPorcentaje}%</span> <span style="font-size:${tamValAsisFraccion}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
+                    <span class="borde-texto-fino">${asisPorcentaje}%</span> <span style="font-family:var(--fuente-impacto); font-size:${tamValAsisFraccion}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
