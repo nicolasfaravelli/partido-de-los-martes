@@ -338,3 +338,11 @@ body.modal-open { overflow: hidden; }
 @media screen and (max-width: 768px) {
     .edit-guest-name, .edit-guest-prom { font-size: 16px; }
 }
+
+
+/* BLOQUEO PROVISORIO PARA SAFARI - BORRAR AL CAMBIAR VIDEO A MP4 */
+@supports (background: -webkit-named-image(i)) or (-webkit-touch-callout: none) {
+    .efecto-rayos {
+        display: none !important;
+    }
+}
