@@ -347,33 +347,11 @@ body.modal-open { overflow: hidden; }
     }
 }
 
-/* 1. Ancho total de la línea (Barra + Texto) y centrado */
-.contenedor-barra-total {
-    display: flex;
-    justify-content: center; /* Centra toda la línea */
-    align-items: center;     /* Alinea verticalmente barra y números */
-    width: 80%;              /* MODIFICÁ ESTO para el ancho total de la línea */
-    margin: 0 auto;          /* Mantiene el bloque centrado */
-}
-
-/* 2. Ancho de la barra sola */
 .barra-contenedor-flexible {
     display: flex;
-    width: 60%;              /* MODIFICÁ ESTO para ajustar el ancho de la barra sola */
-    height: 12px;            /* 3. MODIFICÁ ESTO para la altura de la barra */
-    gap: 2px;                /* 4. MODIFICÁ ESTO para la separación de subdivisiones */
-    margin-right: 15px;      /* 5. MODIFICÁ ESTO para el espacio entre barra y números */
 }
-
-/* Subdivisiones (se ajustan solas al ancho de la barra) */
 .barra-segmento {
     flex-grow: 1;
     height: 100%;
     border-radius: 2px;
-}
-
-/* Números (partidos jugados/posibles) */
-.texto-partidos {
-    font-family: var(--fuente-impacto);
-    font-size: 9cqw;         /* Ajustá el tamaño a gusto */
 }
