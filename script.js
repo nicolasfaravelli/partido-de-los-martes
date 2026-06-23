@@ -218,7 +218,7 @@ function renderizarModal(j) {
                     <div class="barra-contenedor-ajustable" style="display:flex; gap:1px; height:20px; position:relative;">
                         ${htmlBarraAsistencia}
                         
-                        <div style="position:absolute; left:calc(100% + 15px); top:50%; transform:translateY(-50%); font-family:var(--fuente-impacto); font-size:8cqw; color:${j.color}; line-height:1; white-space:nowrap;">
+                        <div style="position:absolute; left:calc(100% + 10px); top:50%; transform:translateY(-50%); font-family:var(--fuente-impacto); font-size:8cqw; color:${j.color}; line-height:1; white-space:nowrap;">
                             ${j.pj}/${totalPartidosAnio}
                         </div>
                     </div>
