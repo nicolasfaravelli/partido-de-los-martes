@@ -214,12 +214,13 @@ function renderizarModal(j) {
                     ASISTENCIA
                 </div>
                 
-                <div style="display:flex; justify-content:center; align-items:center; margin-bottom:${esp_Bajo_NumAsis}; position:relative;">
-                    <div class="barra-contenedor-ajustable" style="display:flex; gap:2px; height:12px;">
+                <div style="display:flex; justify-content:center; align-items:center; margin-bottom:${esp_Bajo_NumAsis}; position:relative; width:100%;">
+                    <div class="barra-contenedor-ajustable" style="display:flex; gap:1px; height:20px; position:relative;">
                         ${htmlBarraAsistencia}
-                    </div>
-                    <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${j.color}; line-height:1; margin-left:15px;">
-                        ${j.pj}/${totalPartidosAnio}
+                        
+                        <div style="position:absolute; left:calc(100% + 15px); top:50%; transform:translateY(-50%); font-family:var(--fuente-impacto); font-size:8cqw; color:${j.color}; line-height:1; white-space:nowrap;">
+                            ${j.pj}/${totalPartidosAnio}
+                        </div>
                     </div>
                 </div>
 
