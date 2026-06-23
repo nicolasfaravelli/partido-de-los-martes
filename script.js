@@ -197,17 +197,35 @@ function renderizarModal(j) {
         // --- IMÁGENES Y STATS ---
         const urlSocioIdeal = "https://via.placeholder.com/20/000000/FFFFFF/?text=+";
         const urlMalaQuimica = "https://via.placeholder.com/20/000000/FFFFFF/?text=-";
+        
+        // Bucle para generar los fragmentos de la barra
+        let htmlBarraAsistencia = '';
+        for (let i = 0; i < totalPartidosAnio; i++) {
+            // Pinta con color dinámico los partidos jugados, y deja semitransparente oscuro los ausentes
+            const colorSeg = i < j.pj ? colorAsis : 'rgba(0, 0, 0, 0.35)';
+            htmlBarraAsistencia += `<div class="barra-segmento" style="background-color: ${colorSeg};"></div>`;
+        }
+
         const htmlStatsTop = `
             <div style="position:absolute; top:${posVBloquePrincipal}; left:0%; width:100%; display:flex; flex-direction:column; z-index:10; text-align:center;">                
                 <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_2026};">
                     2026
                 </div>
-                <div style="font-family:var(--fuente-impacto); font-size:${tamLblAsistencia}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_PalabraAsis};">
-                    ASISTENCIA
+                
+                <div class="bloque-asistencia">
+                    <div class="asistencia-titulo" style="font-size:${tamLblAsistencia}; color:${j.color};">
+                        ASISTENCIA
+                    </div>
+                    <div class="asistencia-fila-barra">
+                        <div class="barra-contenedor">
+                            ${htmlBarraAsistencia}
+                        </div>
+                        <div class="asistencia-fraccion" style="font-size:${tamValAsisFraccion}; color:${j.color};">
+                            ${j.pj}/${totalPartidosAnio}
+                        </div>
+                    </div>
                 </div>
-                <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1; margin-bottom:${esp_Bajo_NumAsis};">
-                    <span class="borde-texto-fino">${asisPorcentaje}%</span> <span style="font-family:var(--fuente-impacto); font-size:${tamValAsisFraccion}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
-                </div>
+
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
