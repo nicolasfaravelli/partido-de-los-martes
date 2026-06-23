@@ -346,3 +346,45 @@ body.modal-open { overflow: hidden; }
         display: none !important;
     }
 }
+
+/* --- BARRA DE ASISTENCIA DORSO --- */
+.bloque-asistencia {
+    width: 90%;
+    margin: 0 auto 22px auto; /* 22px es el margen inferior hacia el bloque de efectividad */
+    display: flex;
+    flex-direction: column;
+}
+
+.asistencia-titulo {
+    font-family: var(--fuente-impacto);
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 8px; /* Separación entre la palabra y la barra */
+}
+
+.asistencia-fila-barra {
+    display: flex;
+    align-items: center; /* Alinea la barra y los números verticalmente */
+    justify-content: space-between;
+    gap: 12px; /* Espacio entre la barra y el texto (15/20) */
+    width: 100%;
+}
+
+.barra-contenedor {
+    display: flex;
+    flex-grow: 1; /* Fuerza a la barra a ocupar todo el espacio sobrante a la izquierda del texto */
+    height: 14px; /* Grosor de la barra */
+    gap: 2px; /* Separación vacía entre cada subdivisión (cada partido) */
+}
+
+.barra-segmento {
+    flex-grow: 1; /* Obliga a que todos los segmentos midan exactamente lo mismo sin importar la cantidad */
+    height: 100%;
+    border-radius: 2px; /* Suaviza las puntas de los cuadraditos */
+}
+
+.asistencia-fraccion {
+    font-family: var(--fuente-impacto);
+    line-height: 1;
+    white-space: nowrap; /* Evita que los números se rompan en dos líneas si falta espacio */
+}
