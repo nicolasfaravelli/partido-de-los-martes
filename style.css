@@ -347,9 +347,10 @@ body.modal-open { overflow: hidden; }
     }
 }
 
-.barra-contenedor-flexible {
-    display: flex;
+.barra-contenedor-ajustable {
+    width: 40%;          /* MODIFICÁ ACÁ EL ANCHO DE LA BARRA */
 }
+
 .barra-segmento {
     flex-grow: 1;
     height: 100%;
