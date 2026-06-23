@@ -217,16 +217,16 @@ function renderizarModal(j) {
                         ASISTENCIA
                     </div>
                     <div class="asistencia-fila-barra">
-                        <div class="barra-contenedor">
+                        <div class="barra-contenedor-flexible">
                             ${htmlBarraAsistencia}
                         </div>
-                        <div class="asistencia-fraccion" style="font-size:${tamValAsisFraccion}; color:${j.color};">
+                        <div class="asistencia-fraccion" style="color:${j.color};">
                             ${j.pj}/${totalPartidosAnio}
                         </div>
                     </div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-top:15px;">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
                         <span class="borde-texto-fino" style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#2E7D32; line-height:1;">${j.pg}</span>
@@ -240,7 +240,7 @@ function renderizarModal(j) {
                         <span class="borde-texto-fino" style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#C62828; line-height:1;">${j.pp}</span>
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
+                <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios}; margin-top:5px;">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <img src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Bien.png" style="height:${tamSocioIcono}; width:auto; object-fit:contain;" alt="Mejor Socio">
