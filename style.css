@@ -348,11 +348,13 @@ body.modal-open { overflow: hidden; }
 }
 
 .barra-contenedor-ajustable {
-    width: 43%; /* CONFIGURÁ ACÁ EL ANCHO DE LA BARRA (ej. 45%, 50%, 55%) */
+    width: 43%;          /* El ancho que prefieras para la barra */
+    display: flex;
+    gap: 0px;            /* Al ponerlo en 0, se eliminan las líneas de separación */
 }
 
 .barra-segmento {
     flex-grow: 1;
     height: 100%;
-    border-radius: 0.5px; /* Radio de curvatura leve para los bloques de la barra */
+    border-radius: 0px;  /* Al remover el redondeo, los bloques se pegan sin fisuras */
 }
