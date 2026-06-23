@@ -348,11 +348,11 @@ body.modal-open { overflow: hidden; }
 }
 
 .barra-contenedor-ajustable {
-    width: 40%;          /* MODIFICÁ ACÁ EL ANCHO DE LA BARRA */
+    width: 50%; /* CONFIGURÁ ACÁ EL ANCHO DE LA BARRA (ej. 45%, 50%, 55%) */
 }
 
 .barra-segmento {
     flex-grow: 1;
     height: 100%;
-    border-radius: 2px;
+    border-radius: 1px; /* Radio de curvatura leve para los bloques de la barra */
 }
