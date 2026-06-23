@@ -351,6 +351,7 @@ body.modal-open { overflow: hidden; }
     width: 43%;          /* El ancho que prefieras para la barra */
     display: flex;
     gap: 0px;            /* Al ponerlo en 0, se eliminan las líneas de separación */
+    transform: translateY(0.0px);
 }
 
 .barra-segmento {
