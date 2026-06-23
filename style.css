@@ -347,44 +347,43 @@ body.modal-open { overflow: hidden; }
     }
 }
 
-/* --- BARRA DE ASISTENCIA DORSO --- */
+/* Contenedor padre centrado y con ancho fijo */
 .bloque-asistencia {
-    width: 90%;
-    margin: 0 auto 22px auto; /* 22px es el margen inferior hacia el bloque de efectividad */
+    width: 85%; /* Ajustá este ancho total según necesites */
+    margin: 0 auto 22px auto;
     display: flex;
     flex-direction: column;
 }
 
-.asistencia-titulo {
-    font-family: var(--fuente-impacto);
-    text-align: center;
-    line-height: 1;
-    margin-bottom: 8px; /* Separación entre la palabra y la barra */
-}
-
+/* Fila que contiene la barra y los números */
 .asistencia-fila-barra {
     display: flex;
-    align-items: center; /* Alinea la barra y los números verticalmente */
-    justify-content: space-between;
-    gap: 12px; /* Espacio entre la barra y el texto (15/20) */
+    align-items: center;
     width: 100%;
+    /* justify-content: space-between; reparte el espacio, pero el gap fija la distancia mínima */
+    justify-content: space-between; 
 }
 
+/* La barra ahora es el elemento que toma el espacio sobrante */
 .barra-contenedor {
     display: flex;
-    flex-grow: 1; /* Fuerza a la barra a ocupar todo el espacio sobrante a la izquierda del texto */
-    height: 14px; /* Grosor de la barra */
-    gap: 2px; /* Separación vacía entre cada subdivisión (cada partido) */
+    flex-grow: 1; /* Esto hace que la barra se coma todo el espacio sobrante */
+    height: 14px;
+    gap: 2px;
+    margin-right: 15px; /* Esta es tu DISTANCIA FIJA con los números */
 }
 
-.barra-segmento {
-    flex-grow: 1; /* Obliga a que todos los segmentos midan exactamente lo mismo sin importar la cantidad */
-    height: 100%;
-    border-radius: 2px; /* Suaviza las puntas de los cuadraditos */
-}
-
+/* Los números no crecen, mantienen su tamaño natural */
 .asistencia-fraccion {
     font-family: var(--fuente-impacto);
     line-height: 1;
-    white-space: nowrap; /* Evita que los números se rompan en dos líneas si falta espacio */
+    white-space: nowrap;
+    flex-shrink: 0; /* Esto evita que los números se achiquen si la barra presiona mucho */
+}
+
+/* El segmento de barra */
+.barra-segmento {
+    flex-grow: 1; 
+    height: 100%;
+    border-radius: 2px;
 }
