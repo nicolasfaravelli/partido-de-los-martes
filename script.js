@@ -201,7 +201,6 @@ function renderizarModal(j) {
         // Bucle para generar los fragmentos de la barra
         let htmlBarraAsistencia = '';
         for (let i = 0; i < totalPartidosAnio; i++) {
-            // Pinta con color dinámico los partidos jugados, y deja semitransparente oscuro los ausentes
             const colorSeg = i < j.pj ? colorAsis : 'rgba(0, 0, 0, 0.35)';
             htmlBarraAsistencia += `<div class="barra-segmento" style="background-color: ${colorSeg};"></div>`;
         }
@@ -211,22 +210,21 @@ function renderizarModal(j) {
                 <div style="font-family:var(--fuente-impacto); font-size:${tam2026}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_2026};">
                     2026
                 </div>
+                <div style="font-family:var(--fuente-impacto); font-size:${tamLblAsistencia}; color:${j.color}; line-height:1; margin-bottom:${esp_Bajo_PalabraAsis};">
+                    ASISTENCIA
+                </div>
                 
-                <div class="bloque-asistencia">
-                    <div class="asistencia-titulo" style="font-size:${tamLblAsistencia}; color:${j.color};">
-                        ASISTENCIA
+                <div style="display:flex; justify-content:center; align-items:center; margin-bottom:${esp_Bajo_NumAsis};">
+                    <div class="barra-contenedor-flexible" style="height:12px; display:flex; gap:2px; margin-right:15px; width:40%;">
+                        ${htmlBarraAsistencia}
                     </div>
-                    <div class="asistencia-fila-barra">
-                        <div class="barra-contenedor-flexible">
-                            ${htmlBarraAsistencia}
-                        </div>
-                        <div class="asistencia-fraccion" style="color:${j.color};">
-                            ${j.pj}/${totalPartidosAnio}
-                        </div>
+                    <div style="font-family:var(--fuente-impacto); font-size:${tamValAsistencia}; color:${colorAsis}; line-height:1;">
+                        <span class="borde-texto-fino">${asisPorcentaje}%</span> 
+                        <span style="font-family:var(--fuente-impacto); font-size:${tamValAsisFraccion}; color:${j.color};">(${j.pj}/${totalPartidosAnio})</span>
                     </div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-top:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 5%; margin-bottom:${esp_Bajo_BloqueRend};">
                     <div style="display:flex; flex-direction:column; align-items:center; width:30%; gap:${esp_Bajo_PalabrasRend};">
                         <span style="font-family:var(--fuente-impacto); font-size:${tamLblRend}; color:${j.color}; line-height:1;">GANADOS</span>
                         <span class="borde-texto-fino" style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#2E7D32; line-height:1;">${j.pg}</span>
@@ -240,7 +238,7 @@ function renderizarModal(j) {
                         <span class="borde-texto-fino" style="font-family:var(--fuente-impacto); font-size:${tamValRend}; color:#C62828; line-height:1;">${j.pp}</span>
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios}; margin-top:5px;">
+                <div style="display:flex; flex-direction:column; gap:${esp_Entre_Socios};">
                     ${j.mejorComp ? `
                         <div style="font-family:var(--fuente-impacto); font-size:${tamSocioTexto}; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <img src="https://raw.githubusercontent.com/nicolasfaravelli/partido-de-los-martes/main/Bien.png" style="height:${tamSocioIcono}; width:auto; object-fit:contain;" alt="Mejor Socio">
