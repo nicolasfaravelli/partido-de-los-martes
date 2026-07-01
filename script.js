@@ -269,7 +269,8 @@ function renderizarModal(j) {
             const res = (j.racha[i] || "-").trim().toUpperCase();            
             let bgColor = 'rgba(0, 0, 0, 0.25)';
             if(res === 'G') bgColor = '#2E7D32';
-            if(res === 'P') bgColor = '#C62828';            
+            if(res === 'P') bgColor = '#C62828';    
+            if(res === 'E') bgColor = '#1565C0';
             return `
                 <div class="racha-contenedor">
                     <div class="racha-fecha-wrapper" style="height:calc(${tamFuenteFecha} * 1.1); margin-bottom:${espacioHaciaCuadrado};">
