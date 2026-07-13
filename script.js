@@ -652,12 +652,14 @@ async function compartirEquipos() {
                 btnShare.innerText = textoOriginal;
                 return;
             }
+            
             const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-            if (navigator.share) {
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try { 
-                await navigator.share({ files: [file] }); 
+                    await navigator.share({ files: [file] }); 
                 } catch (err) { 
-                console.error(err); 
+                    console.error(err); 
                 }
             } else {
                 const a = document.createElement('a');
@@ -665,9 +667,11 @@ async function compartirEquipos() {
                 a.download = 'Equipos.png';
                 a.click();
             }
+            
             btnShare.disabled = false;
             btnShare.innerText = textoOriginal;
         }, 'image/png');
+        
     } catch (error) {
         if (document.body.contains(capturador)) document.body.removeChild(capturador);
         btnShare.disabled = false;
