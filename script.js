@@ -823,3 +823,24 @@ function getColorProm(v) {
 function getPlayerData(id) { 
     return id >= 9000 ? invitados.find(i=>i.id===id) : datosOriginales.find(d=>d.id===id); 
 }
+
+
+
+async function testShareMinimal() {
+    const base64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='; // PNG 1x1, no depende de html2canvas
+    const byteString = atob(base64);
+    const bytes = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) bytes[i] = byteString.charCodeAt(i);
+    const file = new File([bytes], 'test.png', { type: 'image/png' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+            await navigator.share({ files: [file] });
+            alert('share() terminó sin error');
+        } catch (e) {
+            alert('share() tiró: ' + e.name + ' - ' + e.message);
+        }
+    } else {
+        alert('canShare devolvió false');
+    }
+}
