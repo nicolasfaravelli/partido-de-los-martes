@@ -646,39 +646,38 @@ async function compartirEquipos() {
         });
         document.body.removeChild(capturador);
 
-        canvas.toBlob(async blob => {
-            if (!blob) {
-                btnShare.disabled = false;
-                btnShare.innerText = textoOriginal;
-                return;
-            }
-            
-            const file = new File([blob], 'Equipos.png', { type: 'image/png' });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try { 
-                    await navigator.share({ files: [file] }); 
-                } catch (err) { 
-                    console.error(err); 
+        const dataUrl = canvas.toDataURL('image/png');
+        const respuesta = await fetch(dataUrl);
+        const blob = await respuesta.blob();
+        const file = new File([blob], 'Equipos.png', { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file] });
+            } catch (shareError) {
+                if (shareError.name !== 'AbortError') {
+                    forzarDescarga(dataUrl);
                 }
-            } else {
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = 'Equipos.png';
-                a.click();
             }
-            
-            btnShare.disabled = false;
-            btnShare.innerText = textoOriginal;
-        }, 'image/png');
-        
+        } else {
+            forzarDescarga(dataUrl);
+        }
     } catch (error) {
+        console.error("Error al generar la imagen:", error);
         if (document.body.contains(capturador)) document.body.removeChild(capturador);
+    } finally {
+        // Se ejecuta siempre, falle o no, para restablecer el botón
         btnShare.disabled = false;
         btnShare.innerText = textoOriginal;
     }
 }
 
+function forzarDescarga(url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Equipos.png';
+    a.click();
+}
 
 // ==========================================
 // 7. GRÁFICOS (RADAR)
